@@ -1,16 +1,16 @@
 import express, { Express } from "express";
 import cors from "cors";
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 import { environment } from "./utils/loadEnvironment";
 import path from "path";
+import { errorHandler } from "./middlewares/errorHandler.middleware";
 
 // initial the express server
 const app: Express = express();
 app.get("/", (req, res) => {
   res.send("welcome to the api");
 });
-
 
 // middleware to handle CORS
 app.use(cors());
@@ -35,32 +35,31 @@ app.get(
 // middleware to parse incoming JSON requests
 app.use(express.json());
 
-
-
-
-
-
-
 //not found route
-app.all('*',(req,res) => {
-    res.status(404);
-    if (req.accepts('html')) {
-      res.sendFile(path.join(__dirname,'views','404.html'));
-    }else if(req.accepts('json')){
-      res.json({message : '404 Not Found'});
-    }else{
-      res.type('txt').send('404 Not Found');
-    }
-  })
+app.all("*", (req, res) => {
+  res.status(404);
+  if (req.accepts("html")) {
+    res.sendFile(path.join(__dirname, "views", "404.html"));
+  } else if (req.accepts("json")) {
+    res.json({ message: "404 Not Found" });
+  } else {
+    res.type("txt").send("404 Not Found");
+  }
+});
+
+//error handler
+app.use(errorHandler);
 
 //db connection
-mongoose.connect(environment.MONGODB_URI as string).then((_value:mongoose.Mongoose)=>{
-    console.log('🎉 connection established successfully with mongo db');
+mongoose
+  .connect(environment.MONGODB_URI as string)
+  .then((_value: mongoose.Mongoose) => {
+    console.log("🎉 connection established successfully with mongo db");
     app.listen(environment.PORT, () => {
-        console.log(`🚀 Server is running on port: ${environment.PORT}`);
+      console.log(`🚀 Server is running on port: ${environment.PORT}`);
     });
-
-}).catch((err)=>{
+  })
+  .catch((err) => {
     console.log(err);
-    console.log('🚨 error while establishing connection with mongo db');
-});
+    console.log("🚨 error while establishing connection with mongo db");
+  });

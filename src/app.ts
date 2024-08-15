@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import { environment } from "./utils/loadEnvironment";
 import path from "path";
 import { errorHandler } from "./middlewares/errorHandler.middleware";
+import { logEvents, logger } from "./middlewares/logger";
 
 // initial the express server
 const app: Express = express();
@@ -14,6 +15,8 @@ app.get("/", (req, res) => {
 
 // middleware to handle CORS
 app.use(cors());
+// middleware to handle request logs
+app.use(logger);
 
 // dns validation(
 app.get(
@@ -62,4 +65,5 @@ mongoose
   .catch((err) => {
     console.log(err);
     console.log("🚨 error while establishing connection with mongo db");
+    logEvents(`${err.no}: ${err.code}\t${err.syscall}\t${err.hostname}`,'mongoErrLog.log');
   });

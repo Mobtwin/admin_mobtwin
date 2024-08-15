@@ -1,7 +1,7 @@
 import rateLimit from 'express-rate-limit';
 import {logEvents} from './logger';
 
-const loginLimiter = rateLimit({
+export const loginLimiter = rateLimit({
     windowMs: 60*1000, //1 minute
     max: 5, //limit each IP to 5 requests per window per minute
     message: {
@@ -14,5 +14,3 @@ const loginLimiter = rateLimit({
     standardHeaders: true, //return rate limitinfo in the `RateLimit-*` headers
     legacyHeaders: false, // disable the `X-ratelimit-*` headers
 });
-
-module.exports = loginLimiter;

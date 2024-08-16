@@ -14,7 +14,7 @@ export const createAdminController = async (req: Request, res: Response) => {
         if (!req.user) 
             return sendErrorResponse(res,null, "Unauthorized!",401);
         const user = req.user;
-        if (user.role !== ROLES_OPTIONS.admin)
+        if (user.role !== ROLES_OPTIONS.admin && role === ROLES_OPTIONS.admin)
             return sendErrorResponse(res,null, "Unauthorized!",401);
         //validation
         if(!userName)

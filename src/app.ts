@@ -6,6 +6,7 @@ import { environment } from "./utils/loadEnvironment";
 import path from "path";
 import { errorHandler } from "./middlewares/errorHandler.middleware";
 import { logEvents, logger } from "./middlewares/logger";
+import routes from "./routes";
 
 // initial the express server
 const app: Express = express();
@@ -27,16 +28,14 @@ app.get(
         96990964f4fda24`);
   }
 );
-//TODO: Create those middlewares
-// // middleware to validate the input data
-// app.use(validateRequest);
 
-// // middleware to log incoming requests
-// app.use(logRequest);
-//END TODO
 
 // middleware to parse incoming JSON requests
 app.use(express.json());
+
+// routes
+app.use("/api/v1/admin",routes.adminRouter );
+
 
 //not found route
 app.all("*", (req, res) => {

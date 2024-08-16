@@ -33,7 +33,7 @@ export interface IBuilder {
   allowedAds: string[];
 }
 
-export interface IPlan extends Document {
+export interface IPlan {
   name: string;
   prefix: string;
   description?: string;
@@ -52,7 +52,9 @@ export interface IPlan extends Document {
   pockets: IPockets;
   builder: IBuilder;
 }
-
+export interface IPlanDocument extends IPlan, Document {
+  removed_at: Date | null;
+}
 const sortSchema = new Schema<ISort>(
   {
     released: { type: Boolean, default: false },
@@ -100,7 +102,7 @@ const builderSchema = new Schema<IBuilder>(
   { _id: false }
 );
 
-const planSchema = new Schema<IPlan>({
+const planSchema = new Schema<IPlanDocument>({
   name: { type: String, required: true },
   prefix: { type: String, required: true },
   description: { type: String },
@@ -132,8 +134,9 @@ const planSchema = new Schema<IPlan>({
   },
   filters: filtersSchema,
   pockets: pocketsSchema,
-  builder: builderSchema
-});
+  builder: builderSchema,
+  removed_at: { type: Date, default: null },
+}, { timestamps: true });
 
 planSchema.index({
   name: 1,
@@ -141,4 +144,4 @@ planSchema.index({
   stripeProductMonthlyPriceId: 1,
 });
 
-export const Plans:Model<IPlan> = model<IPlan>("Plan", planSchema);
+export const Plans:Model<IPlanDocument> = model<IPlanDocument>("Plan", planSchema);

@@ -2,15 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import { _checkToken, _isTokenExpired } from "../utils/jwt";
 import { sendErrorResponse } from "../utils/response";
 
-export type User = {
-  id: string;
-  userName: string;
-  email: string;
-  plan: string;
-  avatar: string;
-  iat: number;
-  exp: number;
-};
 
 const ALLOWED_ENDPOINTS = ["/auth/login", "/auth/register", "/auth/refresh", "/auth/email-verification","/auth/login-verification"];
 

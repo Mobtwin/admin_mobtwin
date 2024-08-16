@@ -95,7 +95,7 @@ export const deleteAdminById = async (
     if (!toBeDeleted) throw new Error("Admin not found!");
     if (toBeDeleted.role === ROLES_OPTIONS.admin && userRole !== ROLES_OPTIONS.admin)
       throw new Error("Unauthorized!");
-    const deletedAdmin = await Admins.findByIdAndDelete(id);
+    const deletedAdmin = await Admins.findByIdAndUpdate(id, { removed_at: Date.now() }, { new: true });
     if (!deletedAdmin) throw new Error("Admin not deleted!");
     return deletedAdmin;
   } catch (error: any) {

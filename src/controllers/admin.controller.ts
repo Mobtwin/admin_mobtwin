@@ -4,10 +4,12 @@ import { ROLES, ROLES_OPTIONS } from "../models/admin.schema";
 import validate from 'deep-email-validator'
 import { verifyPasswordStrength } from "../utils/string.format";
 import { createAdmin, deleteAdminById, getAdminById, getAllAdmins, updateAdminById } from "../services/admin.service";
+import { logEvents } from "../middlewares/logger";
+import { AdminByIdRequest, CreateAdminRequest, UpdateAdminRequest } from "../validators/admin.validator";
 
 
 //create a new admin
-export const createAdminController = async (req: Request, res: Response) => {
+export const createAdminController = async (req: CreateAdminRequest, res: Response) => {
     try {
         const { userName, email, password, role } = req.body;
         //authorization
@@ -35,9 +37,10 @@ export const createAdminController = async (req: Request, res: Response) => {
         //email validation
         const validationResult = await validate(email);
         if (!validationResult.valid)
-            return sendErrorResponse(res,null, "Invalid email",400);
+            return sendErrorResponse(res,null, "Invalid email: "+validationResult.reason,400);
         //create admin
         createAdmin({userName, email, password, role}).then((admin) => {
+            logEvents(`${admin.role}: ${admin.userName} created by ${user.role}: ${user.userName}`, "actions.log");
             return sendSuccessResponse(res, admin, 'Admin created successfully!', 200);
         }).catch((error) => {
             return sendErrorResponse(res, error, `Error: ${error.message}`, 400);
@@ -68,7 +71,7 @@ export const getAllAdminsController = async (req: Request, res: Response) => {
 }
 
 //get admin by id
-export const getAdminByIdController = async (req: Request, res: Response) => {
+export const getAdminByIdController = async (req: AdminByIdRequest, res: Response) => {
     try {
         const { id } = req.params;
         //authorization
@@ -92,7 +95,7 @@ export const getAdminByIdController = async (req: Request, res: Response) => {
 }
 
 //update admin by id
-export const updateAdminByIdController = async (req: Request, res: Response) => {
+export const updateAdminByIdController = async (req: UpdateAdminRequest, res: Response) => {
     try {
         const { id } = req.params;
         const { userName, email, password, role } = req.body;
@@ -115,6 +118,7 @@ export const updateAdminByIdController = async (req: Request, res: Response) => 
             return sendErrorResponse(res,null, "Unauthorized!",401);
         //update admin
         updateAdminById(id,{userName,email,password,role},user.role).then((admin) => {
+            logEvents(`${admin.role}: ${admin.userName} updated by ${user.role}: ${user.userName}`, "actions.log");
             return sendSuccessResponse(res, admin, 'Admin updated successfully!', 200);
         }).catch((error) => {
             return sendErrorResponse(res, error, `Error: ${error.message}`, 400);
@@ -125,7 +129,7 @@ export const updateAdminByIdController = async (req: Request, res: Response) => 
 }
 
 //delete admin by id
-export const deleteAdminByIdController = async (req: Request, res: Response) => {
+export const deleteAdminByIdController = async (req: AdminByIdRequest, res: Response) => {
     try {
         const { id } = req.params;
         //authorization
@@ -138,7 +142,8 @@ export const deleteAdminByIdController = async (req: Request, res: Response) => 
         if (!id)
             return sendErrorResponse(res,null, "Missing field. Admin ID is required",400);
         //delete admin
-        deleteAdminById(id,user.role).then(() => {
+        deleteAdminById(id,user.role).then((admin) => {
+            logEvents(`${admin.role}: ${admin.userName} created by ${user.role}: ${user.userName}`, "actions.log");
             return sendSuccessResponse(res, null, 'Admin deleted successfully!', 200);
         }).catch((error) => {
             return sendErrorResponse(res, error, `Error: ${error.message}`, 400);

@@ -27,7 +27,7 @@ planRouter.get('/:id',validateRequest(planByIdSchema,"params"), getPlanByIdContr
 planRouter.put('/:id',validateRequest(updatePlanSchema), updatePlanByIdController);
 
 // Method: PUT
-// Route: /plan/:id
+// Route: /plan/delete/:id
 // Delete plan by id
-planRouter.put('/:id',validateRequest(planByIdSchema,"params"), deletePlanByIdController);
+planRouter.put('/delete/:id',validateRequest(planByIdSchema,"params"), deletePlanByIdController);
 

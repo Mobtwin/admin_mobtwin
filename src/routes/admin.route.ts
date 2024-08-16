@@ -24,5 +24,5 @@ adminRouter.put('/:id',validateRequest(updateAdminSchema), updateAdminByIdContro
 // method: PUT
 // path: /admin/delete/:id
 // Delete admin by id
-adminRouter.put('/:id',validateRequest(adminByIdSchema), deleteAdminByIdController);
+adminRouter.put('/delete/:id',validateRequest(adminByIdSchema), deleteAdminByIdController);
 

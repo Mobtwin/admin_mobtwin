@@ -29,7 +29,7 @@ userRouter.put('/:id',validateRequest(updateUserSchema),updateUserByIdController
 // method: PUT
  // path: /user/delete/:id
  // delte user by id
-userRouter.put('/:id',validateRequest(userByIdSchema, 'params'), deleteUserByIdController);
+userRouter.put('/delete/:id',validateRequest(userByIdSchema, 'params'), deleteUserByIdController);
 
 
 

@@ -3,7 +3,7 @@ import { validateRequest } from "../middlewares/requestValidator.middleware";
 import { createThemeSchema, themeByIdSchema, updateThemeSchema } from "../validators/theme.validator";
 import { createThemeController, deleteThemeController, getAllThemesController, getThemeByIdController, updateThemeController } from "../controllers/theme.controller";
 
-const themeRouter = Router();
+export const themeRouter = Router();
 
 // Method: POST
 // Route: /theme

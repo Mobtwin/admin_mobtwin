@@ -4,7 +4,7 @@ import { validateRequest } from "../middlewares/requestValidator.middleware";
 import { createPlanSchema, planByIdSchema, updatePlanSchema } from "../validators/plan.validator";
 
 
-const planRouter = Router();
+export const planRouter = Router();
 
 // Method: POST
 // Route: /plan

@@ -3,7 +3,7 @@ import { createTemplateController, getAllTemplatesController, getTemplateByIdCon
 import { validateRequest } from "../middlewares/requestValidator.middleware";
 import { createTemplateSchema, templateByIdSchema, updateTemplateSchema } from "../validators/template.validator";
 
-const templateRouter = Router();
+export const templateRouter = Router();
 
 // Method: POST
 // Route: /template

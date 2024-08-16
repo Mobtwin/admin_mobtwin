@@ -3,7 +3,7 @@ import { validateRequest } from "../middlewares/requestValidator.middleware";
 import { appsBuildByIdSchema, createAppsBuildSchema, updateAppsBuildSchema } from "../validators/appsBuild.validator";
 import { createAppBuildController, deleteAppBuildController, getAllAppBuildsController, getAppBuildByIdController, updateAppBuildController } from "../controllers/appsBuild.controller";
 
-const appsBuildRouter = Router();
+export const appsBuildRouter = Router();
 
 // Method: POST
 // Path: /appsBuild

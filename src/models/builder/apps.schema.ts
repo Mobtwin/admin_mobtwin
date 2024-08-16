@@ -1,5 +1,8 @@
 import { model, Schema, Document } from "mongoose";
 
+export const ADS_PROVIDERS = ["Admob", "MetaAds", "IronSource", "Applovin", "YandexAds"];
+export const APP_TYPES = ["application", "game"];
+
 // Define TypeScript interfaces for the schemas
 export interface IAds {
     provider: "Admob" | "MetaAds" | "IronSource" | "Applovin" | "YandexAds";
@@ -33,7 +36,7 @@ export interface IStorekeyConfig {
     countryCode: string;    
 }
 
-export interface IAppsBuild extends Document {
+export interface IAppsBuild{
     type: "application" | "game";
     themeId: Schema.Types.ObjectId;
     name: string;
@@ -47,13 +50,15 @@ export interface IAppsBuild extends Document {
     userId: Schema.Types.ObjectId;
     advertisements?: IAds[];
     intro?: IStep[];
+    storekeyConfig?: IStorekeyConfig;
+    filesPath?: string;
+
+}
+export interface IAppsBuildDocument extends IAppsBuild, Document { 
     created_at?: Date;
     updated_at?: Date;
     removed_at?: Date;
     appType?: string;
-    storekeyConfig?: IStorekeyConfig;
-    filesPath?: string;
-
 }
 
 // Mongoose schemas
@@ -88,7 +93,7 @@ const StorekeyConfigSchema = new Schema<IStorekeyConfig>({
     countryCode: { type: String, required: true },
 }, { _id: false });
 
-const AppBuildSchema = new Schema<IAppsBuild>({
+const AppBuildSchema = new Schema<IAppsBuildDocument>({
     type: { type: String, required: true, enum: ["application", "game"] },
     themeId: { type: Schema.Types.ObjectId, required: true, ref: "Theme" },
     name: { type: String, required: true, unique: true },
@@ -114,4 +119,4 @@ const AppBuildSchema = new Schema<IAppsBuild>({
 AppBuildSchema.index({ userId: 1 });
 AppBuildSchema.index({ removed_at: 1 });
 
-export const AppsBuild = model<IAppsBuild & Document>("AppBuild", AppBuildSchema);
+export const AppsBuild = model<IAppsBuildDocument>("AppBuild", AppBuildSchema);

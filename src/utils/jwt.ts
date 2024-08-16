@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken'
 import { environment } from './loadEnvironment'
+import { IAdmin, IAdminDocument } from '../models/admin.schema'
 
 
 export const _generateToken = async (payload: any, lifeTime: string) => {
@@ -38,5 +39,12 @@ export const _checkToken = async (token: string) => {
   }
 } 
 
+export const generateTokenForUser = async (user: IAdminDocument) => {
+  return await _generateToken({ id: user._id, userName: user.userName, email: user.email,role:user.role }, environment.ACCESS_TOKEN_LIFE || "30m");
+}
+
+export const generateRefreshTokenForUser = async (userId: string) => {
+  return await _generateToken({ userId }, environment.REFRESH_TOKEN_LIFE || "30d");
+}
 
 

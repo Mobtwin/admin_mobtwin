@@ -7,6 +7,9 @@ import path from "path";
 import { errorHandler } from "./middlewares/errorHandler.middleware";
 import { logEvents, logger } from "./middlewares/logger";
 import routes from "./routes";
+import { authMiddleWare } from "./middlewares/auth.middleware";
+import { authRouter } from "./routes/auth.route";
+import { getAppsImageController, getAvatarController } from "./controllers/public.conroller";
 
 // initial the express server
 const app: Express = express();
@@ -34,7 +37,20 @@ app.get(
 app.use(express.json());
 
 // routes
+//unprotected routes
+app.use("/api/v1/auth", authRouter);
+//get public avatar image
+app.use("/a/:id", getAvatarController);
+//get public apps image
+app.use("/apps/:id", getAppsImageController);
+//protected routes
+app.use(authMiddleWare);
 app.use("/api/v1/admin",routes.adminRouter );
+app.use("/api/v1/plan",routes.planRouter );
+app.use("/api/v1/user",routes.userRouter );
+app.use("/api/v1/theme",routes.themeRouter );
+app.use("/api/v1/template",routes.templateRouter );
+app.use("/api/v1/appsBuild",routes.appsBuildRouter );
 
 
 //not found route

@@ -1,5 +1,5 @@
 import { Request } from "express";
-import { ADS_PROVIDERS, APP_TYPES, IAppsBuild } from "../models/builder/apps.schema";
+import { APP_TYPES, IAppsBuild } from "../models/builder/apps.schema";
 import Joi from "joi";
 
 //define a Joi schema for appBuils creation request 
@@ -8,7 +8,7 @@ export interface CreateAppsBuildRequest extends Request {
     body: CreateAppsBuild;
 }
 export const createAppsBuildSchema = Joi.object<CreateAppsBuild>({
-    type: Joi.string().valid(APP_TYPES).required(),
+    type: Joi.string().valid("application", "game").required(),
     themeId: Joi.string().required(),
     name: Joi.string().required(),
     packageName: Joi.string().required(),
@@ -20,7 +20,7 @@ export const createAppsBuildSchema = Joi.object<CreateAppsBuild>({
     version: Joi.string().optional(),
     userId: Joi.string().required(),
     advertisements: Joi.array().items(Joi.object({
-        provider: Joi.string().valid(ADS_PROVIDERS).required(),
+        provider: Joi.string().valid("Admob", "MetaAds", "IronSource", "Applovin", "YandexAds").required(),
         appId: Joi.string().optional(),
         smartBanner: Joi.string().optional(),
         nativeAds: Joi.string().optional(),
@@ -58,7 +58,7 @@ export interface UpdateAppsBuildRequest extends Request {
     }
 }
 export const updateAppsBuildSchema = Joi.object<UpdateAppsBuild>({
-    type: Joi.string().valid(APP_TYPES).optional(),
+    type: Joi.string().valid("application", "game").optional(),
     themeId: Joi.string().optional(),
     name: Joi.string().optional(),
     packageName: Joi.string().optional(),
@@ -70,7 +70,7 @@ export const updateAppsBuildSchema = Joi.object<UpdateAppsBuild>({
     version: Joi.string().optional(),
     userId: Joi.string().optional(),
     advertisements: Joi.array().items(Joi.object({
-        provider: Joi.string().valid(ADS_PROVIDERS).required(),
+        provider: Joi.string().valid("Admob", "MetaAds", "IronSource", "Applovin", "YandexAds").required(),
         appId: Joi.string().optional(),
         smartBanner: Joi.string().optional(),
         nativeAds: Joi.string().optional(),

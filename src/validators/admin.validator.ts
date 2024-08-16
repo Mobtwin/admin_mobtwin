@@ -8,7 +8,7 @@ export const createAdminSchema = Joi.object<CreateAdmin>({
     email: Joi.string().email().required(),
     userName: Joi.string().min(4).max(30).required(),
     password: Joi.string().min(8).required(),
-    role: Joi.string().valid(ROLES).required(),
+    role: Joi.string().valid("admin", "maintainer").required(),
 });
 export interface CreateAdmin {
     email: string;
@@ -39,7 +39,7 @@ export const updateAdminSchema = Joi.object<UpdateAdmin>({
     email: Joi.string().email().optional(),
     password: Joi.string().min(8).optional(),
     userName: Joi.string().min(4).max(30).optional(),
-    role: Joi.string().valid(ROLES).optional(),
+    role: Joi.string().valid("admin", "maintainer").optional(),
 });
 export interface UpdateAdmin extends Partial<Omit<IAdmin, 'removed_at'>> {};
 export interface UpdateAdminRequest extends Request {

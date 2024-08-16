@@ -40,5 +40,6 @@ jobs:
           git stash
           git pull origin main
           git status
-          npm
-          npm build
+          npm install
+          npm run build
+          pm2 restart admin

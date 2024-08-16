@@ -9,7 +9,7 @@ export interface CreateTemplateRequest extends Request {
 }
 export const createTemplateSchema = Joi.object<CreateTemplate>({
     name: Joi.string().required(),
-    type: Joi.string().valid(TEMPLATE_TYPES).required(),
+    type: Joi.string().valid("application", "game").required(),
 });
 
 //define a Joi schema for template update request
@@ -20,7 +20,7 @@ export interface UpdateTemplateRequest extends Request {
 }
 export const updateTemplateSchema = Joi.object<UpdateTemplate>({
     name: Joi.string().optional(),
-    type: Joi.string().valid(TEMPLATE_TYPES).optional(),
+    type: Joi.string().valid("application", "game").optional(),
 });
 
 //define a Joi schema for template id retrieve and delete request

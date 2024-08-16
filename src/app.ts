@@ -24,11 +24,11 @@ app.use(logger);
 
 // dns validation(
 app.get(
-  "/.well-known/pki-validation/74739833A0683FFBA3D01A236B75261F.txt",
+  "/.well-known/pki-validation/C7EA7631321E42E8EA295E53788D31D2.txt",
   (req, res) => {
-    res.send(`A7477EB2F23F83415DA4E13CCB56E9B260ED6B334FBA65F89419DD3D6019B2E2
-        comodoca.com
-        96990964f4fda24`);
+    res.send(`BB0A67923E3D998C4F42AA87D6199D3D15E699198AC9E2CBE00F6A01885B837F
+comodoca.com
+e86268acdcf13c7`);
   }
 );
 

@@ -6,7 +6,8 @@
     "build": "tsc",
     "start": "node dist/app.js",
     "dev": "nodemon src/app.ts",
-    "deploy": "npm run build && npm run start"
+    "deploy": "npm run build && npm run start",
+    "seed:roles": "ts-node ./src/scripts/role.seeder.ts"
   },
   "keywords": [],
   "author": "",

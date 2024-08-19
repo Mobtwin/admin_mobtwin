@@ -34,16 +34,21 @@ export const checkItemSpecificPermission = async (
   },
   action: string
 ) => {
-  const itemPermission = await ItemSpecificPermissions.findOne({
-    user: userId,
-    resource: `${resource.table}.${resource.itemId}`,
-    name: action,
-  });
-
-  if (itemPermission) {
-    return true; // Item-specific permission found, proceed
+  try {
+    const itemPermission = await ItemSpecificPermissions.findOne({
+      user: userId,
+      resource: `${resource.table}.${resource.itemId}`,
+      name: action,
+    });
+  
+    if (itemPermission) {
+      return true; // Item-specific permission found, proceed
+    }
+    return false;
+  } catch (error: any) {
+    throw error;
+    
   }
-  return false;
 };
 
 export const removeItemSpecificPermission = async (

@@ -6,6 +6,7 @@ import { createUser, deleteUserById, getAllUsers, getUserById, updateUserById } 
 import { ROLES, ROLES_OPTIONS } from "../models/admin.schema";
 import { logEvents } from "../middlewares/logger";
 import { CreateUserRequest, UpdateUserRequest, UserByIdRequest } from "../validators/user.validator";
+import { USER_PERMISSIONS } from "../constant/user.constant";
 
 //create new user
 export const createUserController = async (req: CreateUserRequest, res: Response) => {
@@ -51,10 +52,9 @@ export const getAllUsersController = async (req: Request, res: Response) => {
     //authorization
     if (!req.user) return sendErrorResponse(res, null, "Unauthorized!", 401);
     const user = req.user;
-    if (!ROLES.includes(user.role))
-      return sendErrorResponse(res, null, "Unauthorized!", 401);
+    const readOwn = user.permissions.includes(USER_PERMISSIONS.READ_OWN);
     //get users
-    getAllUsers()
+    getAllUsers({ readOwn, userId: user.id })
       .then((users) => {
         return sendSuccessResponse(
           res,

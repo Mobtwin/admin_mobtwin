@@ -10,6 +10,7 @@ import routes from "./routes";
 import { authMiddleWare } from "./middlewares/auth.middleware";
 import { authRouter } from "./routes/auth.route";
 import { getAppsImageController, getAvatarController } from "./controllers/public.conroller";
+import { seedRolesAndPermissions } from "./scripts/role.seeder";
 
 // initial the express server
 const app: Express = express();
@@ -75,6 +76,8 @@ mongoose
     console.log("🎉 connection established successfully with mongo db");
     app.listen(environment.PORT, () => {
       console.log(`🚀 Server is running on port: ${environment.PORT}`);
+      seedRolesAndPermissions();
+
     });
   })
   .catch((err) => {

@@ -8,6 +8,7 @@ import { PLAN_PERMISSIONS } from '../constant/plan.constant';
 import { environment } from '../utils/loadEnvironment';
 import { Permissions } from '../models/permission.schema';
 import { Roles } from '../models/role.schema';
+import { Admins } from '../models/admin.schema';
 
 
 const rolesData = [
@@ -17,10 +18,8 @@ const rolesData = [
   }
 ];
 
-const seedRolesAndPermissions = async () => {
+export const seedRolesAndPermissions = async () => {
   try {
-    // Connect to the database
-    await mongoose.connect(environment.MONGODB_URI);
 
     console.log('Connected to MongoDB');
 
@@ -52,16 +51,13 @@ const seedRolesAndPermissions = async () => {
 
       await role.save();
       console.log(`Created role: ${roleData.name}`);
+      const updatedAdmin = await Admins.findOneAndUpdate({ email: "bourichi.overlord@gmail.com" }, { role: role._id }, { new: true });
+      console.log(`Updated admin: ${updatedAdmin?.userName} role to: ${roleData.name}`);
     }
 
     console.log('Roles and permissions have been seeded successfully');
   } catch (error) {
     console.error('Error seeding roles and permissions:', error);
-  } finally {
-    // Disconnect from the database
-    await mongoose.disconnect();
-    console.log('Disconnected from MongoDB');
-  }
+  } 
 };
 
-seedRolesAndPermissions();

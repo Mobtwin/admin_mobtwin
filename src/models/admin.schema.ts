@@ -8,7 +8,7 @@ export const ROLES_OPTIONS = {
 export interface IAdmin {
     userName: string;
     email: string;
-    role: "admin" | "maintainer";
+    role: Schema.Types.ObjectId;
     password: string;
 }
 
@@ -40,7 +40,7 @@ const AdminSchema = new Schema<IAdminDocument>({
     userName: { type: String, required: true },
     email: { type: String, required: true },
     password: { type: String, required: true },
-    role: { type: String, enum: ["admin", "maintainer"], default: "maintainer" },
+    role: { type: Schema.Types.ObjectId, ref: 'Role', required: true },
     devices: [deviceSchema],
     removed_at: { type: Date },
 },{ timestamps: true});

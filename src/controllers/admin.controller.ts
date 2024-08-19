@@ -6,6 +6,7 @@ import { verifyPasswordStrength } from "../utils/string.format";
 import { createAdmin, deleteAdminById, getAdminById, getAllAdmins, updateAdminById } from "../services/admin.service";
 import { logEvents } from "../middlewares/logger";
 import { AdminByIdRequest, CreateAdminRequest, UpdateAdminRequest } from "../validators/admin.validator";
+import { ADMIN_PERMISSIONS } from "../constant/admin.constant";
 
 
 //create a new admin
@@ -16,8 +17,6 @@ export const createAdminController = async (req: CreateAdminRequest, res: Respon
         if (!req.user) 
             return sendErrorResponse(res,null, "Unauthorized!",401);
         const user = req.user;
-        if (user.role !== ROLES_OPTIONS.admin && role === ROLES_OPTIONS.admin)
-            return sendErrorResponse(res,null, "Unauthorized!",401);
         //validation
         if(!userName)
             return sendErrorResponse(res,null, "Missing field. UserName is required",400);
@@ -29,8 +28,6 @@ export const createAdminController = async (req: CreateAdminRequest, res: Respon
             return sendErrorResponse(res,null, "UserName must be at least 4 characters long",400);
         if (password.length < 8)
             return sendErrorResponse(res,null, "Password must be at least 8 characters long",400);
-        if (role && !ROLES.includes(role))
-            return sendErrorResponse(res,null, "Invalid role. Role must be admin or maintainer",400);
         //password validation
         if (!verifyPasswordStrength(password))
             return sendErrorResponse(res,null, "Password is weak. Try a stronger password with at least 8 characters, one uppercase, one lowercase, one number and one special character!",400);
@@ -39,8 +36,8 @@ export const createAdminController = async (req: CreateAdminRequest, res: Respon
         if (!validationResult.valid)
             return sendErrorResponse(res,null, "Invalid email: "+validationResult.reason,400);
         //create admin
-        createAdmin({userName, email, password, role}).then((admin) => {
-            logEvents(`${admin.role}: ${admin.userName} created by ${user.role}: ${user.userName}`, "actions.log");
+        createAdmin({userName, email, password, role},user.id).then((admin) => {
+            logEvents(`${user.role}: ${user.userName} created by ${admin.role}: ${admin.userName}`, "actions.log");
             return sendSuccessResponse(res, admin, 'Admin created successfully!', 200);
         }).catch((error) => {
             return sendErrorResponse(res, error, `Error: ${error.message}`, 400);
@@ -57,10 +54,9 @@ export const getAllAdminsController = async (req: Request, res: Response) => {
         if (!req.user) 
             return sendErrorResponse(res,null, "Unauthorized!",401);
         const user = req.user;
-        if (ROLES.includes(user.role))
-            return sendErrorResponse(res,null, "Unauthorized!",401);
+        const readOwn = user.permissions.includes(ADMIN_PERMISSIONS.READ_OWN);
         //get admins
-        getAllAdmins().then((admins) => {
+        getAllAdmins({readOwn,userId:user.id}).then((admins) => {
             return sendSuccessResponse(res, admins, 'Admins retrieved successfully!', 200);
         }).catch((error) => {
             return sendErrorResponse(res, error, `Error: ${error.message}`, 400);
@@ -103,8 +99,6 @@ export const updateAdminByIdController = async (req: UpdateAdminRequest, res: Re
         if (!req.user) 
             return sendErrorResponse(res,null, "Unauthorized!",401);
         const user = req.user;
-        if (ROLES.includes(user.role))
-            return sendErrorResponse(res,null, "Unauthorized!",401);
         //validation
         if (!id)
             return sendErrorResponse(res,null, "Missing field. Admin ID is required",400);
@@ -112,13 +106,10 @@ export const updateAdminByIdController = async (req: UpdateAdminRequest, res: Re
             return sendErrorResponse(res,null, "UserName must be at least 4 characters long",400);
         if (password && password.length < 8)
             return sendErrorResponse(res,null, "Password must be at least 8 characters long",400);
-        if (role && !ROLES.includes(role))
-            return sendErrorResponse(res,null, "Invalid role. Role must be admin or maintainer",400);
-        if (role && user.role !== ROLES_OPTIONS.admin)
-            return sendErrorResponse(res,null, "Unauthorized!",401);
+        
         //update admin
-        updateAdminById(id,{userName,email,password,role},user.role).then((admin) => {
-            logEvents(`${admin.role}: ${admin.userName} updated by ${user.role}: ${user.userName}`, "actions.log");
+        updateAdminById(id,{userName,email,password,role}).then((admin) => {
+            logEvents(`${user.role}: ${user.userName} updated by ${admin.role}: ${admin.userName}`, "actions.log");
             return sendSuccessResponse(res, admin, 'Admin updated successfully!', 200);
         }).catch((error) => {
             return sendErrorResponse(res, error, `Error: ${error.message}`, 400);
@@ -142,8 +133,8 @@ export const deleteAdminByIdController = async (req: AdminByIdRequest, res: Resp
         if (!id)
             return sendErrorResponse(res,null, "Missing field. Admin ID is required",400);
         //delete admin
-        deleteAdminById(id,user.role).then((admin) => {
-            logEvents(`${admin.role}: ${admin.userName} created by ${user.role}: ${user.userName}`, "actions.log");
+        deleteAdminById(id).then((admin) => {
+            logEvents(`${user.role}: ${user.userName} created by ${admin.role}: ${admin.userName}`, "actions.log");
             return sendSuccessResponse(res, null, 'Admin deleted successfully!', 200);
         }).catch((error) => {
             return sendErrorResponse(res, error, `Error: ${error.message}`, 400);

@@ -7,7 +7,7 @@ import { Request } from 'express';
 // Extend the Express User interface
 declare global {
   namespace Express {
-    interface User { id: string, userName: string, email: string,token?:string,role: "admin"| "maintainer" }
+    interface User { id: string, userName: string, email: string,token?:string,role: string,permissions: string[]; }
   }
 }
 

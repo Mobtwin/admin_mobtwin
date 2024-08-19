@@ -1,10 +1,17 @@
+import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
+import { ADMIN_TABLE } from "../constant/admin.constant";
 import { Admins, IAdmin, ROLES, ROLES_OPTIONS } from "../models/admin.schema";
+import { ItemSpecificPermissions } from "../models/itemSpecificPermission.schema";
+import {  Roles } from "../models/role.schema";
 import { hashPassword } from "../utils/hashing";
 import { verifyPasswordStrength } from "../utils/string.format";
+import { assignItemSpicificPermission } from "./itemSpecificPermissions.service";
 
 //create admin service
-export const createAdmin = async (admin: IAdmin) => {
+export const createAdmin = async (admin: IAdmin,userId:string) => {
   try {
+    const role = await Roles.findById(admin.role);
+    if (!role) throw new Error("Invalid Field. Role not found!");
     const existingAdminByEmail = await Admins.findOne({
       email: admin.email,
     });
@@ -19,14 +26,26 @@ export const createAdmin = async (admin: IAdmin) => {
       password: hashedPassword,
     });
     if (!newAdmin) throw new Error("Admin not created!");
+    await assignItemSpicificPermission(PERMISSIONS_ACTIONS.READ,userId,{table:ADMIN_TABLE,itemId:newAdmin._id as string})
+    await assignItemSpicificPermission(PERMISSIONS_ACTIONS.UPDATE,userId,{table:ADMIN_TABLE,itemId:newAdmin._id as string})
+    await assignItemSpicificPermission(PERMISSIONS_ACTIONS.DELETE,userId,{table:ADMIN_TABLE,itemId:newAdmin._id as string})
     return newAdmin;
   } catch (error: any) {
     throw error;
   }
 };
+
 //get all admins service
-export const getAllAdmins = async () => {
+export const getAllAdmins = async ({readOwn=false,userId}:{readOwn:boolean,userId:string}) => {
   try {
+    if(readOwn) {
+      const ownAdmins = await ItemSpecificPermissions.find({name:PERMISSIONS_ACTIONS.READ,user:userId,resource:new RegExp(`^${ADMIN_TABLE}\\.`)}).select('resource').lean();
+      if (!ownAdmins) throw new Error("No admins found!");
+      const adminIds = ownAdmins.map((admin) => admin.resource.split('.')[1]);
+      const admins = await Admins.find({_id:{$in:adminIds}});
+      if (!admins) throw new Error("No admins found!");
+      return admins;
+    }
     const admins = await Admins.find({});
     if (!admins) throw new Error("No admins found!");
     return admins;
@@ -49,17 +68,15 @@ export const getAdminById = async (id: string) => {
 //update admin by id service
 export const updateAdminById = async (
   id: string,
-  admin: Partial<IAdmin>,
-  userRole: (typeof ROLES)[number]
+  admin: Partial<IAdmin>
 ) => {
   try {
     const toBeUpdated = await Admins.findById(id);
     if (!toBeUpdated) throw new Error("Admin not found!");
-    if (
-      toBeUpdated.role === ROLES_OPTIONS.admin &&
-      userRole !== ROLES_OPTIONS.admin
-    )
-      throw new Error("Unauthorized!");
+    if(admin.role) {
+      const role = await Roles.findById(admin.role);
+      if (!role) throw new Error("Invalid Field. Role not found!");
+    }
     if (admin.email) {
       const existingAdminByEmail = await Admins.findOne({
         email: admin.email,
@@ -88,13 +105,10 @@ export const updateAdminById = async (
 //delete admin by id service
 export const deleteAdminById = async (
   id: string,
-  userRole: (typeof ROLES)[number]
 ) => {
   try {
     const toBeDeleted = await Admins.findById(id);
     if (!toBeDeleted) throw new Error("Admin not found!");
-    if (toBeDeleted.role === ROLES_OPTIONS.admin && userRole !== ROLES_OPTIONS.admin)
-      throw new Error("Unauthorized!");
     const deletedAdmin = await Admins.findByIdAndUpdate(id, { removed_at: Date.now() }, { new: true });
     if (!deletedAdmin) throw new Error("Admin not deleted!");
     return deletedAdmin;

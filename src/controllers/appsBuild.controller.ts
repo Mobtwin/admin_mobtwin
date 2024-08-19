@@ -1,9 +1,10 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import { AppsBuildByIdRequest, CreateAppsBuildRequest, UpdateAppsBuildRequest } from "../validators/appsBuild.validator";
 import { sendErrorResponse, sendSuccessResponse } from "../utils/response";
 import { ROLES } from "../models/admin.schema";
 import { createAppBuild, deleteAppBuild, getAllAppsBuild, getAppBuildById, updateAppBuild } from "../services/appsBuild.service";
 import { logEvents } from "../middlewares/logger";
+import { APPS_BUILD_PERMISSIONS } from "../constant/appsBuild.constant";
 
 //create a new app build
 export const createAppBuildController = async (
@@ -62,14 +63,14 @@ export const updateAppBuildController = async (
 };
 
 // get all app builds
-export const getAllAppBuildsController = async (req: any, res: Response) => {
+export const getAllAppBuildsController = async (req: Request, res: Response) => {
   try {
     //authorize the request
     if (!req.user) return sendErrorResponse(res, null, "Unauthorized", 401);
     const user = req.user;
-    
+    const readOwn = user.permissions.includes(APPS_BUILD_PERMISSIONS.READ_OWN);
     //get all app builds
-    getAllAppsBuild()
+    getAllAppsBuild({readOwn, userId: user.id})
       .then((appBuilds) => {
         return sendSuccessResponse(res, appBuilds, "AppBuilds fetched successfully", 200);
       })

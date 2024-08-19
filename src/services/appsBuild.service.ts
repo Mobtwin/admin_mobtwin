@@ -1,5 +1,8 @@
+import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
+import { APPS_BUILD_TABLE } from "../constant/appsBuild.constant";
 import { AppsBuild } from "../models/builder/apps.schema";
 import { CreateAppsBuild, UpdateAppsBuild } from "../validators/appsBuild.validator";
+import { getOwnItemsByPermissionAction } from "./itemSpecificPermissions.service";
 
 //create a new app build
 export const createAppBuild = async (appData:CreateAppsBuild,userId:string) => {
@@ -26,8 +29,13 @@ export const updateAppBuild = async (appData:UpdateAppsBuild,id:string) => {
 }
 
 // get all app builds
-export const getAllAppsBuild = async () => {
+export const getAllAppsBuild = async ({readOwn=false,userId}:{readOwn:boolean,userId:string}) => {
     try {
+        if(readOwn){
+            const appBuildIds = await getOwnItemsByPermissionAction(userId,APPS_BUILD_TABLE,PERMISSIONS_ACTIONS.READ)
+            const appBuilds = await AppsBuild.find({_id:{$in:appBuildIds}});
+            return appBuilds;
+        }
         const appBuilds = await AppsBuild.find();
         return appBuilds;
     } catch (error:any) {

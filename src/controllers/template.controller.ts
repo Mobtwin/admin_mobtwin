@@ -4,6 +4,7 @@ import { sendErrorResponse, sendSuccessResponse } from "../utils/response";
 import { createTemplate, deleteTemplateById, getAllTemplates, getTemplateById, updateTemplateById } from "../services/template.service";
 import { logEvents } from "../middlewares/logger";
 import { CreateTemplateRequest, TemplateByIdRequest, UpdateTemplateRequest } from "../validators/template.validator";
+import { TEMPLATE_PERMISSIONS } from "../constant/template.constant";
 
 // create a new template
 export const createTemplateController = async (req: CreateTemplateRequest, res: Response) => {
@@ -30,9 +31,8 @@ export const getAllTemplatesController = async (req: Request, res: Response) => 
         // authorization
         if (!req.user) return sendErrorResponse(res, null, "Unauthorized!", 401);
         const user = req.user;
-
-        
-        getAllTemplates().then((value) => {
+        const readOwn = user.permissions.includes(TEMPLATE_PERMISSIONS.READ_OWN);
+        getAllTemplates({readOwn,userId:user.id}).then((value) => {
             return sendSuccessResponse(res, value, "Templates fetched successfully!", 200);
         }).catch((error) => {
             return sendErrorResponse(res, error, `Error: ${error.message}`, 500);

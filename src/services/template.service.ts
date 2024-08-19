@@ -1,5 +1,8 @@
+import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
+import { TEMPLATE_PERMISSIONS, TEMPLATE_TABLE } from "../constant/template.constant";
 import { Templates } from "../models/builder/templates.schema";
 import { CreateTemplate, UpdateTemplate } from "../validators/template.validator";
+import { getOwnItemsByPermissionAction } from "./itemSpecificPermissions.service";
 
 // create a new template
 export const createTemplate = async (template: CreateTemplate) => {
@@ -14,8 +17,13 @@ export const createTemplate = async (template: CreateTemplate) => {
 };
 
 // get all templates
-export const getAllTemplates = async () => {
+export const getAllTemplates = async ({readOwn=false,userId}:{readOwn:boolean,userId:string}) => {
     try {
+        if(readOwn){
+            const templateIds = await getOwnItemsByPermissionAction(userId,TEMPLATE_TABLE,PERMISSIONS_ACTIONS.READ)
+            const templates = await Templates.find({_id:{$in:templateIds}});
+            return templates;
+        }
         // get all templates
         const templates = await Templates.find();
         if (!templates) throw new Error("Templates not found!");

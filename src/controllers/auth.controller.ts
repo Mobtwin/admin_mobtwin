@@ -29,13 +29,10 @@ export const refreshTokenController = (req: RefreshAdminRequest, res: Response) 
     if (!refresh_token) {
         return sendErrorResponse(res, null, 'Missing field. Refresh token is required!', 400);
     }
-    if (!req.user)
-        return sendErrorResponse(res, null, 'Unauthorized', 401);
-    const user = req.user;
     
     const ipAddress = req.ip;
-    refreshToken(refresh_token, ipAddress as string).then((newTokens) => {
-        logEvents(`Admin: ${user.email} refreshed token from ip: ${ipAddress}`, 'auth.log');
+    refreshToken(refresh_token, ipAddress as string).then(({admin,newTokens}) => {
+        logEvents(`Admin: ${admin.email} refreshed token from ip: ${ipAddress}`, 'auth.log');
         return sendSuccessResponse(res, newTokens, 'Token refreshed successfully!', 200);
     }).catch((error: any) => {
         return sendErrorResponse(res, error, `Error: ${error.message}`, 400);

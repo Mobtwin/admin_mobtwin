@@ -44,7 +44,7 @@ export const refreshToken = async (refreshToken: string, ipAddress: string) => {
     } catch (error: any) {
         throw new Error('error while updating tokens'+error.message);
     }
-    return { accessToken: newAccessToken, refreshToken: newRefreshToken };
+    return {newTokens:{ accessToken: newAccessToken, refreshToken: newRefreshToken },admin};
 }
 
 export const logout = async (accessToken: string, refreshToken: string) => {

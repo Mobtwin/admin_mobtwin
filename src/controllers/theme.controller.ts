@@ -4,6 +4,7 @@ import { CreateThemeRequest, ThemeByIdRequest, UpdateThemeRequest } from "../val
 import { ROLES } from "../models/admin.schema";
 import { logEvents } from "../middlewares/logger";
 import { createTheme, deleteTheme, getAllThemes, getThemeById, updateTheme } from "../services/theme.service";
+import { THEME_PERMISSIONS } from "../constant/theme.constant";
 
 // create new Theme
 export const createThemeController = async (req: CreateThemeRequest, res: Response) => {
@@ -12,10 +13,9 @@ export const createThemeController = async (req: CreateThemeRequest, res: Respon
         if (!req.user) 
             return sendErrorResponse(res,null,"Unauthorized!",401);
         const user = req.user;
-        if (!ROLES.includes(user.role))
-            return sendErrorResponse(res,null,"Unauthorized!",401);
+        
         // create theme
-        createTheme(req.body).then((theme) => {
+        createTheme(req.body,user.id).then((theme) => {
             logEvents(`Theme: ${theme.name} created by ${user.role}: ${user.userName}`, "actions.log");
             return sendSuccessResponse(res, theme, "Theme created successfully!", 201);
         }).catch((error) => {
@@ -33,10 +33,10 @@ export const getAllThemesController = async (req: Request, res: Response) => {
         if (!req.user) 
             return sendErrorResponse(res,null,"Unauthorized!",401);
         const user = req.user;
-        if (!ROLES.includes(user.role))
-            return sendErrorResponse(res,null,"Unauthorized!",401);
+        const readOwn = user.permissions.includes(THEME_PERMISSIONS.READ_OWN);
+
         // get all themes
-        getAllThemes().then((themes) => {
+        getAllThemes({readOwn,userId:user.id}).then((themes) => {
             return sendSuccessResponse(res, themes, "Themes fetched successfully!", 200);
         }).catch((error) => {
             return sendErrorResponse(res,error,"Error",400);

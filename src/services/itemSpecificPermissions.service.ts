@@ -1,3 +1,4 @@
+import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
 import { IAdmin } from "../models/admin.schema";
 import { ItemSpecificPermissions } from "../models/itemSpecificPermission.schema";
 
@@ -44,3 +45,57 @@ export const checkItemSpecificPermission = async (
   }
   return false;
 };
+
+export const removeItemSpecificPermission = async (
+  userId: string,
+  resource: {
+    table: string;
+    itemId: string;
+  },
+  action: string
+) => {
+  try {
+    const deletedPermission = await ItemSpecificPermissions.findOneAndDelete({
+      user: userId,
+      resource: `${resource.table}.${resource.itemId}`,
+      name: action,
+    });
+    if (!deletedPermission) throw new Error("Permission not deleted!");
+    return deletedPermission;
+  } catch (error: any) {
+    throw error;
+  }
+};
+
+export const assignCreatorItemSpecificPermissions = async (
+  userId:string,
+  resource:{
+    table:string,
+    itemId:string
+  }) => {
+  try {
+    await assignItemSpicificPermission(PERMISSIONS_ACTIONS.READ,userId,resource);
+    await assignItemSpicificPermission(PERMISSIONS_ACTIONS.UPDATE,userId,resource);
+    await assignItemSpicificPermission(PERMISSIONS_ACTIONS.DELETE,userId,resource);
+  } catch (error: any) {
+    throw error;
+  }
+}
+
+export const getOwnItemsByPermissionAction = async (userId:string,table:string,action:IAction) => {
+try {
+  const ownItems = await ItemSpecificPermissions.find({
+    name: action,
+    user: userId,
+    resource: new RegExp(`^${table}\\.`),
+  })
+    .select("resource")
+    .lean();
+  if (!ownItems) throw new Error(`No ${table} found!`);
+  const itemIds = ownItems.map((item) => item.resource.split(".")[1]);
+  return itemIds;
+} catch (error:any) {
+  throw error;
+}
+
+}

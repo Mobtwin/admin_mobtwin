@@ -5,7 +5,7 @@ import { ItemSpecificPermissions } from "../models/itemSpecificPermission.schema
 import {  Roles } from "../models/role.schema";
 import { hashPassword } from "../utils/hashing";
 import { verifyPasswordStrength } from "../utils/string.format";
-import { assignItemSpicificPermission } from "./itemSpecificPermissions.service";
+import { assignCreatorItemSpecificPermissions, assignItemSpicificPermission } from "./itemSpecificPermissions.service";
 
 //create admin service
 export const createAdmin = async (admin: IAdmin,userId:string) => {
@@ -26,9 +26,7 @@ export const createAdmin = async (admin: IAdmin,userId:string) => {
       password: hashedPassword,
     });
     if (!newAdmin) throw new Error("Admin not created!");
-    await assignItemSpicificPermission(PERMISSIONS_ACTIONS.READ,userId,{table:ADMIN_TABLE,itemId:newAdmin._id as string})
-    await assignItemSpicificPermission(PERMISSIONS_ACTIONS.UPDATE,userId,{table:ADMIN_TABLE,itemId:newAdmin._id as string})
-    await assignItemSpicificPermission(PERMISSIONS_ACTIONS.DELETE,userId,{table:ADMIN_TABLE,itemId:newAdmin._id as string})
+    await assignCreatorItemSpecificPermissions(userId,{table:ADMIN_TABLE,itemId:newAdmin._id as string});
     return newAdmin;
   } catch (error: any) {
     throw error;

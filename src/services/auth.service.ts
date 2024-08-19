@@ -19,9 +19,7 @@ export const loginAdmin = async (credential:LoginAdmin, ipAddress?: string, user
     if (admin.removed_at) {
         throw new Error('account removed');
     }
-    if (!ROLES.includes(admin.role)) 
-        throw new Error('invalid role');
-        
+
     const accessToken = await generateTokenForUser(admin);
     const refreshToken = await generateRefreshTokenForUser(admin.id);
     await Admins.updateOne({ email:credential.email }, { $push: { devices: { accessToken, refreshToken, ipAddress, userAgent } }, $set: { updatedAt: new Date() } });

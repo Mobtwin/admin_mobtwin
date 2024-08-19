@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { Permissions } from '../models/permission.schema'; // Ensure this import is correct and comes before use
 import {
   checkItemSpecificPermission,
   IAction,

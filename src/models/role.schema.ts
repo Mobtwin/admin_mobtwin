@@ -1,6 +1,6 @@
 import { Document, Model, model, Schema } from "mongoose";
 import { IPermission } from "./permission.schema";
-
+import { Permissions } from './permission.schema'; // Ensure this import is correct and comes before use
 
 export interface IRole {
     name: string;

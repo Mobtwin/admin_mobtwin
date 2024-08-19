@@ -18,7 +18,7 @@ export const assignItemSpicificPermission = async (
     const permission = await ItemSpecificPermissions.create({
       name: action,
       resource: `${resource.table}.${resource.itemId}`,
-      user: userId,
+      admin: userId,
     });
     if (!permission) throw new Error("Permission not assigned!");
   } catch (error: any) {
@@ -38,7 +38,7 @@ export const checkItemSpecificPermission = async (
     const itemPermission = await ItemSpecificPermissions.findOne({
       user: userId,
       resource: `${resource.table}.${resource.itemId}`,
-      name: action,
+      admin: action,
     });
   
     if (itemPermission) {
@@ -61,7 +61,7 @@ export const removeItemSpecificPermission = async (
 ) => {
   try {
     const deletedPermission = await ItemSpecificPermissions.findOneAndDelete({
-      user: userId,
+      admin: userId,
       resource: `${resource.table}.${resource.itemId}`,
       name: action,
     });
@@ -91,7 +91,7 @@ export const getOwnItemsByPermissionAction = async (userId:string,table:string,a
 try {
   const ownItems = await ItemSpecificPermissions.find({
     name: action,
-    user: userId,
+    admin: userId,
     resource: new RegExp(`^${table}\\.`),
   })
     .select("resource")

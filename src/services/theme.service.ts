@@ -1,7 +1,6 @@
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
 import { THEME_TABLE } from "../constant/theme.constant";
 import { Theme } from "../models/builder/theme.schema";
-import { ItemSpecificPermissions } from "../models/itemSpecificPermission.schema";
 import { CreateTheme, UpdateTheme } from "../validators/theme.validator";
 import { assignCreatorItemSpecificPermissions, getOwnItemsByPermissionAction } from "./itemSpecificPermissions.service";
 

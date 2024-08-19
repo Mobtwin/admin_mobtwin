@@ -3,7 +3,7 @@ import { Document, Model, model, Schema } from "mongoose";
 export interface IItemSpecificPermission {
   name: string; // e.g., 'read', 'update', 'delete'
   resource: string; // e.g., 'users.123'
-  user: Schema.Types.ObjectId;
+  admin: Schema.Types.ObjectId;
 }
 
 export interface IItemSpecificPermissionDocument
@@ -13,7 +13,7 @@ export interface IItemSpecificPermissionDocument
 const ItemSpecificPermissionSchema = new Schema<IItemSpecificPermissionDocument>({
   name: { type: String, required: true },
   resource: { type: String, required: true },
-  user: { type: Schema.Types.ObjectId, ref: "User", required: true },
+  admin: { type: Schema.Types.ObjectId, ref: "Admin", required: true },
 });
 
 

@@ -37,7 +37,7 @@ export const createAdmin = async (admin: IAdmin,userId:string) => {
 export const getAllAdmins = async ({readOwn=false,userId}:{readOwn:boolean,userId:string}) => {
   try {
     if(readOwn) {
-      const ownAdmins = await ItemSpecificPermissions.find({name:PERMISSIONS_ACTIONS.READ,user:userId,resource:new RegExp(`^${ADMIN_TABLE}\\.`)}).select('resource').lean();
+      const ownAdmins = await ItemSpecificPermissions.find({name:PERMISSIONS_ACTIONS.READ,admin:userId,resource:new RegExp(`^${ADMIN_TABLE}\\.`)}).select('resource').lean();
       if (!ownAdmins) throw new Error("No admins found!");
       const adminIds = ownAdmins.map((admin) => admin.resource.split('.')[1]);
       const admins = await Admins.find({_id:{$in:adminIds}});

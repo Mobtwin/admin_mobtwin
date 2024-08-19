@@ -1,5 +1,8 @@
+import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
+import { PLAN_TABLE } from "../constant/plan.constant";
 import { Plans } from "../models/plan.schema";
 import { CreatePlan, UpdatePlan } from "../validators/plan.validator";
+import { getOwnItemsByPermissionAction } from "./itemSpecificPermissions.service";
 
 //create new plan
 export const createPlan = async (plan: CreatePlan) => {
@@ -14,8 +17,13 @@ export const createPlan = async (plan: CreatePlan) => {
 };
 
 //get all plans
-export const getAllPlans = async () => {
+export const getAllPlans = async ({readOwn=false,userId}:{readOwn:boolean,userId:string}) => {
   try {
+    if(readOwn){
+      const planIds = await getOwnItemsByPermissionAction(userId,PLAN_TABLE,PERMISSIONS_ACTIONS.READ);
+      const allPlans = await Plans.find({_id:{$in:planIds}});
+      return allPlans;
+    }
     //get all plans
     const allPlans = await Plans.find();
     return allPlans;

@@ -10,6 +10,7 @@ import {
   updatePlanById,
 } from "../services/plan.service";
 import { logEvents } from "../middlewares/logger";
+import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
 
 //create new plan
 export const createPlanController = async (
@@ -20,8 +21,7 @@ export const createPlanController = async (
     //authorization
     if (!req.user) return sendErrorResponse(res, null, "Unauthorized!", 401);
     const user = req.user;
-    if (!ROLES.includes(user.role))
-      return sendErrorResponse(res, null, "Unauthorized!", 401);
+    
     //create plan
     createPlan(req.body)
       .then((value) => {
@@ -50,10 +50,9 @@ export const getAllPlansController = async (req: Request, res: Response) => {
     //authorization
     if (!req.user) return sendErrorResponse(res, null, "Unauthorized!", 401);
     const user = req.user;
-    if (!ROLES.includes(user.role))
-      return sendErrorResponse(res, null, "Unauthorized!", 401);
+    const readOwn = user.permissions.includes(PERMISSIONS_ACTIONS.READ_OWN);
     //get all plans
-    getAllPlans()
+    getAllPlans({ readOwn, userId: user.id })
       .then((value) => {
         return sendSuccessResponse(
           res,
@@ -77,8 +76,7 @@ export const getPlanByIdController = async (req: PlanByIdRequest, res: Response)
     const { id } = req.params;
     if (!req.user) return sendErrorResponse(res, null, "Unauthorized!", 401);
     const user = req.user;
-    if (!ROLES.includes(user.role))
-      return sendErrorResponse(res, null, "Unauthorized!", 401);
+    
     if (!id) return sendErrorResponse(res, null, "Plan id is required!", 400);
     //get plan by id
     getPlanById(req.params.id)
@@ -105,8 +103,7 @@ export const updatePlanByIdController = async (req: UpdatePlanRequest, res: Resp
     //authorization
     if (!req.user) return sendErrorResponse(res, null, "Unauthorized!", 401);
     const user = req.user;
-    if (!ROLES.includes(user.role))
-      return sendErrorResponse(res, null, "Unauthorized!", 401);
+    
     if (!id) return sendErrorResponse(res, null, "Plan id is required!", 400);
     updatePlanById(req.params.id, req.body)
       .then((value) => {
@@ -136,8 +133,7 @@ export const deletePlanByIdController = async (req: PlanByIdRequest, res: Respon
     //authorization
     if (!req.user) return sendErrorResponse(res, null, "Unauthorized!", 401);
     const user = req.user;
-    if (!ROLES.includes(user.role))
-      return sendErrorResponse(res, null, "Unauthorized!", 401);
+    
     if (!id) return sendErrorResponse(res, null, "Plan id is required!", 400);
     //delete plan by id
     deletePlanById(req.params.id)

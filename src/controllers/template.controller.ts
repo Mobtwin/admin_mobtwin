@@ -11,7 +11,6 @@ export const createTemplateController = async (req: CreateTemplateRequest, res: 
         // authorization
         if (!req.user) return sendErrorResponse(res, null, "Unauthorized!", 401);
         const user = req.user;
-        if (!ROLES.includes(user.role)) return sendErrorResponse(res, null, "Unauthorized!", 401);
 
         //create template
         createTemplate(req.body).then((value) => {
@@ -31,7 +30,6 @@ export const getAllTemplatesController = async (req: Request, res: Response) => 
         // authorization
         if (!req.user) return sendErrorResponse(res, null, "Unauthorized!", 401);
         const user = req.user;
-        if (!ROLES.includes(user.role)) return sendErrorResponse(res, null, "Unauthorized!", 401);
 
         
         getAllTemplates().then((value) => {
@@ -50,7 +48,6 @@ export const getTemplateByIdController = async (req: TemplateByIdRequest, res: R
         // authorization
         if (!req.user) return sendErrorResponse(res, null, "Unauthorized!", 401);
         const user = req.user;
-        if (!ROLES.includes(user.role)) return sendErrorResponse(res, null, "Unauthorized!", 401);
 
         const { id } = req.params;
         if (!id) return sendErrorResponse(res, null, "Missing field. Template ID is required", 400);
@@ -72,7 +69,6 @@ export const updateTemplateByIdController = async (req: UpdateTemplateRequest, r
         // authorization
         if (!req.user) return sendErrorResponse(res, null, "Unauthorized!", 401);
         const user = req.user;
-        if (!ROLES.includes(user.role)) return sendErrorResponse(res, null, "Unauthorized!", 401);
 
         const { id } = req.params;
         if (!id) return sendErrorResponse(res, null, "Missing field. Template ID is required", 400);
@@ -95,7 +91,7 @@ export const deleteTemplateByIdController = async (req: TemplateByIdRequest, res
         // authorization
         if (!req.user) return sendErrorResponse(res, null, "Unauthorized!", 401);
         const user = req.user;
-        if (!ROLES.includes(user.role)) return sendErrorResponse(res, null, "Unauthorized!", 401);
+        
 
         const { id } = req.params;
         if (!id) return sendErrorResponse(res, null, "Missing field. Template ID is required", 400);

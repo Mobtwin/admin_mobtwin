@@ -16,8 +16,7 @@ export const createUserController = async (req: CreateUserRequest, res: Response
     //authorization
     if (!req.user) return sendErrorResponse(res, null, "Unauthorized!", 401);
     const user = req.user;
-    if (!ROLES.includes(user.role))
-      return sendErrorResponse(res, null, "Unauthorized!", 401);
+    
     if (!email)
       return sendErrorResponse(res,null,"Missing field. Email is required!",400);
 
@@ -78,8 +77,7 @@ export const getUserByIdController = async (req: UserByIdRequest, res: Response)
     //authorization
     if (!req.user) return sendErrorResponse(res, null, "Unauthorized!", 401);
     const user = req.user;
-    if (!ROLES.includes(user.role))
-      return sendErrorResponse(res, null, "Unauthorized!", 401);
+    
     //validation
     if (!id)
       return sendErrorResponse(res, null, "Missing field. User ID is required", 400);
@@ -104,8 +102,7 @@ export const updateUserByIdController = async (req: UpdateUserRequest, res: Resp
     //authorization
     if (!req.user) return sendErrorResponse(res, null, "Unauthorized!", 401);
     const user = req.user;
-    if (!ROLES.includes(user.role))
-      return sendErrorResponse(res, null, "Unauthorized!", 401);
+    
     //validation
     if (!id)
       return sendErrorResponse(res, null, "Missing field. User ID is required", 400);
@@ -139,8 +136,7 @@ export const deleteUserByIdController = async (req: UserByIdRequest, res: Respon
     //authorization
     if (!req.user) return sendErrorResponse(res, null, "Unauthorized!", 401);
     const user = req.user;
-    if (!ROLES.includes(user.role)||user.role===ROLES_OPTIONS.maintainer)
-      return sendErrorResponse(res, null, "Unauthorized!", 401);
+    
     //validation
     if (!id)
       return sendErrorResponse(res, null, "Missing field. User ID is required", 400);

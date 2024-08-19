@@ -14,8 +14,7 @@ export const createAppBuildController = async (
     //authorize the request
     if (!req.user) return sendErrorResponse(res, null, "Unauthorized", 401);
     const user = req.user;
-    if (!ROLES.includes(user.role))
-      return sendErrorResponse(res, null, "Unauthorized", 401);
+    
     //create the app build
     createAppBuild(req.body, user.id)
       .then((appBuild) => {
@@ -42,8 +41,7 @@ export const updateAppBuildController = async (
     //authorize the request
     if (!req.user) return sendErrorResponse(res, null, "Unauthorized", 401);
     const user = req.user;
-    if (!ROLES.includes(user.role))
-      return sendErrorResponse(res, null, "Unauthorized", 401);
+    
     const { id } = req.params;
     if (!id) return sendErrorResponse(res, null, "Invalid app build ID", 400);
     //update the app build
@@ -69,8 +67,7 @@ export const getAllAppBuildsController = async (req: any, res: Response) => {
     //authorize the request
     if (!req.user) return sendErrorResponse(res, null, "Unauthorized", 401);
     const user = req.user;
-    if (!ROLES.includes(user.role))
-      return sendErrorResponse(res, null, "Unauthorized", 401);
+    
     //get all app builds
     getAllAppsBuild()
       .then((appBuilds) => {
@@ -90,8 +87,7 @@ export const getAppBuildByIdController = async (req: AppsBuildByIdRequest, res: 
     //authorize the request
     if (!req.user) return sendErrorResponse(res, null, "Unauthorized", 401);
     const user = req.user;
-    if (!ROLES.includes(user.role))
-      return sendErrorResponse(res, null, "Unauthorized", 401);
+    
     const { id } = req.params;
     if (!id) return sendErrorResponse(res, null, "Invalid app build ID", 400);
     //get app build by id
@@ -113,8 +109,7 @@ export const deleteAppBuildController = async (req: AppsBuildByIdRequest, res: R
     //authorize the request
     if (!req.user) return sendErrorResponse(res, null, "Unauthorized", 401);
     const user = req.user;
-    if (!ROLES.includes(user.role))
-      return sendErrorResponse(res, null, "Unauthorized", 401);
+    
     const { id } = req.params;
     if (!id) return sendErrorResponse(res, null, "Invalid app build ID", 400);
     //delete app build by id

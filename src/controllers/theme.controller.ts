@@ -53,8 +53,7 @@ export const getThemeByIdController = async (req: ThemeByIdRequest, res: Respons
         if (!req.user) 
             return sendErrorResponse(res,null,"Unauthorized!",401);
         const user = req.user;
-        if (!ROLES.includes(user.role))
-            return sendErrorResponse(res,null,"Unauthorized!",401);
+        
         //validate id
         const {id} = req.params;
         if (!id) 
@@ -77,8 +76,7 @@ export const updateThemeController = async (req: UpdateThemeRequest, res: Respon
         if (!req.user) 
             return sendErrorResponse(res,null,"Unauthorized!",401);
         const user = req.user;
-        if (!ROLES.includes(user.role))
-            return sendErrorResponse(res,null,"Unauthorized!",401);
+        
         //validate id
         const {id} = req.params;
         if (!id) 
@@ -102,8 +100,7 @@ export const deleteThemeController = async (req: ThemeByIdRequest, res: Response
         if (!req.user) 
             return sendErrorResponse(res,null,"Unauthorized!",401);
         const user = req.user;
-        if (!ROLES.includes(user.role))
-            return sendErrorResponse(res,null,"Unauthorized!",401);
+        
         //validate id
         const {id} = req.params;
         if (!id) 

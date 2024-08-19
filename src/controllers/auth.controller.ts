@@ -32,8 +32,7 @@ export const refreshTokenController = (req: RefreshAdminRequest, res: Response) 
     if (!req.user)
         return sendErrorResponse(res, null, 'Unauthorized', 401);
     const user = req.user;
-    if (!ROLES.includes(user.role))
-        return sendErrorResponse(res, null, 'Unauthorized', 401);
+    
     const ipAddress = req.ip;
     refreshToken(refresh_token, ipAddress as string).then((newTokens) => {
         logEvents(`Admin: ${user.email} refreshed token from ip: ${ipAddress}`, 'auth.log');
@@ -48,8 +47,7 @@ export const logoutController = (req: LogoutAdminRequest, res: Response) => {
     if (!req.user)
         return sendErrorResponse(res, null, 'Unauthorized', 401);
     const user = req.user;
-    if (!ROLES.includes(user.role))
-        return sendErrorResponse(res, null, 'Unauthorized', 401);
+    
     if (!refresh_token) {
         return sendErrorResponse(res, null, 'Missing field. Refresh token is required!', 400);
     }

@@ -3,6 +3,7 @@ import { Roles } from "../models/role.schema";
 export const isValidRole = async (userRole:string,permissionName:string) => {
   console.log(userRole,permissionName)
   const role = await Roles.findById(userRole).populate("permissions");
+  console.log({role})
   if (
     role &&
     role.permissions.some((permission) => permission.name === permissionName)

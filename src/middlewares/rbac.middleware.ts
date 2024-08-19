@@ -22,7 +22,6 @@ export const checkPermission = (
     const itemId = req.params.id;
 
     try {
-      console.log("Checking permissions...");
       // 1. Check item-specific permissions
       if (resource) {
         if (!itemId)
@@ -38,30 +37,24 @@ export const checkPermission = (
           { table: resource.table, itemId: itemId },
           resource.action
         );
-        console.log("Item-specific permission:", isValidPermission);
         if (isValidPermission) {
           return next();
         }
       }
-      console.log("Item-specific permission not found!");
       // 2. Check role-based permissions
       if (typeof permissionName === "string") {
-        console.log("Checking role-based permissions...");
         if (await isValidRole(userRole, permissionName)) {
           req.user.permissions = [permissionName];
           return next();
         }
-        console.log("Role-based permission not found!");
       }
       if (Array.isArray(permissionName)) {
         for (const permission of permissionName) {
-        console.log("Checking role-based permissions...2");
 
           if (await isValidRole(userRole, permission)) {
             req.user.permissions = [permission];
             return next();
           }
-        console.log("Role-based permission not found!2");
 
         }
       }

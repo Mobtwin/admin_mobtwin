@@ -36,9 +36,9 @@ export const checkItemSpecificPermission = async (
 ) => {
   try {
     const itemPermission = await ItemSpecificPermissions.findOne({
-      user: userId,
+      admin: userId,
       resource: `${resource.table}.${resource.itemId}`,
-      admin: action,
+      name: action,
     });
   
     if (itemPermission) {

@@ -12,9 +12,10 @@ export const sendSuccessResponse = <T>(res: Response, data: T, message: string, 
 
 // Error response handler
 export const sendErrorResponse = (res: Response, error: any, message = "An error occurred", statusCode = 400): void => {
-  if (error) {
-    console.error(error); // Log the error details for debugging
-  }
+  //TODO: Log the error details for debugging
+  // if (error) {
+  //   console.error(error); // Log the error details for debugging
+  // }
   res.status(statusCode).json({
     success: false,
     message,

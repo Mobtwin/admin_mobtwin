@@ -74,8 +74,6 @@ export const getAdminByIdController = async (req: AdminByIdRequest, res: Respons
         if (!req.user) 
             return sendErrorResponse(res,null, "Unauthorized!",401);
         const user = req.user;
-        if (ROLES.includes(user.role))
-            return sendErrorResponse(res,null, "Unauthorized!",401);
         //validation
         if (!id)
             return sendErrorResponse(res,null, "Missing field. Admin ID is required",400);

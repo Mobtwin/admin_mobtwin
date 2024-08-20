@@ -52,6 +52,8 @@ app.use("/api/v1/user",routes.userRouter );
 app.use("/api/v1/theme",routes.themeRouter );
 app.use("/api/v1/template",routes.templateRouter );
 app.use("/api/v1/appsBuild",routes.appsBuildRouter );
+app.use("/api/v1/permission",routes.permissionRouter );
+app.use("/api/v1/role",routes.roleRouter );
 
 
 //not found route

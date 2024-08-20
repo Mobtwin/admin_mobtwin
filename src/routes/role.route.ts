@@ -6,7 +6,7 @@ import { validateRequest } from "../middlewares/requestValidator.middleware";
 import { togglePermissionsSchema, createRoleSchema, roleByIdSchema, roleByNameSchema } from "../validators/role.validator";
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
 
-const roleRouter = Router();
+export const roleRouter = Router();
 
 // Method: POST
 // route: /role

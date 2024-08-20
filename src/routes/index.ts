@@ -4,6 +4,8 @@ import { templateRouter } from "./template.route";
 import { themeRouter } from "./theme.route";
 import { appsBuildRouter } from "./appsBuild.route";
 import { planRouter } from "./plan.route";
+import { permissionRouter } from "./permission.route";
+import { roleRouter } from "./role.route";
 
 
 const routes = {
@@ -12,7 +14,9 @@ const routes = {
     templateRouter,
     themeRouter,
     appsBuildRouter,
-    planRouter
+    planRouter,
+    roleRouter,
+    permissionRouter,
 };
 
 export default routes;

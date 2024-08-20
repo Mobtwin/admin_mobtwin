@@ -1,11 +1,16 @@
 import { Document, Model, model, Schema } from "mongoose";
 import { IPermission } from "./permission.schema";
-import { Permissions } from './permission.schema'; // Ensure this import is correct and comes before use
 
 export interface IRole {
     name: string;
-    permissions: IPermission[];
-}
+    permissions: Schema.Types.ObjectId[]; // Reference to permission ObjectIds
+  }
+  
+  export interface IRolePopulated {
+    name: string;
+    permissions: IPermission[]; // Populated permissions
+  }
+  
 
 export interface IRoleDocument extends IRole, Document {};
 

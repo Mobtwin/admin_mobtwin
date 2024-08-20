@@ -23,23 +23,15 @@ export const checkPermission = (
 
     try {
       // 1. Check item-specific permissions
-      if (resource) {
-        if (!itemId)
-          return sendErrorResponse(
-            res,
-            null,
-            "Missing param. Item ID is required",
-            400
+      if (resource && itemId) {
+          const isValidPermission = await checkItemSpecificPermission(
+            userId,
+            { table: resource.table, itemId: itemId },
+            resource.action
           );
-
-        const isValidPermission = await checkItemSpecificPermission(
-          userId,
-          { table: resource.table, itemId: itemId },
-          resource.action
-        );
-        if (isValidPermission) {
-          return next();
-        }
+          if (isValidPermission) {
+            return next();
+          }
       }
       // 2. Check role-based permissions
       if (typeof permissionName === "string") {

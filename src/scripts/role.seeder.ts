@@ -27,6 +27,10 @@ const rolesData = [
     name: 'Mobile Developer',
     permissions: [THEME_PERMISSIONS.READ_OWN,THEME_PERMISSIONS.CREATE],
   },
+  {
+    name: 'User',
+    permissions: [THEME_PERMISSIONS.READ,TEMPLATE_PERMISSIONS.READ,APPS_BUILD_PERMISSIONS.READ_OWN,APPS_BUILD_PERMISSIONS.CREATE,PLAN_PERMISSIONS.READ],
+  },
 ];
 
 export const seedRolesAndPermissions = async () => {

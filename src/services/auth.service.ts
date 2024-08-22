@@ -1,6 +1,6 @@
 import { Admins, ROLES } from "../models/admin.schema";
 import { comparePassword } from "../utils/hashing";
-import { _isTokenExpired, _refreshToken, generateRefreshTokenForUser, generateTokenForUser } from "../utils/jwt";
+import { _isTokenExpired, _refreshToken, generateRefreshTokenForAdmin, generateTokenForAdmin } from "../utils/jwt";
 import { environment } from "../utils/loadEnvironment";
 import { LoginAdmin } from "../validators/auth.validator";
 
@@ -20,8 +20,8 @@ export const loginAdmin = async (credential:LoginAdmin, ipAddress?: string, user
         throw new Error('account removed');
     }
 
-    const accessToken = await generateTokenForUser(admin);
-    const refreshToken = await generateRefreshTokenForUser(admin.id);
+    const accessToken = await generateTokenForAdmin(admin);
+    const refreshToken = await generateRefreshTokenForAdmin(admin.id);
     await Admins.updateOne({ email:credential.email }, { $push: { devices: { accessToken, refreshToken, ipAddress, userAgent } }, $set: { updatedAt: new Date() } });
     return { accessToken, refreshToken };
 }
@@ -37,7 +37,7 @@ export const refreshToken = async (refreshToken: string, ipAddress: string) => {
     if (await _isTokenExpired(refreshToken)) {
         throw new Error('refresh token expired');
     }
-    const newAccessToken = await generateTokenForUser(admin);
+    const newAccessToken = await generateTokenForAdmin(admin);
     const newRefreshToken = await _refreshToken(refreshToken, environment.REFRESH_TOKEN_LIFE || "30d");
     try {
         await Admins.updateOne({ devices: { $elemMatch: { refreshToken } } }, { $set: { "devices.$.accessToken": newAccessToken, "devices.$.refreshToken": newRefreshToken, "devices.$.ipAddress": ipAddress, "devices.$.updated_at": new Date(), updated_at: new Date() } })

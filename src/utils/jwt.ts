@@ -39,11 +39,11 @@ export const _checkToken = async (token: string) => {
   }
 } 
 
-export const generateTokenForUser = async (user: IAdminDocument) => {
+export const generateTokenForAdmin = async (user: IAdminDocument) => {
   return await _generateToken({ id: user._id, userName: user.userName, email: user.email,role:user.role }, environment.ACCESS_TOKEN_LIFE || "30m");
 }
 
-export const generateRefreshTokenForUser = async (userId: string) => {
+export const generateRefreshTokenForAdmin = async (userId: string) => {
   return await _generateToken({ userId }, environment.REFRESH_TOKEN_LIFE || "30d");
 }
 

@@ -1,9 +1,11 @@
 import { Document, Model, model, Schema } from "mongoose";
 
 export interface IItemSpecificPermission {
-  name: string; // e.g., 'read', 'update', 'delete'
-  resource: string; // e.g., 'users.123'
-  admin: Schema.Types.ObjectId;
+  action: string; // e.g., 'read', 'update', 'delete'
+  table: string; // e.g., 'users', 'roles', 'permissions'
+  userId: Schema.Types.ObjectId; // e.g., '60b9e3b3b3b3b3b3b3b3b3b3'
+  items: Schema.Types.ObjectId[]; // e.g., ['60b9e3b3b3b3b3b3b3b3b3', '60b9e3b3b3b3b3b3b3b3b4']
+  isAbsolute: boolean; // e.g., true, false
 }
 
 export interface IItemSpecificPermissionDocument
@@ -11,9 +13,11 @@ export interface IItemSpecificPermissionDocument
     Document {}
 
 const ItemSpecificPermissionSchema = new Schema<IItemSpecificPermissionDocument>({
-  name: { type: String, required: true },
-  resource: { type: String, required: true },
-  admin: { type: Schema.Types.ObjectId, ref: "Admin", required: true },
+  action: { type: String, required: true },
+  table: { type: String, required: true },
+  userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+  items: { type: [Schema.Types.ObjectId], required: true },
+  isAbsolute: { type: Boolean, required: true, default: false },
 });
 
 

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { sendErrorResponse, sendSuccessResponse } from "../utils/response";
 import { logEvents } from "../middlewares/logger";
-import { assignItemSpicificPermission, unassignItemSpecificPermissions } from "../services/itemSpecificPermissions.service";
+import { assignCreatorItemSpecificPermissions, assignItemSpicificPermission, unassignItemSpecificPermissions } from "../services/itemSpecificPermissions.service";
 
 // assign permission of item to user controller
 export const assignPermissionOfItemToUserController = async (req: Request, res: Response) => {
@@ -10,7 +10,7 @@ export const assignPermissionOfItemToUserController = async (req: Request, res: 
         if (!req.user) return sendErrorResponse(res, null, "Unauthorized!", 401);
         const user = req.user;
         // assign permission to item to user
-        assignItemSpicificPermission(req.body.action, user.id, req.body.resource)
+        assignItemSpicificPermission(req.body.action, req.body.userId, {table:req.body.table,itemId:req.params.id})
             .then((value) => {
                 logEvents(
                     `Permission: ${value.table}.${value.action} assigned to user of Id ${value.userId} by ${user.userName} with roleId: ${user.role}`,
@@ -40,7 +40,7 @@ export const unassignPermissionsOfItemToUserController = async (req: Request, re
         if (!req.user) return sendErrorResponse(res, null, "Unauthorized!", 401);
         const user = req.user;
         // unassign permission of item to user
-        unassignItemSpecificPermissions(req.body.action, user.id, req.body.resource)
+        unassignItemSpecificPermissions(req.body.action, req.body.userId, {table: req.body.table,itemId: req.params.id})
             .then((value) => {
                 logEvents(
                     `Permission: ${value.table}.${value.action} unassigned from user of Id ${value.userId} by ${user.userName} with roleId: ${user.role}`,
@@ -68,10 +68,10 @@ export const assignAllPermissionsOfItemToUserController = async (req: Request, r
         if (!req.user) return sendErrorResponse(res, null, "Unauthorized!", 401);
         const user = req.user;
         // assign all permissions of item to user
-        assignItemSpicificPermission("all", user.id, req.body.resource)
+        assignCreatorItemSpecificPermissions(req.body.userId, {table: req.body.table,itemId: req.params.id})
             .then((value) => {
                 logEvents(
-                    `All permissions of ${value.table} assigned to user of Id ${value.userId} by ${user.userName} with roleId: ${user.role}`,
+                    `All permissions of ${req.body.table} assigned to user of Id ${req.body.userId} by ${user.userName} with roleId: ${user.role}`,
                     "actions.log"
                 );
                 return sendSuccessResponse(

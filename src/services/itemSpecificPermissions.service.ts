@@ -1,6 +1,25 @@
-import { Schema } from "mongoose";
+import { Model, Schema } from "mongoose";
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
 import { ItemSpecificPermissions } from "../models/itemSpecificPermission.schema";
+import { Users } from "../models/user.schema";
+import { ADMIN_TABLE } from "../constant/admin.constant";
+import { Admins } from "../models/admin.schema";
+import { getAdminById } from "./admin.service";
+import { USER_TABLE } from "../constant/user.constant";
+import { getUserById } from "./user.service";
+import { THEME_TABLE } from "../constant/theme.constant";
+import { getThemeById } from "./theme.service";
+import { TEMPLATE_TABLE } from "../constant/template.constant";
+import { getTemplateById } from "./template.service";
+import { APPS_BUILD_TABLE } from "../constant/appsBuild.constant";
+import { getAppBuildById } from "./appsBuild.service";
+import { PERMISSION_TABLE } from "../constant/permission.constant";
+import { getPermissionById } from "./permission.service";
+import { ROLE_TABLE } from "../constant/role.constant";
+import { getRoleById } from "./role.service";
+import { PLAN_TABLE } from "../constant/plan.constant";
+import { getPlanById } from "./plan.service";
+import { ITEM_SPECIFIC_PERMISSION_TABLE } from "../constant/itemSpecificPermission.constant";
 
 export type IAction =
   | "create"
@@ -52,43 +71,55 @@ export const assignItemSpicificPermission = async (
   userId: string,
   resource: {
     table: string;
-    itemId?: string;
+    itemId: string;
   }
 ) => {
   try {
+    // check if user exists 
+    const userExists = await Users.findById(userId).lean();
+    if (!userExists) throw new Error("User not found!");
+    // check if item exists
+    let itemExists: any;
+    switch (resource.table) {
+      case ADMIN_TABLE:
+        itemExists = await getAdminById(resource.itemId);
+        break;
+      case USER_TABLE:
+        itemExists = await getUserById(resource.itemId);
+        break;
+      case THEME_TABLE:
+        itemExists = await getThemeById(resource.itemId);
+        break;
+      case TEMPLATE_TABLE:
+        itemExists = await getTemplateById(resource.itemId);
+        break;
+      case APPS_BUILD_TABLE:
+        itemExists = await getAppBuildById(resource.itemId);
+        break;
+      case PERMISSION_TABLE:
+        itemExists = await getPermissionById(resource.itemId);
+        break;
+      case ROLE_TABLE:
+        itemExists = await getRoleById(resource.itemId);
+        break;
+      case PLAN_TABLE:
+        itemExists = await getPlanById(resource.itemId);
+        break;
+    
+      default:
+        throw new Error("Unsupported resource Table: " + resource.table);
+    }
+    if (!itemExists) throw new Error("Item not found!");
     // Check if item-specific permission already exists
-    const alreadyHasPermission = await checkItemSpecificPermission(
-      userId,
-      resource,
-      action
-    );
-    if (alreadyHasPermission) throw new Error("Permission already exists!");
-    // check if user already has this table permission action
-    const userHasTablePermission = await ItemSpecificPermissions.findOne({
-      userId,
-      table: resource.table,
-      action: action,
-      isAbsolute: false,
-    });
-    if (userHasTablePermission) {
-      // update the user's permission to include the new item
-      const updatedPermission = await ItemSpecificPermissions.findOneAndUpdate(
-        { userId, table: resource.table, action: action },
-        { $push: { items: resource.itemId } },
-        { new: true }
-      );
-      if (!updatedPermission) throw new Error("Permission not updated!");
+    const permission = await ItemSpecificPermissions.findOne({userId,table:resource.table,action});
+    if(permission) {
+      const updatedPermission = await ItemSpecificPermissions.findOneAndUpdate({userId,table:resource.table,action},{$addToSet:{items:resource.itemId}},{new:true});
+      if(!updatedPermission) throw new Error("Permission not updated!");
       return updatedPermission;
     }
-    // Assign item-specific permissions if needed
-    const permission = await ItemSpecificPermissions.create({
-      action,
-      table: resource.table,
-      userId,
-      items: [resource.itemId],
-    });
-    if (!permission) throw new Error("Permission not assigned!");
-    return permission;
+    const newPermission = await ItemSpecificPermissions.create({userId,table:resource.table,action,items:[resource.itemId]});
+    if(!newPermission) throw new Error("Permission not created!");
+    return newPermission;
   } catch (error: any) {
     throw error;
   }
@@ -100,28 +131,50 @@ export const unassignItemSpecificPermissions = async (
   userId: string,
   resource: {
     table: string;
-    itemId?: string;
+    itemId: string;
   }
 ) => {
   try {
+    // check if user exists 
+    const userExists = await Users.findById(userId).lean();
+    if (!userExists) throw new Error("User not found!");
+    // check if item exists
+    let itemExists: any;
+    switch (resource.table) {
+      case ADMIN_TABLE:
+        itemExists = await getAdminById(resource.itemId);
+        break;
+      case USER_TABLE:
+        itemExists = await getUserById(resource.itemId);
+        break;
+      case THEME_TABLE:
+        itemExists = await getThemeById(resource.itemId);
+        break;
+      case TEMPLATE_TABLE:
+        itemExists = await getTemplateById(resource.itemId);
+        break;
+      case APPS_BUILD_TABLE:
+        itemExists = await getAppBuildById(resource.itemId);
+        break;
+      case PERMISSION_TABLE:
+        itemExists = await getPermissionById(resource.itemId);
+        break;
+      case ROLE_TABLE:
+        itemExists = await getRoleById(resource.itemId);
+        break;
+      case PLAN_TABLE:
+        itemExists = await getPlanById(resource.itemId);
+        break;
+    
+      default:
+        throw new Error("Unsupported resource Table: " + resource.table);
+    }
+    if (!itemExists) throw new Error("Item not found!");
     // Check if item-specific permission already exists
-    const alreadyHasPermission = await checkItemSpecificPermission(
-      userId,
-      resource,
-      action
-    );
-    if (!alreadyHasPermission) throw new Error("Permission dosn't exists!");
-    // check if user already has this table permission action
-    const userHasTablePermission = await ItemSpecificPermissions.findOne({
-      userId,
-      table: resource.table,
-      action: action,
-    });
-    if (!userHasTablePermission) throw new Error("Permission dosn't exists!");
-    if(userHasTablePermission.isAbsolute) throw new Error("This user has absolute permission!");
-    // update the user's permission to include the new item
+    const permission = await ItemSpecificPermissions.findOne({userId,table:resource.table,action});
+    if (!permission) throw new Error("User doesn't have the Table Permission!");
     const updatedPermission = await ItemSpecificPermissions.findOneAndUpdate(
-      { userId, table: resource.table, action: action },
+      { userId, table: resource.table, action },
       { $pull: { items: resource.itemId } },
       { new: true }
     );
@@ -140,6 +193,41 @@ export const assignCreatorItemSpecificPermissions = async (
   }
 ) => {
   try {
+    // check if user exists 
+    const userExists = await getUserById(userId);
+    if (!userExists) throw new Error("User not found!");
+    // check if item exists
+    let itemExists: any;
+    switch (resource.table) {
+      case ADMIN_TABLE:
+        itemExists = await getAdminById(resource.itemId);
+        break;
+      case USER_TABLE:
+        itemExists = await getUserById(resource.itemId);
+        break;
+      case THEME_TABLE:
+        itemExists = await getThemeById(resource.itemId);
+        break;
+      case TEMPLATE_TABLE:
+        itemExists = await getTemplateById(resource.itemId);
+        break;
+      case APPS_BUILD_TABLE:
+        itemExists = await getAppBuildById(resource.itemId);
+        break;
+      case PERMISSION_TABLE:
+        itemExists = await getPermissionById(resource.itemId);
+        break;
+      case ROLE_TABLE:
+        itemExists = await getRoleById(resource.itemId);
+        break;
+      case PLAN_TABLE:
+        itemExists = await getPlanById(resource.itemId);
+        break;
+    
+      default:
+        throw new Error("Unsupported resource Table: " + resource.table);
+    }
+    if (!itemExists) throw new Error("Item not found!");
     await assignItemSpicificPermission(
       PERMISSIONS_ACTIONS.READ,
       userId,
@@ -166,18 +254,13 @@ export const getOwnItemsByPermissionAction = async (
   action: IAction
 ) => {
   try {
-    const ownItems = await ItemSpecificPermissions.find({
+    const ownItems = await ItemSpecificPermissions.findOne({
       action,
       userId,
       table,
     }).lean();
     if (!ownItems) throw new Error(`No ${table}s found!`);
-    let itemIds: Schema.Types.ObjectId[] = [];
-    ownItems.map((item) => {
-      item.items.forEach((itemId: Schema.Types.ObjectId) => {
-        itemIds.push(itemId);
-      });
-    });
+    const itemIds = ownItems.items;
     return itemIds;
   } catch (error: any) {
     throw error;

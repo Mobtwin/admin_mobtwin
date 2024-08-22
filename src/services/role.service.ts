@@ -4,7 +4,6 @@ import { IRolePopulated, Roles } from "../models/role.schema";
 import { CreateRole } from "../validators/role.validator";
 
 export const isValidRole = async (userRole:string,permissionName:string) => {
-  console.log(userRole,permissionName)
   const role = await Roles.findById(userRole).populate("permissions") as IRolePopulated | null;
   if (
     role &&

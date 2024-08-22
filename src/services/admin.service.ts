@@ -1,11 +1,11 @@
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
-import { ADMIN_TABLE } from "../constant/admin.constant";
+import { ADMIN_PERMISSIONS, ADMIN_TABLE } from "../constant/admin.constant";
 import { Admins, IAdmin, ROLES, ROLES_OPTIONS } from "../models/admin.schema";
 import { ItemSpecificPermissions } from "../models/itemSpecificPermission.schema";
 import {  Roles } from "../models/role.schema";
 import { hashPassword } from "../utils/hashing";
 import { verifyPasswordStrength } from "../utils/string.format";
-import { assignCreatorItemSpecificPermissions, assignItemSpicificPermission } from "./itemSpecificPermissions.service";
+import { assignCreatorItemSpecificPermissions, assignItemSpicificPermission, getOwnItemsByPermissionAction } from "./itemSpecificPermissions.service";
 
 //create admin service
 export const createAdmin = async (admin: IAdmin,userId:string) => {
@@ -37,10 +37,8 @@ export const createAdmin = async (admin: IAdmin,userId:string) => {
 export const getAllAdmins = async ({readOwn=false,userId}:{readOwn:boolean,userId:string}) => {
   try {
     if(readOwn) {
-      const ownAdmins = await ItemSpecificPermissions.find({name:PERMISSIONS_ACTIONS.READ,admin:userId,resource:new RegExp(`^${ADMIN_TABLE}\\.`)}).select('resource').lean();
-      if (!ownAdmins) throw new Error("No admins found!");
-      const adminIds = ownAdmins.map((admin) => admin.resource.split('.')[1]);
-      const admins = await Admins.find({_id:{$in:adminIds}});
+      const itemsIds = await getOwnItemsByPermissionAction(userId,ADMIN_TABLE,PERMISSIONS_ACTIONS.READ)
+      const admins = await Admins.find({_id:{$in:itemsIds}});
       if (!admins) throw new Error("No admins found!");
       return admins;
     }

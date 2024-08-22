@@ -1,5 +1,6 @@
 import { Permissions } from "../models/permission.schema";
 import { CreatePermission } from "../validators/permission.validator";
+import { IAction } from "./itemSpecificPermissions.service";
 
 // create permission service
 export const createPermission = async (permission: CreatePermission) => {
@@ -20,6 +21,18 @@ export const getAllPermissions = async () => {
     try {
         const permissions = await Permissions.find();
         return permissions;
+    } catch (error: any) {
+        throw new Error(error.message);
+    }
+};
+// get permission by Id
+export const getPermissionById = async (id:string) => {
+    try {
+        const permission = await Permissions.findById(id);
+        if (!permission) {
+            throw new Error("Permission not found!");
+        }
+        return permission;
     } catch (error: any) {
         throw new Error(error.message);
     }
@@ -51,5 +64,7 @@ export const deletePermissionByName = async (name: string) => {
     }
 }
 
-
+export const getPermissionName =  (action: IAction,table:string) => {
+    return `${table}.${action}`;
+}
 

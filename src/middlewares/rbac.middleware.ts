@@ -18,9 +18,7 @@ export const checkPermission = (
     if (!userId || !userRole || !req.user) {
       return sendErrorResponse(res, null, "Unauthorized!", 401);
     }
-
-    const itemId = req.params.id;
-
+    const itemId = req.params.itemId;
     try {
       // 1. Check item-specific permissions
       if (resource && itemId) {
@@ -44,7 +42,7 @@ export const checkPermission = (
         for (const permission of permissionName) {
 
           if (await isValidRole(userRole, permission)) {
-            req.user.permissions = [permission];
+            req.user.permissions = [...req.user.permissions,permission];
             return next();
           }
 

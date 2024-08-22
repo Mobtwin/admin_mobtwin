@@ -11,13 +11,22 @@ import { Roles } from '../models/role.schema';
 import { Admins } from '../models/admin.schema';
 import { PERMISSION_PERMISSIONS } from '../constant/permission.constant';
 import { ROLE_PERMISSIONS } from '../constant/role.constant';
+import { ITEM_SPECIFIC_PERMISSION_PERMISSIONS } from '../constant/itemSpecificPermission.constant';
 
 
 const rolesData = [
   {
     name: 'Admin',
-    permissions: [...Object.values(ADMIN_PERMISSIONS),...Object.values(APPS_BUILD_PERMISSIONS),...Object.values(USER_PERMISSIONS),...Object.values(THEME_PERMISSIONS),...Object.values(TEMPLATE_PERMISSIONS),...Object.values(PLAN_PERMISSIONS),...Object.values(PERMISSION_PERMISSIONS),...Object.values(ROLE_PERMISSIONS)],
-  }
+    permissions: [...Object.values(ADMIN_PERMISSIONS),...Object.values(APPS_BUILD_PERMISSIONS),...Object.values(USER_PERMISSIONS),...Object.values(THEME_PERMISSIONS),...Object.values(TEMPLATE_PERMISSIONS),...Object.values(PLAN_PERMISSIONS),...Object.values(PERMISSION_PERMISSIONS),...Object.values(ROLE_PERMISSIONS),...Object.values(ITEM_SPECIFIC_PERMISSION_PERMISSIONS)],
+  },
+  {
+    name: 'Checker',
+    permissions: [...Object.values(THEME_PERMISSIONS),...Object.values(TEMPLATE_PERMISSIONS)],
+  },
+  {
+    name: 'Mobile Developer',
+    permissions: [THEME_PERMISSIONS.READ_OWN,THEME_PERMISSIONS.CREATE],
+  },
 ];
 
 export const seedRolesAndPermissions = async () => {

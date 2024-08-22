@@ -4,6 +4,7 @@ import {
   createThemeSchema,
   themeByIdSchema,
   updateThemeSchema,
+  updateThemeStatusSchema,
 } from "../validators/theme.validator";
 import {
   createThemeController,
@@ -11,6 +12,7 @@ import {
   getAllThemesController,
   getThemeByIdController,
   updateThemeController,
+  updateThemeStatusController,
 } from "../controllers/theme.controller";
 import { checkPermission } from "../middlewares/rbac.middleware";
 import { THEME_PERMISSIONS, THEME_TABLE } from "../constant/theme.constant";
@@ -74,4 +76,18 @@ themeRouter.put(
     action: PERMISSIONS_ACTIONS.DELETE,
   }),
   deleteThemeController
+);
+
+// Method: PUT
+// Route: /theme/status/:id
+// Update theme status by id
+themeRouter.put(
+  "/status/:id",
+  validateRequest(updateThemeStatusSchema, "params"),
+  checkPermission([THEME_PERMISSIONS.UPDATE,THEME_PERMISSIONS.STATUS], {
+    table: THEME_TABLE,
+    action: PERMISSIONS_ACTIONS.STATUS,
+  }),
+  validateRequest(updateThemeStatusSchema),
+  updateThemeStatusController
 );

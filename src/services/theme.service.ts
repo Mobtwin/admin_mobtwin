@@ -1,7 +1,7 @@
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
 import { THEME_TABLE } from "../constant/theme.constant";
 import { Theme } from "../models/builder/theme.schema";
-import { CreateTheme, UpdateTheme } from "../validators/theme.validator";
+import { CreateTheme, UpdateTheme, UpdateThemeStatus } from "../validators/theme.validator";
 import { assignCreatorItemSpecificPermissions, getOwnItemsByPermissionAction } from "./itemSpecificPermissions.service";
 
 // create a new theme
@@ -54,6 +54,18 @@ export const getThemeById = async (id: string) => {
 
 // update theme by id
 export const updateTheme = async (id: string, theme: UpdateTheme) => {
+  try {
+    const updatedTheme = await Theme.findByIdAndUpdate(id, theme, {
+      new: true,
+    });
+    if (!updatedTheme) throw new Error("Theme not updated!");
+    return updatedTheme;
+  } catch (error: any) {
+    throw error;
+  }
+};
+// update theme status by id
+export const updateThemeStatus = async (id: string, theme: UpdateThemeStatus) => {
   try {
     const updatedTheme = await Theme.findByIdAndUpdate(id, theme, {
       new: true,

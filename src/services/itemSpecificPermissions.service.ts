@@ -29,7 +29,7 @@ export type IAction =
   | "read_own"
   | "assign"
   | "unassign"
-  | "all";
+  | "status";
 export const checkItemSpecificPermission = async (
   userId: string,
   resource: {

@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { sendErrorResponse, sendSuccessResponse } from "../utils/response";
-import { CreateThemeRequest, ThemeByIdRequest, UpdateThemeRequest } from "../validators/theme.validator";
+import { CreateThemeRequest, ThemeByIdRequest, UpdateThemeRequest, UpdateThemeStatusRequest } from "../validators/theme.validator";
 import { ROLES } from "../models/admin.schema";
 import { logEvents } from "../middlewares/logger";
-import { createTheme, deleteTheme, getAllThemes, getThemeById, updateTheme } from "../services/theme.service";
+import { createTheme, deleteTheme, getAllThemes, getThemeById, updateTheme, updateThemeStatus } from "../services/theme.service";
 import { THEME_PERMISSIONS } from "../constant/theme.constant";
 
 // create new Theme
@@ -85,6 +85,29 @@ export const updateThemeController = async (req: UpdateThemeRequest, res: Respon
         updateTheme(id,req.body).then((theme) => {
             logEvents(`Theme: ${theme.name} updated by ${user.role}: ${user.userName}`, "actions.log");
             return sendSuccessResponse(res, theme, "Theme updated successfully!", 200);
+        }).catch((error) => {
+            return sendErrorResponse(res,error,"Error",400);
+        });
+    } catch (error) {
+        return sendErrorResponse(res,error,"Error",500);
+    }
+}
+// update theme status by id
+export const updateThemeStatusController = async (req: UpdateThemeStatusRequest, res: Response) => {
+    try {
+        // Authization
+        if (!req.user) 
+            return sendErrorResponse(res,null,"Unauthorized!",401);
+        const user = req.user;
+        
+        //validate id
+        const {id} = req.params;
+        if (!id) 
+            return sendErrorResponse(res,null,"Theme Id is required!",400);
+        // update theme by id
+        updateThemeStatus(id,req.body).then((theme) => {
+            logEvents(`Theme: ${theme.name} moved to '${theme.status}' by ${user.userName} role id: ${user.role}`, "actions.log");
+            return sendSuccessResponse(res, theme, `Theme moved to ${theme.status} successfully!`, 200);
         }).catch((error) => {
             return sendErrorResponse(res,error,"Error",400);
         });

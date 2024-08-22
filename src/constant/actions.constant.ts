@@ -5,6 +5,7 @@ export const PERMISSIONS_ACTIONS: {
     DELETE: 'delete',
     READ_OWN: 'read_own',
     ASSIGN: 'assign',
+    STATUS: 'status',
 } = {
     READ: 'read',
     CREATE: 'create',
@@ -12,4 +13,5 @@ export const PERMISSIONS_ACTIONS: {
     DELETE: 'delete',
     READ_OWN: 'read_own',
     ASSIGN: 'assign',
+    STATUS: 'status',
 } 

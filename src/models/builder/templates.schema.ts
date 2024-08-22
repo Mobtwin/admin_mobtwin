@@ -13,7 +13,7 @@ export interface ITemplate{
 }
 
 // Define an interface for the document methods.
-interface ITemplateDocument extends ITemplate, Document {
+export interface ITemplateDocument extends ITemplate, Document {
     removed_at: Date|null;
 }
 

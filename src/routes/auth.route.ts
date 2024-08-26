@@ -11,6 +11,7 @@ import {
   refreshAdminSchema,
 } from "../validators/auth.validator";
 import { loginLimiter } from "../middlewares/limiter";
+import { authMiddleWare } from "../middlewares/auth.middleware";
 
 export const authRouter = Router();
 
@@ -36,6 +37,7 @@ authRouter.post(
 // Logout user
 authRouter.post(
   "/logout",
+  authMiddleWare,
   validateRequest(logoutAdminSchema),
   logoutController
 );

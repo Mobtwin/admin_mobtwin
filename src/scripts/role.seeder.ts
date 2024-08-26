@@ -25,7 +25,7 @@ const rolesData = [
   },
   {
     name: 'Mobile Developer',
-    permissions: [THEME_PERMISSIONS.READ_OWN,THEME_PERMISSIONS.CREATE],
+    permissions: [THEME_PERMISSIONS.READ_OWN,THEME_PERMISSIONS.CREATE,THEME_PERMISSIONS.UPDATE],
   },
   {
     name: 'User',

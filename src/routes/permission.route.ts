@@ -41,8 +41,8 @@ permissionRouter.get(
     PERMISSION_PERMISSIONS.READ,
     PERMISSION_PERMISSIONS.READ_OWN,
   ]),
-  validateRequest(paginationQuerySchema,"query"),
-  cacheMiddleware(PERMISSION_TABLE),
+  // validateRequest(paginationQuerySchema,"query"),
+  // cacheMiddleware(PERMISSION_TABLE),
   paginationMiddleware,
   getAllPermissionsController
 );

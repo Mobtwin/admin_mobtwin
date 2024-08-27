@@ -11,6 +11,8 @@ import {
 } from "../services/plan.service";
 import { logEvents } from "../middlewares/logger";
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
+import { invalidateCache } from "../middlewares/cache.middleware";
+import { PLAN_TABLE } from "../constant/plan.constant";
 
 //create new plan
 export const createPlanController = async (
@@ -29,12 +31,24 @@ export const createPlanController = async (
           `Plan: ${value.name} created by ${user.role}: ${user.userName}`,
           "actions.log"
         );
-        return sendSuccessResponse(
-          res,
-          value,
-          "Plan created successfully!",
-          201
-        );
+        invalidateCache(PLAN_TABLE)
+          .then(() => {
+            return sendSuccessResponse(
+              res,
+              value,
+              "Plan created successfully!",
+              201
+            );
+          })
+          .catch((error) => {
+            return sendErrorResponse(
+              res,
+              error,
+              `Error: ${error.message}`,
+              400
+            );
+          });
+        
       })
       .catch((error) => {
         return sendErrorResponse(res, error, `Error: ${error.message}`, 500);
@@ -111,12 +125,24 @@ export const updatePlanByIdController = async (req: UpdatePlanRequest, res: Resp
           `Plan: ${value.name} updated by ${user.role}: ${user.userName}`,
           "actions.log"
         );
-        return sendSuccessResponse(
-          res,
-          value,
-          "Plan updated successfully!",
-          200
-        );
+        invalidateCache(PLAN_TABLE)
+          .then(() => {
+            return sendSuccessResponse(
+              res,
+              value,
+              "Plan updated successfully!",
+              200
+            );
+          })
+          .catch((error) => {
+            return sendErrorResponse(
+              res,
+              error,
+              `Error: ${error.message}`,
+              400
+            );
+          });
+        
       })
       .catch((error) => {
         return sendErrorResponse(res, error, `Error: ${error.message}`, 500);
@@ -142,12 +168,24 @@ export const deletePlanByIdController = async (req: PlanByIdRequest, res: Respon
           `Plan: ${value.name} deleted by ${user.role}: ${user.userName}`,
           "actions.log"
         );
-        return sendSuccessResponse(
-          res,
-          value,
-          "Plan deleted successfully!",
-          200
-        );
+        invalidateCache(PLAN_TABLE)
+        .then(() => {
+          return sendSuccessResponse(
+            res,
+            value,
+            "Plan deleted successfully!",
+            200
+          );
+        })
+        .catch((error) => {
+          return sendErrorResponse(
+            res,
+            error,
+            `Error: ${error.message}`,
+            400
+          );
+        });
+
       })
       .catch((error) => {
         return sendErrorResponse(res, error, `Error: ${error.message}`, 500);

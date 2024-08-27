@@ -4,7 +4,8 @@ import { CreateThemeRequest, ThemeByIdRequest, UpdateThemeRequest, UpdateThemeSt
 import { ROLES } from "../models/admin.schema";
 import { logEvents } from "../middlewares/logger";
 import { createTheme, deleteTheme, getAllThemes, getThemeById, updateTheme, updateThemeStatus } from "../services/theme.service";
-import { THEME_PERMISSIONS } from "../constant/theme.constant";
+import { THEME_PERMISSIONS, THEME_TABLE } from "../constant/theme.constant";
+import { invalidateCache } from "../middlewares/cache.middleware";
 
 // create new Theme
 export const createThemeController = async (req: CreateThemeRequest, res: Response) => {
@@ -17,7 +18,11 @@ export const createThemeController = async (req: CreateThemeRequest, res: Respon
         // create theme
         createTheme(req.body,user.id).then((theme) => {
             logEvents(`Theme: ${theme.name} created by ${user.role}: ${user.userName}`, "actions.log");
+            invalidateCache(THEME_TABLE).then(() => {
             return sendSuccessResponse(res, theme, "Theme created successfully!", 201);
+            }).catch((error) => {
+                return sendErrorResponse(res,error,`Error: ${error.message}`,400);
+            });
         }).catch((error) => {
             return sendErrorResponse(res,error,"Error",400);
         });
@@ -84,7 +89,12 @@ export const updateThemeController = async (req: UpdateThemeRequest, res: Respon
         // update theme by id
         updateTheme(id,req.body).then((theme) => {
             logEvents(`Theme: ${theme.name} updated by ${user.role}: ${user.userName}`, "actions.log");
-            return sendSuccessResponse(res, theme, "Theme updated successfully!", 200);
+            invalidateCache(THEME_TABLE).then(() => {
+                return sendSuccessResponse(res, theme, "Theme updated successfully!", 200);
+                }).catch((error) => {
+                    return sendErrorResponse(res,error,`Error: ${error.message}`,400);
+                });
+            
         }).catch((error) => {
             return sendErrorResponse(res,error,"Error",400);
         });
@@ -107,7 +117,12 @@ export const updateThemeStatusController = async (req: UpdateThemeStatusRequest,
         // update theme by id
         updateThemeStatus(id,req.body).then((theme) => {
             logEvents(`Theme: ${theme.name} moved to '${theme.status}' by ${user.userName} role id: ${user.role}`, "actions.log");
-            return sendSuccessResponse(res, theme, `Theme moved to ${theme.status} successfully!`, 200);
+            invalidateCache(THEME_TABLE).then(() => {
+                return sendSuccessResponse(res, theme, `Theme moved to ${theme.status} successfully!`, 200);
+                }).catch((error) => {
+                    return sendErrorResponse(res,error,`Error: ${error.message}`,400);
+                });
+            
         }).catch((error) => {
             return sendErrorResponse(res,error,"Error",400);
         });
@@ -131,7 +146,12 @@ export const deleteThemeController = async (req: ThemeByIdRequest, res: Response
         // delete theme by id
         deleteTheme(id).then((theme) => {
             logEvents(`Theme: ${theme.name} deleted by ${user.role}: ${user.userName}`, "actions.log");
-            return sendSuccessResponse(res, theme, "Theme deleted successfully!", 200);
+            invalidateCache(THEME_TABLE).then(() => {
+                return sendSuccessResponse(res, theme, "Theme deleted successfully!", 200);
+                }).catch((error) => {
+                    return sendErrorResponse(res,error,`Error: ${error.message}`,400);
+                });
+            
         }).catch((error) => {
             return sendErrorResponse(res,error,"Error",400);
         });

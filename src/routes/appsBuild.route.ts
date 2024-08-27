@@ -18,6 +18,7 @@ import {
   APPS_BUILD_TABLE,
 } from "../constant/appsBuild.constant";
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
+import cacheMiddleware from "../middlewares/cache.middleware";
 
 export const appsBuildRouter = Router();
 
@@ -53,6 +54,7 @@ appsBuildRouter.get(
     APPS_BUILD_PERMISSIONS.READ,
     APPS_BUILD_PERMISSIONS.READ_OWN,
   ]),
+  cacheMiddleware(APPS_BUILD_TABLE),
   getAllAppBuildsController
 );
 
@@ -66,6 +68,7 @@ appsBuildRouter.get(
     table: APPS_BUILD_TABLE,
     action: PERMISSIONS_ACTIONS.READ,
   }),
+  cacheMiddleware(APPS_BUILD_TABLE),
   getAppBuildByIdController
 );
 

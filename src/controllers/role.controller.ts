@@ -12,6 +12,8 @@ import {
   removePermissionsById,
   removePermissionsByName,
 } from "../services/role.service";
+import { invalidateCache } from "../middlewares/cache.middleware";
+import { ROLE_TABLE } from "../constant/role.constant";
 
 // create a new role controller
 export const createRoleController = async (
@@ -29,12 +31,16 @@ export const createRoleController = async (
           `Role: ${value.name} created by ${user.userName}: ${user.role}`,
           "actions.log"
         );
-        return sendSuccessResponse(
-          res,
-          value,
-          "Role created successfully!",
-          201
-        );
+        invalidateCache(ROLE_TABLE).then(() => {
+          return sendSuccessResponse(
+            res,
+            value,
+            "Role created successfully!",
+            201
+          );
+        }).catch((error) => {
+          return sendErrorResponse(res, error, `Error: ${error.message}`, 400);
+        });
       })
       .catch((error) => {
         return sendErrorResponse(res, error, `Error: ${error.message}`, 400);
@@ -132,12 +138,17 @@ export const assignPermissionsByIdController = async (
           `Permissions: ${JSON.stringify(req.body.permissions)} assigned to role: ${value.name} by ${user.userName}: ${user.role}`,
           "actions.log"
         );
-        return sendSuccessResponse(
-          res,
-          value,
-          "Permissions assigned successfully!",
-          200
-        );
+        invalidateCache(ROLE_TABLE).then(() => {
+          return sendSuccessResponse(
+            res,
+            value,
+            "Permissions assigned successfully!",
+            200
+          );
+        }).catch((error) => {
+          return sendErrorResponse(res, error, `Error: ${error.message}`, 400);
+        });
+
       })
       .catch((error) => {
         return sendErrorResponse(res, error, `Error: ${error.message}`, 400);
@@ -163,12 +174,17 @@ export const assignPermissionsByNameController = async (
           `Permissions: ${JSON.stringify(req.body.permissions)} assigned to role: ${value.name} by ${user.userName}: ${user.role}`,
           "actions.log"
         );
-        return sendSuccessResponse(
-          res,
-          value,
-          "Permissions assigned successfully!",
-          200
-        );
+        invalidateCache(ROLE_TABLE).then(() => {
+          return sendSuccessResponse(
+            res,
+            value,
+            "Permissions assigned successfully!",
+            200
+          );
+        }).catch((error) => {
+          return sendErrorResponse(res, error, `Error: ${error.message}`, 400);
+        });
+
       })
       .catch((error) => {
         return sendErrorResponse(res, error, `Error: ${error.message}`, 400);
@@ -194,12 +210,17 @@ export const unassignPermissionsByIdController = async (
           `Permissions: ${JSON.stringify(req.body.permissions)} unassigned to role: ${value.name} by ${user.userName}: ${user.role}`,
           "actions.log"
         );
-        return sendSuccessResponse(
-          res,
-          value,
-          "Permissions unassigned successfully!",
-          200
-        );
+        invalidateCache(ROLE_TABLE).then(() => {
+          return sendSuccessResponse(
+            res,
+            value,
+            "Permissions unassigned successfully!",
+            200
+          );
+        }).catch((error) => {
+          return sendErrorResponse(res, error, `Error: ${error.message}`, 400);
+        });
+
       })
       .catch((error) => {
         return sendErrorResponse(res, error, `Error: ${error.message}`, 400);
@@ -225,12 +246,17 @@ export const unassignPermissionsByNameController = async (
           `Permissions: ${JSON.stringify(req.body.permissions)} unassigned to role: ${value.name} by ${user.userName}: ${user.role}`,
           "actions.log"
         );
-        return sendSuccessResponse(
-          res,
-          value,
-          "Permissions unassigned successfully!",
-          200
-        );
+        invalidateCache(ROLE_TABLE).then(() => {
+          return sendSuccessResponse(
+            res,
+            value,
+            "Permissions unassigned successfully!",
+            200
+          );
+        }).catch((error) => {
+          return sendErrorResponse(res, error, `Error: ${error.message}`, 400);
+        });
+
       })
       .catch((error) => {
         return sendErrorResponse(res, error, `Error: ${error.message}`, 400);

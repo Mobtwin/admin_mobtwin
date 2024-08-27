@@ -19,6 +19,7 @@ import {
   roleByNameSchema,
 } from "../validators/role.validator";
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
+import cacheMiddleware from "../middlewares/cache.middleware";
 
 export const roleRouter = Router();
 
@@ -38,6 +39,7 @@ roleRouter.post(
 roleRouter.get(
   "/",
   checkPermission([ROLE_PERMISSIONS.READ]),
+  cacheMiddleware(ROLE_TABLE),
   getAllRolesController
 );
 
@@ -51,6 +53,7 @@ roleRouter.get(
     table: ROLE_TABLE,
     action: PERMISSIONS_ACTIONS.READ,
   }),
+  cacheMiddleware(ROLE_TABLE),
   getRoleByIdController
 );
 
@@ -64,6 +67,7 @@ roleRouter.get(
     table: ROLE_TABLE,
     action: PERMISSIONS_ACTIONS.READ,
   }),
+  cacheMiddleware(ROLE_TABLE),
   getRoleByNameController
 );
 

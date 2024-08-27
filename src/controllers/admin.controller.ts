@@ -6,7 +6,8 @@ import { verifyPasswordStrength } from "../utils/string.format";
 import { createAdmin, deleteAdminById, getAdminById, getAllAdmins, updateAdminById } from "../services/admin.service";
 import { logEvents } from "../middlewares/logger";
 import { AdminByIdRequest, CreateAdminRequest, UpdateAdminRequest } from "../validators/admin.validator";
-import { ADMIN_PERMISSIONS } from "../constant/admin.constant";
+import { ADMIN_PERMISSIONS, ADMIN_TABLE } from "../constant/admin.constant";
+import { invalidateCache } from "../middlewares/cache.middleware";
 
 
 //create a new admin
@@ -38,7 +39,11 @@ export const createAdminController = async (req: CreateAdminRequest, res: Respon
         //create admin
         createAdmin({userName, email, password, role},user.id).then((admin) => {
             logEvents(`${user.role}: ${user.userName} created by ${admin.role}: ${admin.userName}`, "actions.log");
-            return sendSuccessResponse(res, admin, 'Admin created successfully!', 200);
+            invalidateCache(ADMIN_TABLE).then(() => {
+                return sendSuccessResponse(res, admin, 'Admin created successfully!', 200);
+            }).catch((error) => {
+                return sendErrorResponse(res, error, `Error: ${error.message}`, 400);
+            });
         }).catch((error) => {
             return sendErrorResponse(res, error, `Error: ${error.message}`, 400);
         });
@@ -108,7 +113,11 @@ export const updateAdminByIdController = async (req: UpdateAdminRequest, res: Re
         //update admin
         updateAdminById(id,{userName,email,password,role}).then((admin) => {
             logEvents(`${user.role}: ${user.userName} updated by ${admin.role}: ${admin.userName}`, "actions.log");
-            return sendSuccessResponse(res, admin, 'Admin updated successfully!', 200);
+            invalidateCache(ADMIN_TABLE).then(() => {
+                return sendSuccessResponse(res, admin, 'Admin updated successfully!', 200);
+            }).catch((error) => {
+                return sendErrorResponse(res, error, `Error: ${error.message}`, 400);
+            });
         }).catch((error) => {
             return sendErrorResponse(res, error, `Error: ${error.message}`, 400);
         });
@@ -133,7 +142,11 @@ export const deleteAdminByIdController = async (req: AdminByIdRequest, res: Resp
         //delete admin
         deleteAdminById(id).then((admin) => {
             logEvents(`${user.role}: ${user.userName} created by ${admin.role}: ${admin.userName}`, "actions.log");
-            return sendSuccessResponse(res, null, 'Admin deleted successfully!', 200);
+            invalidateCache(ADMIN_TABLE).then(() => {
+                return sendSuccessResponse(res, null, 'Admin deleted successfully!', 200);
+            }).catch((error) => {
+                return sendErrorResponse(res, error, `Error: ${error.message}`, 400);
+            });
         }).catch((error) => {
             return sendErrorResponse(res, error, `Error: ${error.message}`, 400);
         });

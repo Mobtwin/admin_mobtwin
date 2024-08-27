@@ -15,6 +15,7 @@ import {
 import { checkPermission } from "../middlewares/rbac.middleware";
 import { USER_PERMISSIONS, USER_TABLE } from "../constant/user.constant";
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
+import cacheMiddleware from "../middlewares/cache.middleware";
 
 export const userRouter = Router();
 
@@ -34,6 +35,7 @@ userRouter.post(
 userRouter.get(
   "/",
   checkPermission([USER_PERMISSIONS.READ, USER_PERMISSIONS.READ_OWN]),
+  cacheMiddleware(USER_TABLE),
   getAllUsersController
 );
 
@@ -47,6 +49,7 @@ userRouter.get(
     table: USER_TABLE,
     action: PERMISSIONS_ACTIONS.READ,
   }),
+  cacheMiddleware(USER_TABLE),
   getUserByIdController
 );
 

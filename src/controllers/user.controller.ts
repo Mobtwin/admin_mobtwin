@@ -6,7 +6,8 @@ import { createUser, deleteUserById, getAllUsers, getUserById, updateUserById } 
 import { ROLES, ROLES_OPTIONS } from "../models/admin.schema";
 import { logEvents } from "../middlewares/logger";
 import { CreateUserRequest, UpdateUserRequest, UserByIdRequest } from "../validators/user.validator";
-import { USER_PERMISSIONS } from "../constant/user.constant";
+import { USER_PERMISSIONS, USER_TABLE } from "../constant/user.constant";
+import { invalidateCache } from "../middlewares/cache.middleware";
 
 //create new user
 export const createUserController = async (req: CreateUserRequest, res: Response) => {
@@ -35,7 +36,11 @@ export const createUserController = async (req: CreateUserRequest, res: Response
     createUser(userName, email, password, ipAddress)
       .then((value) => {
         logEvents(`User: ${value.userName} created by ${user.role}: ${user.userName}`, "actions.log");
-        return sendSuccessResponse(res,value,"Account created successfully!",201);
+        invalidateCache(USER_TABLE).then(() => {
+          return sendSuccessResponse(res,value,"Account created successfully!",201);
+        }).catch((error) => {
+          return sendErrorResponse(res,error,`Error: ${error.message}`,400);
+        });
       })
       .catch((error) => {
         return sendErrorResponse(res, error, `Error: ${error.message}`, 500);
@@ -119,7 +124,12 @@ export const updateUserByIdController = async (req: UpdateUserRequest, res: Resp
     updateUserById(id, userInfo)
       .then((updatedUser) => {
         logEvents(`User: ${user.userName} updated by ${user.role}: ${user.userName}`, "actions.log");
-        return sendSuccessResponse(res, updatedUser, "User updated successfully!", 200);
+        invalidateCache(USER_TABLE).then(() => {
+          return sendSuccessResponse(res, updatedUser, "User updated successfully!", 200);
+        }).catch((error) => {
+          return sendErrorResponse(res,error,`Error: ${error.message}`,400);
+        });
+        
       })
       .catch((error) => {
         return sendErrorResponse(res, error, `Error: ${error.message}`, 400);
@@ -144,7 +154,12 @@ export const deleteUserByIdController = async (req: UserByIdRequest, res: Respon
     deleteUserById(id)
       .then((deletedUser) => {
         logEvents(`User: ${user.userName} deleted by ${user.role}: ${user.userName}`, "actions.log");
-        return sendSuccessResponse(res, deletedUser, "User deleted successfully!", 200);
+        invalidateCache(USER_TABLE).then(() => {
+          return sendSuccessResponse(res, deletedUser, "User deleted successfully!", 200);
+        }).catch((error) => {
+          return sendErrorResponse(res,error,`Error: ${error.message}`,400);
+        });
+        
       })
       .catch((error) => {
         return sendErrorResponse(res, error, `Error: ${error.message}`, 400);

@@ -17,6 +17,7 @@ import {
   TEMPLATE_TABLE,
 } from "../constant/template.constant";
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
+import cacheMiddleware from "../middlewares/cache.middleware";
 
 export const templateRouter = Router();
 
@@ -36,6 +37,7 @@ templateRouter.post(
 templateRouter.get(
   "/",
   checkPermission([TEMPLATE_PERMISSIONS.READ, TEMPLATE_PERMISSIONS.READ_OWN]),
+  cacheMiddleware(TEMPLATE_TABLE),
   getAllTemplatesController
 );
 
@@ -49,6 +51,7 @@ templateRouter.get(
     table: TEMPLATE_TABLE,
     action: PERMISSIONS_ACTIONS.READ,
   }),
+  cacheMiddleware(TEMPLATE_TABLE),
   getTemplateByIdController
 );
 

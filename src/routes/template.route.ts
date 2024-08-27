@@ -19,6 +19,7 @@ import {
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
 import cacheMiddleware from "../middlewares/cache.middleware";
 import paginationMiddleware from "../middlewares/pagination.middleware";
+import { paginationQuerySchema } from "../validators/pagination.validator";
 
 export const templateRouter = Router();
 
@@ -38,6 +39,7 @@ templateRouter.post(
 templateRouter.get(
   "/",
   checkPermission([TEMPLATE_PERMISSIONS.READ, TEMPLATE_PERMISSIONS.READ_OWN]),
+  validateRequest(paginationQuerySchema,"query"),
   cacheMiddleware(TEMPLATE_TABLE),
   paginationMiddleware,
   getAllTemplatesController

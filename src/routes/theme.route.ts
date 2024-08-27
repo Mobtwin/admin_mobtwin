@@ -19,6 +19,7 @@ import { THEME_PERMISSIONS, THEME_TABLE } from "../constant/theme.constant";
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
 import cacheMiddleware from "../middlewares/cache.middleware";
 import paginationMiddleware from "../middlewares/pagination.middleware";
+import { paginationQuerySchema } from "../validators/pagination.validator";
 
 export const themeRouter = Router();
 
@@ -38,6 +39,7 @@ themeRouter.post(
 themeRouter.get(
   "/",
   checkPermission([THEME_PERMISSIONS.READ, THEME_PERMISSIONS.READ_OWN]),
+  validateRequest(paginationQuerySchema,"query"),
   cacheMiddleware(THEME_TABLE),
   paginationMiddleware,
   getAllThemesController

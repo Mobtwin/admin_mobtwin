@@ -17,6 +17,7 @@ import { USER_PERMISSIONS, USER_TABLE } from "../constant/user.constant";
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
 import cacheMiddleware from "../middlewares/cache.middleware";
 import paginationMiddleware from "../middlewares/pagination.middleware";
+import { paginationQuerySchema } from "../validators/pagination.validator";
 
 export const userRouter = Router();
 
@@ -36,6 +37,7 @@ userRouter.post(
 userRouter.get(
   "/",
   checkPermission([USER_PERMISSIONS.READ, USER_PERMISSIONS.READ_OWN]),
+  validateRequest(paginationQuerySchema,"query"),
   cacheMiddleware(USER_TABLE),
   paginationMiddleware,
   getAllUsersController

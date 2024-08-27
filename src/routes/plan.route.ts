@@ -17,6 +17,7 @@ import { PLAN_PERMISSIONS, PLAN_TABLE } from "../constant/plan.constant";
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
 import cacheMiddleware from "../middlewares/cache.middleware";
 import paginationMiddleware from "../middlewares/pagination.middleware";
+import { paginationQuerySchema } from "../validators/pagination.validator";
 
 export const planRouter = Router();
 
@@ -36,6 +37,7 @@ planRouter.post(
 planRouter.get(
   "/",
   checkPermission([PLAN_PERMISSIONS.READ, PLAN_PERMISSIONS.READ_OWN]),
+  validateRequest(paginationQuerySchema,"query"),
   cacheMiddleware(PLAN_TABLE),
   paginationMiddleware,
   getAllPlansController

@@ -18,6 +18,7 @@ import {
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
 import cacheMiddleware from "../middlewares/cache.middleware";
 import paginationMiddleware from "../middlewares/pagination.middleware";
+import { paginationQuerySchema } from "../validators/pagination.validator";
 
 export const permissionRouter = Router();
 
@@ -40,6 +41,7 @@ permissionRouter.get(
     PERMISSION_PERMISSIONS.READ,
     PERMISSION_PERMISSIONS.READ_OWN,
   ]),
+  validateRequest(paginationQuerySchema,"query"),
   cacheMiddleware(PERMISSION_TABLE),
   paginationMiddleware,
   getAllPermissionsController

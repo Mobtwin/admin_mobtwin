@@ -21,6 +21,7 @@ import {
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
 import cacheMiddleware from "../middlewares/cache.middleware";
 import paginationMiddleware from "../middlewares/pagination.middleware";
+import { paginationQuerySchema } from "../validators/pagination.validator";
 
 export const roleRouter = Router();
 
@@ -40,6 +41,7 @@ roleRouter.post(
 roleRouter.get(
   "/",
   checkPermission([ROLE_PERMISSIONS.READ]),
+  validateRequest(paginationQuerySchema,"query"),
   cacheMiddleware(ROLE_TABLE),
   paginationMiddleware,
   getAllRolesController

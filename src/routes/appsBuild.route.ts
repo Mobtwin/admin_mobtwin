@@ -20,6 +20,7 @@ import {
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
 import cacheMiddleware from "../middlewares/cache.middleware";
 import paginationMiddleware from "../middlewares/pagination.middleware";
+import { paginationQuerySchema } from "../validators/pagination.validator";
 
 export const appsBuildRouter = Router();
 
@@ -55,6 +56,7 @@ appsBuildRouter.get(
     APPS_BUILD_PERMISSIONS.READ,
     APPS_BUILD_PERMISSIONS.READ_OWN,
   ]),
+  validateRequest(paginationQuerySchema,"query"),
   cacheMiddleware(APPS_BUILD_TABLE),
   paginationMiddleware,
   getAllAppBuildsController

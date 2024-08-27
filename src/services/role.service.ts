@@ -1,7 +1,8 @@
 import { Schema } from "mongoose";
 import { IPermissionDocument, Permissions } from "../models/permission.schema";
-import { IRolePopulated, Roles } from "../models/role.schema";
+import { IRoleDocument, IRolePopulated, Roles } from "../models/role.schema";
 import { CreateRole } from "../validators/role.validator";
+import fetchPaginatedData from "../utils/pagination";
 
 export const isValidRole = async (userRole:string,permissionName:string) => {
   const role = await Roles.findById(userRole).populate("permissions") as IRolePopulated | null;
@@ -36,10 +37,10 @@ export const createRole = async (role:CreateRole) => {
 }
 
 // get all roles service
-export const getAllRoles = async () => {
+export const getAllRoles = async ({limit,skip}:{skip:number,limit:number}) => {
   try {
-    const roles = await Roles.find().populate("permissions");
-    return roles;
+    const {data,pagination} = await fetchPaginatedData<IRoleDocument>(Roles,skip,limit,{},"permissions");
+    return {data, pagination};
   } catch (error) {
     throw error;
   }

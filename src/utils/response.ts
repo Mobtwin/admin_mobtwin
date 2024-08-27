@@ -1,11 +1,14 @@
 import { Response } from 'express';
+import { Pagination } from './pagination';
+// Pagination interface
 
 // Success response handler
-export const sendSuccessResponse = <T>(res: Response, data: T, message: string, statusCode = 200): void => {
+export const sendSuccessResponse = <T>(res: Response, data: T, message: string, statusCode = 200,pagination?:Pagination): void => {
   res.status(statusCode).json({
     success: true,
     message,
     data,
+    pagination: pagination || undefined, // Include pagination if it exists
   });
   return;
 };

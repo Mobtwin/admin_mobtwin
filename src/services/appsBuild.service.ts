@@ -1,6 +1,7 @@
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
 import { APPS_BUILD_TABLE } from "../constant/appsBuild.constant";
-import { AppsBuild } from "../models/builder/apps.schema";
+import { AppsBuild, IAppsBuildDocument } from "../models/builder/apps.schema";
+import fetchPaginatedData from "../utils/pagination";
 import { CreateAppsBuild, UpdateAppsBuild } from "../validators/appsBuild.validator";
 import { getOwnItemsByPermissionAction } from "./itemSpecificPermissions.service";
 
@@ -29,15 +30,15 @@ export const updateAppBuild = async (appData:UpdateAppsBuild,id:string) => {
 }
 
 // get all app builds
-export const getAllAppsBuild = async ({readOwn=false,userId}:{readOwn:boolean,userId:string}) => {
+export const getAllAppsBuild = async ({readOwn=false,userId,skip,limit}:{readOwn:boolean,userId:string,skip:number,limit:number}) => {
     try {
         if(readOwn){
             const appBuildIds = await getOwnItemsByPermissionAction(userId,APPS_BUILD_TABLE,PERMISSIONS_ACTIONS.READ)
-            const appBuilds = await AppsBuild.find({_id:{$in:appBuildIds}});
-            return appBuilds;
+            const {data,pagination} = await fetchPaginatedData<IAppsBuildDocument>(AppsBuild,skip,limit,{_id:{$in:appBuildIds}});
+            return {data,pagination};
         }
-        const appBuilds = await AppsBuild.find();
-        return appBuilds;
+        const {data,pagination} = await fetchPaginatedData<IAppsBuildDocument>(AppsBuild,skip,limit,{});
+        return {data,pagination};
     } catch (error:any) {
         throw error;
     }

@@ -1,6 +1,7 @@
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
 import { THEME_TABLE } from "../constant/theme.constant";
-import { Theme } from "../models/builder/theme.schema";
+import { IThemeDocument, Theme } from "../models/builder/theme.schema";
+import fetchPaginatedData from "../utils/pagination";
 import { CreateTheme, UpdateTheme, UpdateThemeStatus } from "../validators/theme.validator";
 import { assignCreatorItemSpecificPermissions, getOwnItemsByPermissionAction } from "./itemSpecificPermissions.service";
 
@@ -23,19 +24,22 @@ export const createTheme = async (theme: CreateTheme, userId: string) => {
 export const getAllThemes = async ({
   readOwn = false,
   userId,
+  limit,
+  skip
 }: {
   readOwn: boolean;
   userId: string;
+  skip: number;
+  limit: number;
 }) => {
   try {
     if (readOwn) {
       const themeIds = await getOwnItemsByPermissionAction(userId,THEME_TABLE,PERMISSIONS_ACTIONS.READ);
-      const themes = await Theme.find({ _id: { $in: themeIds } });
-      if (!themes) throw new Error("No themes found!");
-      return themes;
+      const { data, pagination } = await fetchPaginatedData<IThemeDocument>(Theme,skip,limit,{_id: { $in: themeIds }});
+      return { data, pagination };
     }
-    const themes = await Theme.find();
-    return themes;
+    const { data, pagination } = await fetchPaginatedData<IThemeDocument>(Theme,skip,limit,{});
+      return { data, pagination };
   } catch (error: any) {
     throw error;
   }

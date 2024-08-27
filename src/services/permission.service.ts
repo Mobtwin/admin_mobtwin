@@ -1,4 +1,5 @@
-import { Permissions } from "../models/permission.schema";
+import { IPermissionDocument, Permissions } from "../models/permission.schema";
+import fetchPaginatedData from "../utils/pagination";
 import { CreatePermission } from "../validators/permission.validator";
 import { IAction } from "./itemSpecificPermissions.service";
 
@@ -17,10 +18,10 @@ export const createPermission = async (permission: CreatePermission) => {
 };
 
 // get all permissions
-export const getAllPermissions = async () => {
+export const getAllPermissions = async ({skip,limit}:{skip:number,limit:number}) => {
     try {
-        const permissions = await Permissions.find();
-        return permissions;
+        const {data,pagination} = await fetchPaginatedData<IPermissionDocument>(Permissions,skip,limit,{});
+        return {data, pagination};
     } catch (error: any) {
         throw new Error(error.message);
     }

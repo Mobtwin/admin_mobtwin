@@ -65,14 +65,16 @@ export const getAllPlansController = async (req: Request, res: Response) => {
     if (!req.user) return sendErrorResponse(res, null, "Unauthorized!", 401);
     const user = req.user;
     const readOwn = user.permissions.includes(PERMISSIONS_ACTIONS.READ_OWN);
+    const {skip,limit} = res.locals;
     //get all plans
-    getAllPlans({ readOwn, userId: user.id })
-      .then((value) => {
+    getAllPlans({ readOwn, userId: user.id,skip,limit })
+      .then(({data,pagination}) => {
         return sendSuccessResponse(
           res,
-          value,
+          data,
           "All plans fetched successfully!",
-          200
+          200,
+          pagination
         );
       })
       .catch((error) => {

@@ -73,13 +73,15 @@ export const getAllTemplatesController = async (
     if (!req.user) return sendErrorResponse(res, null, "Unauthorized!", 401);
     const user = req.user;
     const readOwn = user.permissions.includes(TEMPLATE_PERMISSIONS.READ_OWN);
-    getAllTemplates({ readOwn, userId: user.id })
-      .then((value) => {
+    const {skip,limit} = res.locals;
+    getAllTemplates({ readOwn, userId: user.id,skip,limit })
+      .then(({data,pagination}) => {
         return sendSuccessResponse(
           res,
-          value,
+          data,
           "Templates fetched successfully!",
-          200
+          200,
+          pagination
         );
       })
       .catch((error) => {

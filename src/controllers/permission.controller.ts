@@ -62,15 +62,16 @@ export const getAllPermissionsController = async (
   try {
     //authorization
     if (!req.user) return sendErrorResponse(res, null, "Unauthorized!", 401);
-
+    const {skip,limit} = res.locals;
     //get all permissions
-    getAllPermissions()
-      .then((permissions) => {
+    getAllPermissions({skip,limit})
+      .then(({data,pagination}) => {
         return sendSuccessResponse(
           res,
-          permissions,
+          data,
           "Permissions retrieved successfully!",
-          200
+          200,
+          pagination
         );
       })
       .catch((error) => {

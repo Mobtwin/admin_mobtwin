@@ -1,9 +1,10 @@
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
 import { ADMIN_PERMISSIONS, ADMIN_TABLE } from "../constant/admin.constant";
-import { Admins, IAdmin, ROLES, ROLES_OPTIONS } from "../models/admin.schema";
+import { Admins, IAdmin, IAdminDocument, ROLES, ROLES_OPTIONS } from "../models/admin.schema";
 import { ItemSpecificPermissions } from "../models/itemSpecificPermission.schema";
 import {  Roles } from "../models/role.schema";
 import { hashPassword } from "../utils/hashing";
+import fetchPaginatedData from "../utils/pagination";
 import { verifyPasswordStrength } from "../utils/string.format";
 import { assignCreatorItemSpecificPermissions, assignItemSpicificPermission, getOwnItemsByPermissionAction } from "./itemSpecificPermissions.service";
 
@@ -34,17 +35,17 @@ export const createAdmin = async (admin: IAdmin,userId:string) => {
 };
 
 //get all admins service
-export const getAllAdmins = async ({readOwn=false,userId}:{readOwn:boolean,userId:string}) => {
+export const getAllAdmins = async ({readOwn=false,userId,skip,limit}:{readOwn:boolean,userId:string,skip:number,limit:number}) => {
   try {
     if(readOwn) {
       const itemsIds = await getOwnItemsByPermissionAction(userId,ADMIN_TABLE,PERMISSIONS_ACTIONS.READ)
-      const admins = await Admins.find({_id:{$in:itemsIds}});
-      if (!admins) throw new Error("No admins found!");
-      return admins;
+      const {data,pagination} = await fetchPaginatedData<IAdminDocument>(Admins,skip,limit,{_id:{$in:itemsIds}});
+      if (!data.length) throw new Error("No admins found!");
+      return {data,pagination};
     }
-    const admins = await Admins.find({});
-    if (!admins) throw new Error("No admins found!");
-    return admins;
+    const {data,pagination} = await fetchPaginatedData<IAdminDocument>(Admins,skip,limit,{});
+    if (!data.length) throw new Error("No admins found!");
+    return {data,pagination};
   } catch (error: any) {
     throw error;
   }

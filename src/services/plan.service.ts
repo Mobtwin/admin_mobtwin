@@ -1,6 +1,7 @@
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
 import { PLAN_TABLE } from "../constant/plan.constant";
-import { Plans } from "../models/plan.schema";
+import { IPlanDocument, Plans } from "../models/plan.schema";
+import fetchPaginatedData from "../utils/pagination";
 import { CreatePlan, UpdatePlan } from "../validators/plan.validator";
 import { getOwnItemsByPermissionAction } from "./itemSpecificPermissions.service";
 
@@ -17,16 +18,16 @@ export const createPlan = async (plan: CreatePlan) => {
 };
 
 //get all plans
-export const getAllPlans = async ({readOwn=false,userId}:{readOwn:boolean,userId:string}) => {
+export const getAllPlans = async ({readOwn=false,userId,limit,skip}:{readOwn:boolean,userId:string,skip:number,limit:number}) => {
   try {
     if(readOwn){
       const planIds = await getOwnItemsByPermissionAction(userId,PLAN_TABLE,PERMISSIONS_ACTIONS.READ);
-      const allPlans = await Plans.find({_id:{$in:planIds}});
-      return allPlans;
+      const {data,pagination} = await fetchPaginatedData<IPlanDocument>(Plans,skip,limit,{_id:{$in:planIds}});
+      return {data,pagination};
     }
     //get all plans
-    const allPlans = await Plans.find();
-    return allPlans;
+    const {data,pagination} = await fetchPaginatedData<IPlanDocument>(Plans,skip,limit,{});
+    return {data,pagination};
   } catch (error: any) {
     throw error;
   }

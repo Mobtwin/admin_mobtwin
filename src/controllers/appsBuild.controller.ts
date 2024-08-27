@@ -116,14 +116,16 @@ export const getAllAppBuildsController = async (
     if (!req.user) return sendErrorResponse(res, null, "Unauthorized", 401);
     const user = req.user;
     const readOwn = user.permissions.includes(APPS_BUILD_PERMISSIONS.READ_OWN);
+    const {skip,limit} = res.locals;
     //get all app builds
-    getAllAppsBuild({ readOwn, userId: user.id })
-      .then((appBuilds) => {
+    getAllAppsBuild({ readOwn, userId: user.id,skip,limit })
+      .then(({data,pagination}) => {
         return sendSuccessResponse(
           res,
-          appBuilds,
+          data,
           "AppBuilds fetched successfully",
-          200
+          200,
+          pagination
         );
       })
       .catch((error) => {

@@ -18,6 +18,7 @@ import { checkPermission } from "../middlewares/rbac.middleware";
 import { THEME_PERMISSIONS, THEME_TABLE } from "../constant/theme.constant";
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
 import cacheMiddleware from "../middlewares/cache.middleware";
+import paginationMiddleware from "../middlewares/pagination.middleware";
 
 export const themeRouter = Router();
 
@@ -38,6 +39,7 @@ themeRouter.get(
   "/",
   checkPermission([THEME_PERMISSIONS.READ, THEME_PERMISSIONS.READ_OWN]),
   cacheMiddleware(THEME_TABLE),
+  paginationMiddleware,
   getAllThemesController
 );
 

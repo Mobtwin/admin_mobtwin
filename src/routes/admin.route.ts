@@ -16,6 +16,7 @@ import { checkPermission } from "../middlewares/rbac.middleware";
 import { ADMIN_PERMISSIONS, ADMIN_TABLE } from "../constant/admin.constant";
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
 import cacheMiddleware from "../middlewares/cache.middleware";
+import paginationMiddleware from "../middlewares/pagination.middleware";
 
 export const adminRouter = Router();
 // method: POST
@@ -34,6 +35,7 @@ adminRouter.get(
   "/",
   checkPermission([ADMIN_PERMISSIONS.READ, ADMIN_PERMISSIONS.READ_OWN]),
   cacheMiddleware(ADMIN_TABLE),
+  paginationMiddleware,
   getAllAdminsController
 );
 // method: GET

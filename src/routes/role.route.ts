@@ -20,6 +20,7 @@ import {
 } from "../validators/role.validator";
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
 import cacheMiddleware from "../middlewares/cache.middleware";
+import paginationMiddleware from "../middlewares/pagination.middleware";
 
 export const roleRouter = Router();
 
@@ -40,6 +41,7 @@ roleRouter.get(
   "/",
   checkPermission([ROLE_PERMISSIONS.READ]),
   cacheMiddleware(ROLE_TABLE),
+  paginationMiddleware,
   getAllRolesController
 );
 

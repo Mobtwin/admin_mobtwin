@@ -39,10 +39,10 @@ export const getAllThemesController = async (req: Request, res: Response) => {
             return sendErrorResponse(res,null,"Unauthorized!",401);
         const user = req.user;
         const readOwn = user.permissions.includes(THEME_PERMISSIONS.READ_OWN);
-
+        const {skip,limit} = res.locals;
         // get all themes
-        getAllThemes({readOwn,userId:user.id}).then((themes) => {
-            return sendSuccessResponse(res, themes, "Themes fetched successfully!", 200);
+        getAllThemes({readOwn,userId:user.id,skip,limit}).then(({data,pagination}) => {
+            return sendSuccessResponse(res, data, "Themes fetched successfully!", 200,pagination);
         }).catch((error) => {
             return sendErrorResponse(res,error,"Error",400);
         });

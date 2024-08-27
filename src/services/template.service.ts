@@ -1,6 +1,7 @@
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
 import { TEMPLATE_PERMISSIONS, TEMPLATE_TABLE } from "../constant/template.constant";
-import { Templates } from "../models/builder/templates.schema";
+import { ITemplateDocument, Templates } from "../models/builder/templates.schema";
+import fetchPaginatedData from "../utils/pagination";
 import { CreateTemplate, UpdateTemplate } from "../validators/template.validator";
 import { getOwnItemsByPermissionAction } from "./itemSpecificPermissions.service";
 
@@ -17,17 +18,16 @@ export const createTemplate = async (template: CreateTemplate) => {
 };
 
 // get all templates
-export const getAllTemplates = async ({readOwn=false,userId}:{readOwn:boolean,userId:string}) => {
+export const getAllTemplates = async ({readOwn=false,userId,limit,skip}:{readOwn:boolean,userId:string,skip:number,limit:number}) => {
     try {
         if(readOwn){
             const templateIds = await getOwnItemsByPermissionAction(userId,TEMPLATE_TABLE,PERMISSIONS_ACTIONS.READ)
-            const templates = await Templates.find({_id:{$in:templateIds}});
-            return templates;
+            const {data,pagination} = await fetchPaginatedData<ITemplateDocument>(Templates,skip,limit,{_id:{$in:templateIds}});
+            return {data,pagination};
         }
         // get all templates
-        const templates = await Templates.find();
-        if (!templates) throw new Error("Templates not found!");
-        return templates;
+        const {data,pagination} = await fetchPaginatedData<ITemplateDocument>(Templates,skip,limit,{});
+        return {data,pagination};
     } catch (error: any) {
         throw error;
     }

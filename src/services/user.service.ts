@@ -4,6 +4,7 @@ import { hashPassword } from "../utils/hashing";
 import { getOwnItemsByPermissionAction } from "./itemSpecificPermissions.service";
 import { USER_TABLE } from "../constant/user.constant";
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
+import fetchPaginatedData from "../utils/pagination";
 
 //create user
 export const createUser = async (
@@ -42,9 +43,13 @@ export const createUser = async (
 export const getAllUsers = async ({
   readOwn = false,
   userId,
+  limit,
+  skip
 }: {
   readOwn: boolean;
   userId: string;
+  skip: number;
+  limit: number;
 }) => {
   try {
     if (readOwn) {
@@ -53,12 +58,11 @@ export const getAllUsers = async ({
         USER_TABLE,
         PERMISSIONS_ACTIONS.READ
       );
-      const users = await Users.find({ _id: { $in: userIds } });
-      if (!users) throw new Error("No users found!");
-      return users;
+      const { data, pagination } = await fetchPaginatedData<IUser>(Users,skip,limit,{ _id: { $in: userIds } });
+      return { data, pagination };
     }
-    const users = await Users.find();
-    return users;
+    const { data, pagination } = await fetchPaginatedData<IUser>(Users,skip,limit,{});
+    return { data, pagination };
   } catch (error: any) {
     throw error;
   }

@@ -60,9 +60,10 @@ export const getAllAdminsController = async (req: Request, res: Response) => {
             return sendErrorResponse(res,null, "Unauthorized!",401);
         const user = req.user;
         const readOwn = user.permissions.includes(ADMIN_PERMISSIONS.READ_OWN);
+        const { skip, limit } = res.locals;
         //get admins
-        getAllAdmins({readOwn,userId:user.id}).then((admins) => {
-            return sendSuccessResponse(res, admins, 'Admins retrieved successfully!', 200);
+        getAllAdmins({readOwn,userId:user.id,skip,limit}).then(({data,pagination}) => {
+            return sendSuccessResponse(res, data, 'Admins retrieved successfully!', 200,pagination);
         }).catch((error) => {
             return sendErrorResponse(res, error, `Error: ${error.message}`, 400);
         });

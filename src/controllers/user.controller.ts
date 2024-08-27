@@ -57,14 +57,16 @@ export const getAllUsersController = async (req: Request, res: Response) => {
     if (!req.user) return sendErrorResponse(res, null, "Unauthorized!", 401);
     const user = req.user;
     const readOwn = user.permissions.includes(USER_PERMISSIONS.READ_OWN);
+    const {skip,limit} = res.locals;
     //get users
-    getAllUsers({ readOwn, userId: user.id })
-      .then((users) => {
+    getAllUsers({ readOwn, userId: user.id, skip, limit})
+      .then(({data,pagination}) => {
         return sendSuccessResponse(
           res,
-          users,
+          data,
           "Users fetched successfully!",
-          200
+          200,
+          pagination
         );
       })
       .catch((error) => {

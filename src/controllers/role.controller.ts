@@ -55,15 +55,16 @@ export const getAllRolesController = async (req: Request, res: Response) => {
   try {
     //authorization
     if (!req.user) return sendErrorResponse(res, null, "Unauthorized!", 401);
-    const user = req.user;
+    const {skip,limit} = res.locals;
     //get all roles
-    getAllRoles()
-      .then((value) => {
+    getAllRoles({skip,limit})
+      .then(({data,pagination}) => {
         return sendSuccessResponse(
           res,
-          value,
+          data,
           "Roles fetched successfully!",
-          200
+          200,
+          pagination
         );
       })
       .catch((error) => {

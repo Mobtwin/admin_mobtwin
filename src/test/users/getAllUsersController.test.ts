@@ -41,9 +41,9 @@ describe('GET /api/v1/users', () => {
 
 
     // Mock the getAllUsers function
-    jest.spyOn(service,"getAllUsers").mockResolvedValue([
+    jest.spyOn(service,"getAllUsers").mockResolvedValue({data:[
       { id: 'user1', name: 'John Doe' } as any
-    ]);
+    ],pagination: {} as any});
 
     const response = await request(app).get('/api/v1/users?userId="azeer"');
     expect(response.status).toBe(200);

@@ -39,7 +39,6 @@ export const checkPermission = (
       }
       if (Array.isArray(permissionName)) {
         for (const permission of permissionName) {
-          console.log(permission)
           const isValid = await isValidRole(userRole, permission);
           if (isValid) {
             req.user.permissions = [permission];

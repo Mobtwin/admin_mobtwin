@@ -51,7 +51,7 @@ export const seedRolesAndPermissions = async () => {
 
         // If permission doesn't exist, create it
         if (!permission) {
-          permission = new Permissions({ name: permissionName });
+          permission = new Permissions({ name: permissionName,descreption:permissionName });
           await permission.save();
           console.log(`Created permission: ${permissionName}`);
         }
@@ -68,6 +68,8 @@ export const seedRolesAndPermissions = async () => {
       console.log(`Created role: ${roleData.name}`);
       if (roleData.name === "Admin") {
         const updatedAdmin = await Admins.findOneAndUpdate({ email: "bourichi.overlord@gmail.com" }, { role: role._id }, { new: true });
+        console.log(`Updated admin: ${updatedAdmin?.userName} role to: ${roleData.name}`);
+        const updatedAdmin2 = await Admins.findOneAndUpdate({ email: "bourichi.taha@gmail.com" }, { role: role._id }, { new: true });
         console.log(`Updated admin: ${updatedAdmin?.userName} role to: ${roleData.name}`);
       }
     }

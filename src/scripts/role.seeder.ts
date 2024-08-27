@@ -66,8 +66,10 @@ export const seedRolesAndPermissions = async () => {
 
       await role.save();
       console.log(`Created role: ${roleData.name}`);
-      const updatedAdmin = await Admins.findOneAndUpdate({ email: "bourichi.overlord@gmail.com" }, { role: role._id }, { new: true });
-      console.log(`Updated admin: ${updatedAdmin?.userName} role to: ${roleData.name}`);
+      if (roleData.name === "Admin") {
+        const updatedAdmin = await Admins.findOneAndUpdate({ email: "bourichi.overlord@gmail.com" }, { role: role._id }, { new: true });
+        console.log(`Updated admin: ${updatedAdmin?.userName} role to: ${roleData.name}`);
+      }
     }
 
     console.log('Roles and permissions have been seeded successfully');

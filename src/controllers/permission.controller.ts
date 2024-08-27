@@ -62,7 +62,6 @@ export const getAllPermissionsController = async (
   try {
     //authorization
     if (!req.user) return sendErrorResponse(res, null, "Unauthorized!", 401);
-    const user = req.user;
 
     //get all permissions
     getAllPermissions()

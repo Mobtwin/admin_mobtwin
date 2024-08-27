@@ -42,7 +42,7 @@ export const checkPermission = (
           console.log(permission)
           const isValid = await isValidRole(userRole, permission);
           if (isValid) {
-            req.user.permissions = [...req.user.permissions,permission];
+            req.user.permissions.push(permission);
             return next();
           }
 

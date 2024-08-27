@@ -15,7 +15,7 @@ export interface IItemSpecificPermissionDocument
 const ItemSpecificPermissionSchema = new Schema<IItemSpecificPermissionDocument>({
   action: { type: String, required: true },
   table: { type: String, required: true },
-  userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+  userId: { type: Schema.Types.ObjectId, required: true },
   items: { type: [Schema.Types.ObjectId], required: true },
   isAbsolute: { type: Boolean, required: true, default: false },
 });

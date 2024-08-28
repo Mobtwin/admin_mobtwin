@@ -1,4 +1,4 @@
-import { Model, Document } from 'mongoose';
+import { Model, Document, FilterQuery } from 'mongoose';
 
 export interface SearchParams {
   [key: string]: string | undefined;
@@ -24,3 +24,19 @@ export const searchInModel = async <T extends Document>(
     throw new Error(`Error searching in model: ${error.message}`);
   }
 };
+
+export function constructSearchFilter<T>(searchParams: SearchParams): FilterQuery<T> {
+    const filter: FilterQuery<T> = {};
+  
+    // Cast the filter to `any` to avoid TypeScript issues with indexing.
+    const filterAny = filter as any;
+  
+    // Loop through each search param and add it to the filter
+    for (const key in searchParams) {
+      if (searchParams[key]) {
+        filterAny[key] = { $regex: searchParams[key], $options: 'i' };
+      }
+    }
+  
+    return filter as FilterQuery<T>;
+  }

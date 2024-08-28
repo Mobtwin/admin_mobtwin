@@ -44,7 +44,7 @@ permissionRouter.get(
     PERMISSION_PERMISSIONS.READ,
     PERMISSION_PERMISSIONS.READ_OWN,
   ]),
-  validateRequest(paginationQuerySchema,"query"),
+  validateRequest(paginationQuerySchema, "query"),
   paginationMiddleware,
   cacheMiddleware(PERMISSION_TABLE),
   getAllPermissionsController
@@ -79,8 +79,15 @@ permissionRouter.delete(
 // Method: GET
 // route: /permission/search
 // search permissions
-permissionRouter.get("/search",validateRequest(searchPermissionSchema, "params"),checkPermission([PERMISSION_PERMISSIONS.READ,PERMISSION_PERMISSIONS.READ_OWN]),searchPermissionTableController);
 
-
-
-
+permissionRouter.get(
+  "/search",
+  validateRequest(searchPermissionSchema, "params"),
+  checkPermission([
+    PERMISSION_PERMISSIONS.READ,
+    PERMISSION_PERMISSIONS.READ_OWN,
+  ]),
+  paginationMiddleware,
+  cacheMiddleware(PERMISSION_TABLE),
+  searchPermissionTableController
+);

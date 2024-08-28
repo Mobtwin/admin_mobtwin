@@ -6,11 +6,12 @@ import {
   createPermission,
   deletePermissionByName,
   getAllPermissions,
+  getSearchedPermissions,
   updatePermissionByName,
 } from "../services/permission.service";
 import { invalidateCache } from "../middlewares/cache.middleware";
 import { PERMISSION_TABLE } from "../constant/permission.constant";
-import { searchInModel } from "../utils/search";
+import { constructSearchFilter, searchInModel } from "../utils/search";
 import { IPermissionDocument, Permissions } from "../models/permission.schema";
 
 // create new permission
@@ -186,9 +187,13 @@ export const searchPermissionTableController = async (req: SearchPermissionReque
       name: req.query.name,
       description: req.query.description,
     };
+    const searchFilters = constructSearchFilter<IPermissionDocument>(searchParamas);
     // search permission table
-    const permissions = await searchInModel<IPermissionDocument>(Permissions, searchParamas);
-    return sendSuccessResponse(res, permissions, "Permissions retrieved successfully!", 200);
+    getSearchedPermissions({skip:res.locals.skip,limit:res.locals.limit,filters:searchFilters}).then(({data,pagination})=>{
+      return sendSuccessResponse(res, data, "Permissions retrieved successfully!", 200,pagination);
+    }).catch((error) => {
+      return sendErrorResponse(res, error, `Error: ${error.message}`, 400);
+    });
   } catch (error: any) {
     return sendErrorResponse(res, error, `Error: ${error.message}`, 500);
   }

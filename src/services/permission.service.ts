@@ -1,3 +1,4 @@
+import { FilterQuery } from "mongoose";
 import { IPermissionDocument, Permissions } from "../models/permission.schema";
 import fetchPaginatedData from "../utils/pagination";
 import { CreatePermission, UpdatePermission } from "../validators/permission.validator";
@@ -21,6 +22,15 @@ export const createPermission = async (permission: CreatePermission) => {
 export const getAllPermissions = async ({skip,limit}:{skip:number,limit:number}) => {
     try {
         const {data,pagination} = await fetchPaginatedData<IPermissionDocument>(Permissions,skip,limit,{});
+        return {data, pagination};
+    } catch (error: any) {
+        throw new Error(error.message);
+    }
+};
+// get all permissions
+export const getSearchedPermissions = async ({skip,limit,filters}:{skip:number,limit:number,filters:FilterQuery<IPermissionDocument>}) => {
+    try {
+        const {data,pagination} = await fetchPaginatedData<IPermissionDocument>(Permissions,skip,limit,filters);
         return {data, pagination};
     } catch (error: any) {
         throw new Error(error.message);

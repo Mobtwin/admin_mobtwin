@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { sendErrorResponse, sendSuccessResponse } from "../utils/response";
-import { CreatePermissionRequest } from "../validators/permission.validator";
+import { CreatePermissionRequest, UpdatePermissionRequest } from "../validators/permission.validator";
 import { logEvents } from "../middlewares/logger";
 import {
   createPermission,
@@ -84,7 +84,7 @@ export const getAllPermissionsController = async (
 
 // update permission controller
 export const updatePermissionByNameController = async (
-  req: CreatePermissionRequest,
+  req: UpdatePermissionRequest,
   res: Response
 ) => {
   try {

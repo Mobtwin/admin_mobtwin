@@ -51,7 +51,7 @@ export const seedRolesAndPermissions = async () => {
 
         // If permission doesn't exist, create it
         if (!permission) {
-          permission = new Permissions({ name: permissionName,descreption:permissionName });
+          permission = new Permissions({ name: permissionName,description:permissionName });
           await permission.save();
           console.log(`Created permission: ${permissionName}`);
         }

@@ -1,12 +1,12 @@
 import { IPermissionDocument, Permissions } from "../models/permission.schema";
 import fetchPaginatedData from "../utils/pagination";
-import { CreatePermission } from "../validators/permission.validator";
+import { CreatePermission, UpdatePermission } from "../validators/permission.validator";
 import { IAction } from "./itemSpecificPermissions.service";
 
 // create permission service
 export const createPermission = async (permission: CreatePermission) => {
     try {
-        const existingPermission = await Permissions.findOne({ name: permission.name });
+        const existingPermission = await Permissions.findOne({ ...permission });
         if (existingPermission) {
             throw new Error("Permission already exists!");
         }
@@ -40,9 +40,9 @@ export const getPermissionById = async (id:string) => {
 };
 
 // update permission by name
-export const updatePermissionByName = async (name: string, permission: CreatePermission) => {
+export const updatePermissionByName = async (name: string, permission: UpdatePermission) => {
     try {
-        const existingPermission = await Permissions.findOneAndUpdate({ name },{name: permission.name}, { new: true });
+        const existingPermission = await Permissions.findOneAndUpdate({ name },{...permission}, { new: true });
         if (!existingPermission) {
             throw new Error("Permission not found!");
         }

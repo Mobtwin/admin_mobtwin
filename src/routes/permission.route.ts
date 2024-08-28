@@ -14,6 +14,7 @@ import { validateRequest } from "../middlewares/requestValidator.middleware";
 import {
   createPermissionSchema,
   deletePermissionSchema,
+  updatePermissionSchema,
 } from "../validators/permission.validator";
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
 import cacheMiddleware from "../middlewares/cache.middleware";
@@ -56,7 +57,7 @@ permissionRouter.put(
     table: PERMISSION_TABLE,
     action: PERMISSIONS_ACTIONS.UPDATE,
   }),
-  validateRequest(createPermissionSchema),
+  validateRequest(updatePermissionSchema),
   updatePermissionByNameController
 );
 

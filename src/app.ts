@@ -78,7 +78,7 @@ mongoose
     console.log("🎉 connection established successfully with mongo db");
     app.listen(environment.PORT, () => {
       console.log(`🚀 Server is running on port: ${environment.PORT}`);
-      seedRolesAndPermissions();
+      // seedRolesAndPermissions();
 
     });
   })

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { sendErrorResponse, sendSuccessResponse } from "../utils/response";
-import { CreatePermissionRequest, UpdatePermissionRequest } from "../validators/permission.validator";
+import { CreatePermissionRequest, SearchPermission, SearchPermissionRequest, UpdatePermissionRequest } from "../validators/permission.validator";
 import { logEvents } from "../middlewares/logger";
 import {
   createPermission,
@@ -10,6 +10,8 @@ import {
 } from "../services/permission.service";
 import { invalidateCache } from "../middlewares/cache.middleware";
 import { PERMISSION_TABLE } from "../constant/permission.constant";
+import { searchInModel } from "../utils/search";
+import { IPermissionDocument, Permissions } from "../models/permission.schema";
 
 // create new permission
 export const createPermissionController = async (
@@ -176,3 +178,22 @@ export const deletePermissionByNameController = async (
     return sendErrorResponse(res, error, `Error: ${error.message}`, 500);
   }
 };
+
+// search permission table controller
+export const searchPermissionTableController = async (req: SearchPermissionRequest, res: Response) => {
+  try {
+    const searchParamas:SearchPermission = {
+      name: req.query.name,
+      description: req.query.description,
+    };
+    // search permission table
+    const permissions = await searchInModel<IPermissionDocument>(Permissions, searchParamas);
+    return sendSuccessResponse(res, permissions, "Permissions retrieved successfully!", 200);
+  } catch (error: any) {
+    return sendErrorResponse(res, error, `Error: ${error.message}`, 500);
+  }
+}
+
+
+
+

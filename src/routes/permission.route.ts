@@ -3,6 +3,7 @@ import {
   createPermissionController,
   deletePermissionByNameController,
   getAllPermissionsController,
+  searchPermissionTableController,
   updatePermissionByNameController,
 } from "../controllers/permission.controller";
 import { checkPermission } from "../middlewares/rbac.middleware";
@@ -14,6 +15,7 @@ import { validateRequest } from "../middlewares/requestValidator.middleware";
 import {
   createPermissionSchema,
   deletePermissionSchema,
+  searchPermissionSchema,
   updatePermissionSchema,
 } from "../validators/permission.validator";
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
@@ -73,3 +75,12 @@ permissionRouter.delete(
   }),
   deletePermissionByNameController
 );
+
+// Method: GET
+// route: /permission/search
+// search permissions
+permissionRouter.get("/search",validateRequest(searchPermissionSchema, "params"),checkPermission([PERMISSION_PERMISSIONS.READ,PERMISSION_PERMISSIONS.READ_OWN]),searchPermissionTableController);
+
+
+
+

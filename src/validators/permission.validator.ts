@@ -1,5 +1,6 @@
 import { Request } from "express";
 import Joi from "joi";
+import { SearchParams } from "../utils/search";
 
 
 // define joi schema for create permission request
@@ -39,6 +40,22 @@ export const deletePermissionSchema = Joi.object<PermissionByName>({
 export interface PermissionByName {
     name: string;
 }
+// define joi schema for search permission request
 
+export interface SearchPermissionRequest extends Request {
+    query: {
+        name?: string;
+        description?: string;
+    };
+}
 
+export const searchPermissionSchema = Joi.object<SearchPermission>({
+    name: Joi.string().optional(),
+    description: Joi.string().optional(),
+});
+
+export interface SearchPermission extends SearchParams {
+    name?: string;
+    description?: string;
+}
 

@@ -3,7 +3,6 @@ import { ResponseType } from "../utils/response";
 
 
 export const transformResponseJson = (req: Request, res: Response, next: NextFunction) => {
-    console.log("response saved in res.locals.responseData");
     if (req.method === 'GET') {
         return next();
     }

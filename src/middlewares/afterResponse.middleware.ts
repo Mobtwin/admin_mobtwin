@@ -9,6 +9,10 @@ import addLogActionsJob from "../workers/logActions.worker";
 export const afterResponse = (req: Request, res: Response, next: NextFunction) => {
     res.on('finish', async() => {
         try {
+            if (req.method === 'GET') {
+                return;
+                
+            }
             if (!res.locals.responseData) {
                 return;
             }

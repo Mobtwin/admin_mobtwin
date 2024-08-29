@@ -55,7 +55,7 @@ export const afterResponse = (req: Request, res: Response, next: NextFunction) =
 
 function determineActionType(user:Express.User): string {
     // Implement this function to determine the action type based on the request user
-    const values = Object.values(PERMISSIONS_ACTIONS) as IAction[];
+    const values = Object.values(PERMISSIONS_ACTIONS);
     let actionType = 'UNKNOWN';
     values.forEach((value) => {
         if (user.permissions.filter(p => p.includes(value)).length > 0) {

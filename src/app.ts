@@ -54,7 +54,7 @@ e86268acdcf13c7`);
 // middleware to parse incoming JSON requests
 app.use(express.json());
 // middleware to save response json in res.locals.responseData
-// app.use(transformResponseJson);
+app.use(transformResponseJson);
 
 // routes
 //unprotected routes
@@ -75,7 +75,7 @@ app.use("/api/v1/permission",routes.permissionRouter );
 app.use("/api/v1/role",routes.roleRouter );
 
 // after response logging middleware
-// app.use(afterResponse);
+app.use(afterResponse);
 //not found route
 app.all("*", (req, res) => {
   res.status(404);

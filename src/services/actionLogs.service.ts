@@ -1,8 +1,8 @@
 import ActionLog, { IActionLog, IActionLogDocument } from "../models/actionLog.schema";
 
 
-// create an action log object service
-export const createActionLog = async (action: IActionLog): Promise<IActionLogDocument> => {
+// create an action log object service // TODO: Implement the type to create an action log object
+export const createActionLog = async (action: any): Promise<IActionLogDocument> => {
     try {
         const actionLogEntry = await ActionLog.create(action);
         return actionLogEntry;

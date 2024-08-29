@@ -8,8 +8,10 @@ import { TABLES } from "../constant/tables.constant";
 
 
 export const afterResponse = (req: Request, res: Response, next: NextFunction) => {
+    console.log("from afterResponse middleware");
     res.on('finish', async() => {
         try {
+            console.log("finish event triggered");
             if (req.method === 'GET') {
                 return;
                 
@@ -51,6 +53,7 @@ export const afterResponse = (req: Request, res: Response, next: NextFunction) =
             // Handle errors in logging/queueing here
         }
     });
+    console.log("finish event listener passed");
     next();
 }
 

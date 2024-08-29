@@ -18,7 +18,7 @@ const ItemSpecificPermissionSchema = new Schema<IItemSpecificPermissionDocument>
   userId: { type: Schema.Types.ObjectId, required: true },
   items: { type: [Schema.Types.ObjectId], required: true },
   isAbsolute: { type: Boolean, required: true, default: false },
-});
+},{timestamps: true});
 
 
 export const ItemSpecificPermissions:Model<IItemSpecificPermissionDocument> = model<IItemSpecificPermissionDocument>('ItemSpecificPermission', ItemSpecificPermissionSchema);

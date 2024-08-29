@@ -11,12 +11,29 @@ import { authMiddleWare } from "./middlewares/auth.middleware";
 import { authRouter } from "./routes/auth.route";
 import { getAppsImageController, getAvatarController } from "./controllers/public.conroller";
 import { seedRolesAndPermissions } from "./scripts/role.seeder";
+//bullMQ
+import { createBullBoard } from "@bull-board/api";
+import { BullMQAdapter } from "@bull-board/api/bullMQAdapter";
+import { ExpressAdapter } from "@bull-board/express";
+import { updateLogsAndActionsQueue } from "./config/queue.config";
+import { transformResponseJson } from "./middlewares/response.middleware";
+import { afterResponse } from "./middlewares/afterResponse.middleware";
 
 // initial the express server
 const app: Express = express();
 app.get("/", (req, res) => {
   res.send("welcome to the api");
 });
+
+// bullMQ adapter
+const serverAdapter = new ExpressAdapter();
+createBullBoard({
+  queues: [new BullMQAdapter(updateLogsAndActionsQueue)],
+  serverAdapter: serverAdapter,
+}); 
+serverAdapter.setBasePath("/admin");
+
+app.use("/admin", serverAdapter.getRouter());
 
 // middleware to handle CORS
 app.use(cors());
@@ -36,6 +53,8 @@ e86268acdcf13c7`);
 
 // middleware to parse incoming JSON requests
 app.use(express.json());
+// middleware to save response json in res.locals.responseData
+app.use(transformResponseJson);
 
 // routes
 //unprotected routes
@@ -55,7 +74,8 @@ app.use("/api/v1/appsBuild",routes.appsBuildRouter );
 app.use("/api/v1/permission",routes.permissionRouter );
 app.use("/api/v1/role",routes.roleRouter );
 
-
+// after response logging middleware
+app.use(afterResponse);
 //not found route
 app.all("*", (req, res) => {
   res.status(404);

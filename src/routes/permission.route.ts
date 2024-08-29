@@ -1,9 +1,11 @@
 import { Router } from "express";
 import {
   createPermissionController,
+  deletePermissionByIdController,
   deletePermissionByNameController,
   getAllPermissionsController,
   searchPermissionTableController,
+  updatePermissionByIdController,
   updatePermissionByNameController,
 } from "../controllers/permission.controller";
 import { checkPermission } from "../middlewares/rbac.middleware";
@@ -14,9 +16,11 @@ import {
 import { validateRequest } from "../middlewares/requestValidator.middleware";
 import {
   createPermissionSchema,
-  deletePermissionSchema,
+  deletePermissionByIdSchema,
+  deletePermissionByNameSchema,
   searchPermissionSchema,
-  updatePermissionSchema,
+  updatePermissionByIdSchema,
+  updatePermissionByNameSchema,
 } from "../validators/permission.validator";
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
 import cacheMiddleware from "../middlewares/cache.middleware";
@@ -59,7 +63,7 @@ permissionRouter.put(
     table: PERMISSION_TABLE,
     action: PERMISSIONS_ACTIONS.UPDATE,
   }),
-  validateRequest(updatePermissionSchema),
+  validateRequest(updatePermissionByNameSchema),
   updatePermissionByNameController
 );
 
@@ -68,12 +72,37 @@ permissionRouter.put(
 // Delete a permission
 permissionRouter.delete(
   "/:name",
-  validateRequest(deletePermissionSchema, "params"),
+  validateRequest(deletePermissionByNameSchema, "params"),
   checkPermission([PERMISSION_PERMISSIONS.DELETE], {
     table: PERMISSION_TABLE,
     action: PERMISSIONS_ACTIONS.DELETE,
   }),
   deletePermissionByNameController
+);
+// Method: PUT
+// route: /permission/:id
+// Update a permission
+permissionRouter.put(
+  "/:id",
+  checkPermission([PERMISSION_PERMISSIONS.UPDATE], {
+    table: PERMISSION_TABLE,
+    action: PERMISSIONS_ACTIONS.UPDATE,
+  }),
+  validateRequest(updatePermissionByIdSchema),
+  updatePermissionByIdController
+);
+
+// Method: DELETE
+// route: /permission/:id
+// Delete a permission
+permissionRouter.delete(
+  "/:id",
+  validateRequest(deletePermissionByIdSchema, "params"),
+  checkPermission([PERMISSION_PERMISSIONS.DELETE], {
+    table: PERMISSION_TABLE,
+    action: PERMISSIONS_ACTIONS.DELETE,
+  }),
+  deletePermissionByIdController
 );
 
 // Method: GET

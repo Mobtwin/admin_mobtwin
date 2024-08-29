@@ -118,7 +118,7 @@ roleRouter.patch(
 );
 
 // Method: PATCH
-// route: /role/unassign/name/:id
+// route: /role/unassign/name/:name
 // unassign permissions to a role by name
 roleRouter.patch(
   "/unassign/name/:name",

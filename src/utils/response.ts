@@ -26,3 +26,12 @@ export const sendErrorResponse = (res: Response, error: any, message = "An error
   });
   return;
 };
+
+// response types
+export interface ResponseType<T> {
+  success: boolean;
+  message: string;
+  data?: T;
+  error?: string;
+  pagination?:Pagination;
+}

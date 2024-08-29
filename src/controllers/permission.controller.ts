@@ -1,12 +1,14 @@
 import { Request, Response } from "express";
 import { sendErrorResponse, sendSuccessResponse } from "../utils/response";
-import { CreatePermissionRequest, SearchPermission, SearchPermissionRequest, UpdatePermissionRequest } from "../validators/permission.validator";
+import { CreatePermissionRequest, SearchPermission, SearchPermissionRequest, UpdatePermissionByIdRequest, UpdatePermissionByNameRequest,  } from "../validators/permission.validator";
 import { logEvents } from "../middlewares/logger";
 import {
   createPermission,
+  deletePermissionById,
   deletePermissionByName,
   getAllPermissions,
   getSearchedPermissions,
+  updatePermissionById,
   updatePermissionByName,
 } from "../services/permission.service";
 import { invalidateCache } from "../middlewares/cache.middleware";
@@ -85,9 +87,9 @@ export const getAllPermissionsController = async (
   }
 };
 
-// update permission controller
+// update permission controller by name
 export const updatePermissionByNameController = async (
-  req: UpdatePermissionRequest,
+  req: UpdatePermissionByNameRequest,
   res: Response
 ) => {
   try {
@@ -101,6 +103,52 @@ export const updatePermissionByNameController = async (
 
     //update permission
     updatePermissionByName(name, req.body)
+      .then((value) => {
+        logEvents(
+          `Permission: ${value.name} updated by ${user.userName}: ${user.role}`,
+          "actions.log"
+        );
+        invalidateCache(PERMISSION_TABLE)
+          .then(() => {
+            return sendSuccessResponse(
+              res,
+              value,
+              "Permission updated successfully!",
+              200
+            );
+          })
+          .catch((error) => {
+            return sendErrorResponse(
+              res,
+              error,
+              `Error: ${error.message}`,
+              400
+            );
+          });
+      })
+      .catch((error) => {
+        return sendErrorResponse(res, error, `Error: ${error.message}`, 400);
+      });
+  } catch (error: any) {
+    return sendErrorResponse(res, error, `Error: ${error.message}`, 500);
+  }
+};
+// update permission controller by id
+export const updatePermissionByIdController = async (
+  req: UpdatePermissionByIdRequest,
+  res: Response
+) => {
+  try {
+    // authorization
+    if (!req.user) return sendErrorResponse(res, null, "Unauthorized!", 401);
+    const user = req.user;
+    const id = req.params.id;
+    if (!id) {
+      return sendErrorResponse(res, null, "Permission id is required!", 400);
+    }
+
+    //update permission
+    updatePermissionById(id, req.body)
       .then((value) => {
         logEvents(
           `Permission: ${value.name} updated by ${user.userName}: ${user.role}`,
@@ -148,6 +196,53 @@ export const deletePermissionByNameController = async (
 
     // delete permission
     deletePermissionByName(name)
+      .then((value) => {
+        logEvents(
+          `Permission: ${value.name} deleted by ${user.userName}: ${user.role}`,
+          "actions.log"
+        );
+        invalidateCache(PERMISSION_TABLE)
+          .then(() => {
+            return sendSuccessResponse(
+                res,
+                value,
+                "Permission deleted successfully!",
+                200
+              );
+          })
+          .catch((error) => {
+            return sendErrorResponse(
+              res,
+              error,
+              `Error: ${error.message}`,
+              400
+            );
+          });
+
+      })
+      .catch((error) => {
+        return sendErrorResponse(res, error, `Error: ${error.message}`, 400);
+      });
+  } catch (error: any) {
+    return sendErrorResponse(res, error, `Error: ${error.message}`, 500);
+  }
+};
+//delete permission by id controller
+export const deletePermissionByIdController = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    //authorization
+    if (!req.user) return sendErrorResponse(res, null, "Unauthorized!", 401);
+    const user = req.user;
+    const id = req.params.id;
+    if (!id) {
+      return sendErrorResponse(res, null, "Permission id is required!", 400);
+    }
+
+    // delete permission
+    deletePermissionById(id)
       .then((value) => {
         logEvents(
           `Permission: ${value.name} deleted by ${user.userName}: ${user.role}`,

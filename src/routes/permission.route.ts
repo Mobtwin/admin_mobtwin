@@ -26,6 +26,7 @@ import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
 import cacheMiddleware from "../middlewares/cache.middleware";
 import paginationMiddleware from "../middlewares/pagination.middleware";
 import { paginationQuerySchema } from "../validators/pagination.validator";
+import { afterResponse } from "../middlewares/afterResponse.middleware";
 
 export const permissionRouter = Router();
 
@@ -120,3 +121,4 @@ permissionRouter.get(
   cacheMiddleware(PERMISSION_TABLE),
   searchPermissionTableController
 );
+permissionRouter.use(afterResponse);

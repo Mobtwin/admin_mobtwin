@@ -28,9 +28,10 @@ export const createRole = async (role:CreateRole) => {
     }
     const permissionsArray = permissions.map((permission) => permission._id as Schema.Types.ObjectId);
     const newRole = await Roles.create({ name: role.name, permissions: permissionsArray });
+    const plainRole = newRole.toObject();
     if (!newRole) 
       throw new Error("Role not created!");
-    return {...newRole,permissions};
+    return {...plainRole,permissions};
   } catch (error) {
     throw error;
   }

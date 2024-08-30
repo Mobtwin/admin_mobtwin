@@ -140,7 +140,7 @@ export const removePermissionsById = async (roleId:string, permissions:string[])
     }
     permissionsArray.map((permission) => {
       if (role.permissions.includes(permission._id as Schema.Types.ObjectId)) {
-        role.permissions = role.permissions.filter((id) => id !== permission._id);
+        role.permissions.splice(role.permissions.indexOf(permission._id as Schema.Types.ObjectId), 1);
       }else{
         throw new Error("Permission not found!");
       }

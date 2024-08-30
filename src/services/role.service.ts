@@ -81,7 +81,7 @@ export const assignPermissionsById = async (roleId:string, permissions:string[])
       throw new Error("Role not found!");
     }
     // Find the permission by ID
-    const permissionsArray = await Permissions.find({ _id: { $in: permissions } }) as IPermissionDocument[] | [];
+    const permissionsArray = await Permissions.find({ _id: { $in: permissions } }).lean() as IPermissionDocument[] | [];
     if (permissionsArray.length !== permissions.length) {
       throw new Error("Some permissions not found!");
     }
@@ -93,8 +93,8 @@ export const assignPermissionsById = async (roleId:string, permissions:string[])
       }
     });
     await role.save();
-
-    return {...role,permissions:permissionsArray};
+    const plainRole = role.toObject();
+    return {...plainRole,permissions:permissionsArray};
   } catch (error) {
     throw error;
   }
@@ -135,7 +135,7 @@ export const removePermissionsById = async (roleId:string, permissions:string[])
       throw new Error("Role not found!");
     }
     // Find the permission by ID
-    const permissionsArray = await Permissions.find({ _id: { $in: permissions } }) as IPermissionDocument[] | [];
+    const permissionsArray = await Permissions.find({ _id: { $in: permissions } }).lean() as IPermissionDocument[] | [];
     if (permissionsArray.length !== permissions.length) {
       throw new Error("Some permissions not found!");
     }
@@ -147,8 +147,8 @@ export const removePermissionsById = async (roleId:string, permissions:string[])
       }
     });
     await role.save();
-
-    return {role,permissions:permissionsArray};
+    const plainRole = role.toObject();
+    return {...plainRole,permissions:permissionsArray};
   } catch (error) {
     throw error;
   }

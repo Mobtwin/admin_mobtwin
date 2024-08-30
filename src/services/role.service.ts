@@ -94,7 +94,7 @@ export const assignPermissionsById = async (roleId:string, permissions:string[])
     });
     await role.save();
 
-    return role;
+    return {...role,permissions:permissionsArray};
   } catch (error) {
     throw error;
   }
@@ -148,7 +148,7 @@ export const removePermissionsById = async (roleId:string, permissions:string[])
     });
     await role.save();
 
-    return role;
+    return {role,permissions:permissionsArray};
   } catch (error) {
     throw error;
   }

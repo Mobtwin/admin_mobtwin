@@ -6,7 +6,7 @@ const cacheMiddleware = (cacheKey: string) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       // Generate the cache key based on the request
-      const key = `${cacheKey}-${req.originalUrl}`;
+      const key = `admin-${cacheKey}-${req.originalUrl}`;
 
       // Check if the response is cached in Redis
       const cachedData = await redisClient.get(key);
@@ -38,7 +38,7 @@ const cacheMiddleware = (cacheKey: string) => {
 
 export const invalidateCache = async (cacheKey: string) => {
   try {
-    const keys = await redisClient.keys(`${cacheKey}-*`);
+    const keys = await redisClient.keys(`admin-${cacheKey}-*`);
     if (keys.length > 0) {
       await redisClient.del(keys);
     }

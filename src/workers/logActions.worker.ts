@@ -28,7 +28,6 @@ const updateLogsAndActionsWorker = new Worker(
   async (job: Job) => {
     try {
       const { adminId, action, message,itemId,table } = job.data as UpdateLogsAndActionsJobData;
-      // TODO: Add logic to update action table and action logs
       await createActionLog({adminId:adminId,performedBy:PerformedBy.ADMIN,actionType:action,table,itemId:itemId ? itemId : undefined,description:message})
       await logEvents(message, "actions.log");
       await job.moveToCompleted("success", job.token || "");

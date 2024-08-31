@@ -93,8 +93,8 @@ export const assignPermissionsById = async (roleId:string, permissions:string[])
       }
     });
     await role.save();
-    const plainRole = role.toObject();
-    return {...plainRole,permissions:permissionsArray};
+    const populated = (await role.populate("permissions")).toObject();
+    return {...populated};
   } catch (error) {
     throw error;
   }
@@ -147,8 +147,8 @@ export const removePermissionsById = async (roleId:string, permissions:string[])
       }
     });
     await role.save();
-    const plainRole = role.toObject();
-    return {...plainRole,permissions:permissionsArray};
+    const populated = (await role.populate("permissions")).toObject();
+    return {...populated};
   } catch (error) {
     throw error;
   }

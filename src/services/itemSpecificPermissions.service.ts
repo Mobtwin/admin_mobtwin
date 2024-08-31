@@ -193,9 +193,9 @@ export const assignCreatorItemSpecificPermissions = async (
   }
 ) => {
   try {
-    // check if user exists 
-    const userExists = await getUserById(userId);
-    if (!userExists) throw new Error("User not found!");
+    // check if admin exists 
+    const adminExists = await getAdminById(userId);
+    if (!adminExists) throw new Error("Admin not found!");
     // check if item exists
     let itemExists: any;
     switch (resource.table) {

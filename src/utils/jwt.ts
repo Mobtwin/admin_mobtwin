@@ -1,50 +1,100 @@
 import jwt from 'jsonwebtoken'
 import { environment } from './loadEnvironment'
-import { IAdmin, IAdminDocument } from '../models/admin.schema'
+import { Request, Response } from 'express'
+import { sendErrorResponse } from './response';
 
 
-export const _generateToken = async (payload: any, lifeTime: string) => {
-  return jwt.sign(payload, environment.JWT_SECRET , {
+export const generateToken = async (payload: any, lifeTime: string,type:"access"|"refresh") => {
+  if(type === "access")
+    return jwt.sign(payload, environment.JWT_ACCESS_SECRET , {
+      expiresIn: lifeTime,
+    });
+  
+  return jwt.sign(payload, environment.JWT_REFRESH_SECRET , {
     expiresIn: lifeTime,
-  })
+  });
 }
 
-export const _refreshToken = async (accessToken: string, lifeTime: string) => {
+
+export const __refreshToken = async (accessToken: string, lifeTime: string) => {
   try {
     const decodedToken = jwt.decode(accessToken);
     delete (decodedToken as any).exp;
     delete (decodedToken as any).iat;
-    const newToken = jwt.sign(decodedToken as Object, environment.JWT_SECRET, { expiresIn: lifeTime });
-    return newToken;
+    const refresh = generateToken(decodedToken, lifeTime,"refresh");
+    return refresh;
   } catch (error: any) {
     throw new Error('invalid token refresh'+error.message)
   }
 }
 
-export const _isTokenExpired = async (token: string) => {
+export const isTokenExpired = async (token: string,type:"access"|"refresh") => {
   try {
-    jwt.verify(token, environment.JWT_SECRET);
+    if (type === "access") {
+      const decodedAccess = jwt.verify(token, environment.JWT_ACCESS_SECRET);
+      return false;
+    }
+    const decodedRefresh = jwt.verify(token, environment.JWT_REFRESH_SECRET);
     return false;
   } catch (error) {
     return true;
   }
 }
 
-export const _checkToken = async (token: string) => {
+export const checkToken = async (token: string,type:"access"|"refresh") => {
   try {
-    const decodedToken = jwt.verify(token, environment.JWT_SECRET);
-    return decodedToken as Express.User;
+    if (type === "access") {
+      const decodedAccess = jwt.verify(token, environment.JWT_ACCESS_SECRET);
+      return decodedAccess as Express.User;
+    }
+    const decodedRefresh = jwt.verify(token, environment.JWT_REFRESH_SECRET);
+    return decodedRefresh as Express.User;
   } catch (error) {
     return undefined;
   }
 } 
 
-export const generateTokenForAdmin = async (user: IAdminDocument) => {
-  return await _generateToken({ id: user._id, userName: user.userName, email: user.email,role:user.role }, environment.ACCESS_TOKEN_LIFE || "30m");
-}
 
-export const generateRefreshTokenForAdmin = async (userId: string) => {
-  return await _generateToken({ userId }, environment.REFRESH_TOKEN_LIFE || "30d");
-}
+export const createTokens = (res: Response, payload: Express.User) => {
+  const accessToken = generateToken(payload, '15m', "access");
+  const refreshToken = generateToken(payload, '1d', "refresh");
+
+  res.cookie(environment.COOKIE_NAME, refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge: 1 * 24 * 60 * 60 * 1000, // 1 days
+  });
+
+  return {accessToken,refreshToken};
+};
+
+export const refreshToken = (req: Request, res: Response) => {
+  const refreshToken = req.cookies[environment.COOKIE_NAME];
+  if (!refreshToken) return sendErrorResponse(res, null, 'Unauthorized: Invalid or Expired Token!', 401);
+
+  try {
+    const decoded = jwt.verify(refreshToken, environment.JWT_REFRESH_SECRET);
+    const accessToken = generateToken(decoded, '15m', "access");
+    delete (decoded as any).exp;
+    delete (decoded as any).iat;
+    return accessToken;
+  } catch (err) {
+    sendErrorResponse(res, null, 'Unauthorized: Invalid or Expired Token!', 401);
+  }
+};
+
+export const getRefreshToken = (req: Request) => {
+  const refreshToken = req.cookies[environment.COOKIE_NAME];
+  if (!refreshToken) return null;
+  return refreshToken;
+};
+
+
+export const revokeToken = (res: Response) => {
+  res.clearCookie(environment.COOKIE_NAME);
+  return;
+};
+
 
 

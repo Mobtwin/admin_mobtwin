@@ -7,8 +7,6 @@ import {
 import { validateRequest } from "../middlewares/requestValidator.middleware";
 import {
   loginAdminSchema,
-  logoutAdminSchema,
-  refreshAdminSchema,
 } from "../validators/auth.validator";
 import { loginLimiter } from "../middlewares/limiter";
 import { authMiddleWare } from "../middlewares/auth.middleware";
@@ -27,9 +25,8 @@ authRouter.post(
 // Method: POST
 // Route: /auth/refresh
 // Refresh token
-authRouter.post(
+authRouter.get(
   "/refresh",
-  validateRequest(refreshAdminSchema),
   refreshTokenController
 );
 // Method: POST
@@ -38,6 +35,5 @@ authRouter.post(
 authRouter.post(
   "/logout",
   authMiddleWare,
-  validateRequest(logoutAdminSchema),
   logoutController
 );

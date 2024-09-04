@@ -17,6 +17,7 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.7",
     "@types/ioredis": "^5.0.0",
     "@types/jest": "^29.5.12",
     "@types/node": "^22.3.0",
@@ -44,6 +45,7 @@
     "@types/uuid": "^10.0.0",
     "bcrypt": "^5.1.1",
     "bullmq": "^5.12.11",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "date-fns": "^3.6.0",
     "deep-email-validator": "^0.1.21",

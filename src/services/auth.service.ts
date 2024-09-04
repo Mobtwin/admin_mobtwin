@@ -1,11 +1,12 @@
+import { Response } from "express";
 import { Admins, ROLES } from "../models/admin.schema";
 import { comparePassword } from "../utils/hashing";
-import { _isTokenExpired, _refreshToken, generateRefreshTokenForAdmin, generateTokenForAdmin } from "../utils/jwt";
+import { createTokens, isTokenExpired, revokeToken  } from "../utils/jwt";
 import { environment } from "../utils/loadEnvironment";
 import { LoginAdmin } from "../validators/auth.validator";
 
-export const loginAdmin = async (credential:LoginAdmin, ipAddress?: string, userAgent?: string) => {
-    const admin = await Admins.findOne({ email:credential.email }).select('password email userName role removed_at devices');
+export const loginAdmin = async (credential:LoginAdmin,res:Response, ipAddress?: string, userAgent?: string) => {
+    const admin = await Admins.findOne({ email:credential.email }).select('_id password email userName role removed_at devices');
     if (!admin) {
         throw new Error('invalid credentials');
     }
@@ -20,13 +21,14 @@ export const loginAdmin = async (credential:LoginAdmin, ipAddress?: string, user
         throw new Error('account removed');
     }
 
-    const accessToken = await generateTokenForAdmin(admin);
-    const refreshToken = await generateRefreshTokenForAdmin(admin.id);
+    const expressPayload :Express.User = { id: admin._id as string, email: admin.email, userName: admin.userName, role: admin.role.toString(),permissions:[]};
+    const {accessToken,refreshToken} = createTokens(res, expressPayload);
+    
     await Admins.updateOne({ email:credential.email }, { $push: { devices: { accessToken, refreshToken, ipAddress, userAgent } }, $set: { updatedAt: new Date() } });
-    return { accessToken, refreshToken };
+    return { accessToken };
 }
 
-export const refreshToken = async (refreshToken: string, ipAddress: string) => {
+export const refreshToken = async (refreshToken: string, ipAddress: string,res:Response) => {
     if (!refreshToken) {
         throw new Error('refresh token is required');
     }
@@ -34,20 +36,20 @@ export const refreshToken = async (refreshToken: string, ipAddress: string) => {
     if (!admin) {
         throw new Error('invalid tokens');
     }
-    if (await _isTokenExpired(refreshToken)) {
+    if (await isTokenExpired(refreshToken,"refresh")) {
         throw new Error('refresh token expired');
     }
-    const newAccessToken = await generateTokenForAdmin(admin);
-    const newRefreshToken = await _refreshToken(refreshToken, environment.REFRESH_TOKEN_LIFE || "30d");
+    const expressPayload :Express.User = { id: admin._id as string, email: admin.email, userName: admin.userName, role: admin.role.toString(),permissions:[]};
+    const {accessToken,refreshToken:newRefreshToken} = createTokens(res, expressPayload);
     try {
-        await Admins.updateOne({ devices: { $elemMatch: { refreshToken } } }, { $set: { "devices.$.accessToken": newAccessToken, "devices.$.refreshToken": newRefreshToken, "devices.$.ipAddress": ipAddress, "devices.$.updated_at": new Date(), updated_at: new Date() } })
+        await Admins.updateOne({ devices: { $elemMatch: { refreshToken } } }, { $set: { "devices.$.accessToken": accessToken, "devices.$.refreshToken": newRefreshToken, "devices.$.ipAddress": ipAddress, "devices.$.updated_at": new Date(), updated_at: new Date() } })
     } catch (error: any) {
         throw new Error('error while updating tokens'+error.message);
     }
-    return {newTokens:{ accessToken: newAccessToken, refreshToken: newRefreshToken },admin};
+    return {newTokens:{ accessToken },admin};
 }
 
-export const logout = async (accessToken: string, refreshToken: string) => {
+export const logout = async (accessToken: string, refreshToken: string,res:Response) => {
     if (!accessToken || !refreshToken) {
         throw new Error('both tokens are required');
     }
@@ -57,6 +59,7 @@ export const logout = async (accessToken: string, refreshToken: string) => {
     }
     try {
         await Admins.updateOne({ devices: { $elemMatch: { accessToken, refreshToken } } }, { $pull: { devices: { accessToken, refreshToken } }, $set : { updated_at: new Date() } })
+        revokeToken(res);
     } catch (error: any) {
         console.error('🚨 error while revoking device ' + error.message);
         throw new Error('error while revoking device');

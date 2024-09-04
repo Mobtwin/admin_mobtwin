@@ -18,6 +18,7 @@ import { ExpressAdapter } from "@bull-board/express";
 import { updateLogsAndActionsQueue } from "./config/queue.config";
 import { transformResponseJson } from "./middlewares/response.middleware";
 import { afterResponse } from "./middlewares/afterResponse.middleware";
+import cookieParser from 'cookie-parser';
 
 // initial the express server
 const app: Express = express();
@@ -37,6 +38,7 @@ app.use("/admin", serverAdapter.getRouter());
 
 // middleware to handle CORS
 app.use(cors());
+app.use(cookieParser());
 // middleware to handle request logs
 app.use(logger);
 

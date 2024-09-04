@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { _checkToken, _isTokenExpired } from "../utils/jwt";
+import { checkToken } from "../utils/jwt";
 import { sendErrorResponse } from "../utils/response";
 
 
@@ -18,7 +18,7 @@ export const authMiddleWare = async (
       return sendErrorResponse(res, null, "Token is required.", 401);
     }
     try {
-      const decodedToken = await _checkToken(token);
+      const decodedToken = await checkToken(token,"access");
       if (!decodedToken) {
         return sendErrorResponse(res, null, "Invalid token.", 401);
       }

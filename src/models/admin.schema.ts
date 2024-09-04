@@ -1,4 +1,4 @@
-import { Document, model, Model, Schema } from "mongoose";
+import { Document, model, Model, Schema, Types } from "mongoose";
 
 export const ROLES = ["admin", "maintainer"];
 export const ROLES_OPTIONS = {
@@ -8,15 +8,16 @@ export const ROLES_OPTIONS = {
 export interface IAdmin {
     userName: string;
     email: string;
-    role: Schema.Types.ObjectId;
+    role: string;
     password: string;
 }
 
-export interface IAdminDocument extends IAdmin, Document {
+export interface IAdminDocument extends Omit<IAdmin,"role">, Document {
     createdAt: Date;
     updatedAt: Date;
     removed_at?: Date;
     devices: IDevice[];
+    role: Types.ObjectId;
 }
 export interface IDevice extends Document {
     ipAddress?: string;

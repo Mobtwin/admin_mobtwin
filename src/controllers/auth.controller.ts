@@ -1,9 +1,10 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import { sendErrorResponse, sendSuccessResponse } from "../utils/response";
 import { loginAdmin, logout, refreshToken } from "../services/auth.service";
-import { LoginAdminRequest, LogoutAdminRequest, RefreshAdminRequest } from "../validators/auth.validator";
+import { LoginAdminRequest} from "../validators/auth.validator";
 import { logEvents } from "../middlewares/logger";
 import { ROLES } from "../models/admin.schema";
+import { getRefreshToken } from "../utils/jwt";
 
 export const loginController = async (req: LoginAdminRequest, res: Response) => {
     const { email, password } = req.body;
@@ -15,7 +16,7 @@ export const loginController = async (req: LoginAdminRequest, res: Response) => 
     if (!password) {
         return sendErrorResponse(res, null, 'Missing field. Password is required!', 400);
     }
-    loginAdmin(req.body, ipAddress, userAgent).then((newTokens) => {
+    loginAdmin(req.body,res, ipAddress, userAgent).then((newTokens) => {
         logEvents(`Admin: ${email} logged in`, 'auth.log');
         return sendSuccessResponse(res, newTokens, 'Login successful!', 200);
     }).catch((error) => {
@@ -24,14 +25,14 @@ export const loginController = async (req: LoginAdminRequest, res: Response) => 
 
 }
 
-export const refreshTokenController = (req: RefreshAdminRequest, res: Response) => {
-    const refresh_token = req.body.refreshToken;
+export const refreshTokenController = (req: Request, res: Response) => {
+    const refresh_token = getRefreshToken(req);
     if (!refresh_token) {
         return sendErrorResponse(res, null, 'Missing field. Refresh token is required!', 400);
     }
     
     const ipAddress = req.ip;
-    refreshToken(refresh_token, ipAddress as string).then(({admin,newTokens}) => {
+    refreshToken(refresh_token, ipAddress as string,res).then(({admin,newTokens}) => {
         logEvents(`Admin: ${admin.email} refreshed token from ip: ${ipAddress}`, 'auth.log');
         return sendSuccessResponse(res, newTokens, 'Token refreshed successfully!', 200);
     }).catch((error: any) => {
@@ -39,8 +40,8 @@ export const refreshTokenController = (req: RefreshAdminRequest, res: Response) 
     })
 }
 
-export const logoutController = (req: LogoutAdminRequest, res: Response) => {
-    const refresh_token = req.body.refreshToken;
+export const logoutController = (req: Request, res: Response) => {
+    const refresh_token = getRefreshToken(req);
     if (!req.user)
         return sendErrorResponse(res, null, 'Unauthorized', 401);
     const user = req.user;
@@ -51,7 +52,7 @@ export const logoutController = (req: LogoutAdminRequest, res: Response) => {
     if (!user.token) {
         return sendErrorResponse(res, null, 'Missing field. Access token is required!', 400);
     }
-    logout(user.token, refresh_token).then((ip) => {
+    logout(user.token, refresh_token,res).then((ip) => {
         logEvents(`${user.role}: ${user.userName} logged out from ip: ${ip} `, 'auth.log');
         return sendSuccessResponse(res, null, 'Logout successful!', 200);
     }).catch((error: any) => {

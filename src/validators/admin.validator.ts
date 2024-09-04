@@ -15,7 +15,7 @@ export interface CreateAdmin {
     email: string;
     password: string;
     userName: string;
-    role: Schema.Types.ObjectId;
+    role: string;
 }
 
 export interface CreateAdminRequest extends Request {

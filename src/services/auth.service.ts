@@ -22,7 +22,7 @@ export const loginAdmin = async (credential:LoginAdmin,res:Response, ipAddress?:
     }
 
     const expressPayload :Express.User = { id: admin._id as string, email: admin.email, userName: admin.userName, role: admin.role.toString(),permissions:[]};
-    const {accessToken,refreshToken} = createTokens(res, expressPayload);
+    const {accessToken,refreshToken} = await createTokens(res, expressPayload);
     
     await Admins.updateOne({ email:credential.email }, { $push: { devices: { accessToken, refreshToken, ipAddress, userAgent } }, $set: { updatedAt: new Date() } });
     return { accessToken };
@@ -40,7 +40,7 @@ export const refreshToken = async (refreshToken: string, ipAddress: string,res:R
         throw new Error('refresh token expired');
     }
     const expressPayload :Express.User = { id: admin._id as string, email: admin.email, userName: admin.userName, role: admin.role.toString(),permissions:[]};
-    const {accessToken,refreshToken:newRefreshToken} = createTokens(res, expressPayload);
+    const {accessToken,refreshToken:newRefreshToken} = await createTokens(res, expressPayload);
     try {
         await Admins.updateOne({ devices: { $elemMatch: { refreshToken } } }, { $set: { "devices.$.accessToken": accessToken, "devices.$.refreshToken": newRefreshToken, "devices.$.ipAddress": ipAddress, "devices.$.updated_at": new Date(), updated_at: new Date() } })
     } catch (error: any) {

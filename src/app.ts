@@ -19,6 +19,7 @@ import { updateLogsAndActionsQueue } from "./config/queue.config";
 import { transformResponseJson } from "./middlewares/response.middleware";
 import { afterResponse } from "./middlewares/afterResponse.middleware";
 import cookieParser from 'cookie-parser';
+import { corsOptions } from "./config/cors.config";
 
 // initial the express server
 const app: Express = express();
@@ -37,7 +38,7 @@ serverAdapter.setBasePath("/admin");
 app.use("/admin", serverAdapter.getRouter());
 
 // middleware to handle CORS
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(cookieParser());
 // middleware to handle request logs
 app.use(logger);

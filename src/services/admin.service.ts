@@ -40,11 +40,11 @@ export const getAllAdmins = async ({readOwn=false,userId,skip,limit}:{readOwn:bo
   try {
     if(readOwn) {
       const itemsIds = await getOwnItemsByPermissionAction(userId,ADMIN_TABLE,PERMISSIONS_ACTIONS.READ)
-      const {data,pagination} = await fetchPaginatedData<IAdminDocument>(Admins,skip,limit,{_id:{$in:itemsIds}});
+      const {data,pagination} = await fetchPaginatedData<IAdminDocument>(Admins,skip,limit,{_id:{$in:itemsIds}},"role");
       if (!data.length) throw new Error("No admins found!");
       return {data,pagination};
     }
-    const {data,pagination} = await fetchPaginatedData<IAdminDocument>(Admins,skip,limit,{});
+    const {data,pagination} = await fetchPaginatedData<IAdminDocument>(Admins,skip,limit,{},"role");
     if (!data.length) throw new Error("No admins found!");
     return {data,pagination};
   } catch (error: any) {
@@ -55,7 +55,7 @@ export const getAllAdmins = async ({readOwn=false,userId,skip,limit}:{readOwn:bo
 //get admin by id service
 export const getAdminById = async (id: string) => {
   try {
-    const admin = await Admins.findById(id);
+    const admin = await Admins.findById(id).populate('role').lean();
     if (!admin) throw new Error("Admin not found!");
     return admin;
   } catch (error: any) {

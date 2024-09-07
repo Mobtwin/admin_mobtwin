@@ -1,8 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { ResponseType } from "../utils/response";
-import { PerformedBy } from "../models/actionLog.schema";
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
-import { IAction } from "../services/itemSpecificPermissions.service";
 import addLogActionsJob from "../workers/logActions.worker";
 import { TABLES } from "../constant/tables.constant";
 

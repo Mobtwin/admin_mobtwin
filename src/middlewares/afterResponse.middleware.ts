@@ -33,7 +33,7 @@ export const afterResponse = (req: Request, res: Response, next: NextFunction) =
             const targetEntityId = determineTargetEntityId(req,responseData); // You need to implement this function to determine the ID of the entity
 
             // Optional: Use responseData to build a more detailed description
-            const description = `Action: ${actionType} on ${targetEntity} with ID: ${targetEntityId} by ${user.userName}`;
+            const description = `Action: ${actionType} on ${targetEntity} ${targetEntityId ? "with ID: " + targetEntityId : ""} by ${user.userName}`;
 
             // Push to the queue
             await addLogActionsJob(

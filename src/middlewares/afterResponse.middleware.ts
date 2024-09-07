@@ -83,8 +83,26 @@ function determineTargetEntityId(req: Request,responseData:ResponseType<any>): s
         return req.params.id;
     }
     // This assumes you're extracting entity IDs from the response data
-    if (responseData && responseData.data && responseData.data._id) {
-        return responseData.data._id;
-    }
-    return undefined;
+    return findId(responseData);
 }
+
+function findId(obj: any): string | undefined {
+    if (typeof obj !== 'object' || obj === null) {
+      return undefined;
+    }
+  
+    if ('_id' in obj) {
+      return obj._id;
+    }
+  
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        const result = findId(obj[key]);
+        if (result) {
+          return result;
+        }
+      }
+    }
+  
+    return undefined;
+  }

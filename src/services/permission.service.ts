@@ -27,7 +27,7 @@ export const getAllPermissions = async ({skip,limit}:{skip:number,limit:number})
         throw new Error(error.message);
     }
 };
-// get all permissions
+// get searched permissions
 export const getSearchedPermissions = async ({skip,limit,filters}:{skip:number,limit:number,filters:FilterQuery<IPermissionDocument>}) => {
     try {
         const {data,pagination} = await fetchPaginatedData<IPermissionDocument>(Permissions,skip,limit,filters);

@@ -1,13 +1,15 @@
 import { Request, Response } from "express";
 import { sendErrorResponse, sendSuccessResponse } from "../utils/response";
-import { ROLES, ROLES_OPTIONS } from "../models/admin.schema";
+import { IAdminDocument, ROLES, ROLES_OPTIONS } from "../models/admin.schema";
 import validate from 'deep-email-validator'
 import { verifyPasswordStrength } from "../utils/string.format";
-import { createAdmin, deleteAdminById, getAdminById, getAllAdmins, updateAdminById } from "../services/admin.service";
+import { createAdmin, deleteAdminById, getAdminById, getAllAdmins, getSearchedAdmins, updateAdminById } from "../services/admin.service";
 import { logEvents } from "../middlewares/logger";
-import { AdminByIdRequest, CreateAdminRequest, UpdateAdminRequest } from "../validators/admin.validator";
+import { AdminByIdRequest, CreateAdminRequest, SearchAdmin, SearchAdminRequest, UpdateAdminRequest } from "../validators/admin.validator";
 import { ADMIN_PERMISSIONS, ADMIN_TABLE } from "../constant/admin.constant";
 import { invalidateCache } from "../middlewares/cache.middleware";
+import { constructSearchFilter } from "../utils/search";
+import { SearchPermissionRequest } from "../validators/permission.validator";
 
 
 //create a new admin
@@ -157,7 +159,25 @@ export const deleteAdminByIdController = async (req: AdminByIdRequest, res: Resp
 }
 
 
-
+// search admins table controller
+export const searchAdminsTableController = async (req: SearchAdminRequest, res: Response) => {
+    try {
+      const searchParamas:SearchAdmin = {
+        UserName: req.query.UserName,
+        email: req.query.email,
+        role: req.query.role,
+      };
+      const searchFilters = constructSearchFilter<IAdminDocument>(searchParamas);
+      // search admins table
+      getSearchedAdmins({skip:res.locals.skip,limit:res.locals.limit,filters:searchFilters}).then(({data,pagination})=>{
+        return sendSuccessResponse(res, data, "Admins retrieved successfully!", 200,pagination);
+      }).catch((error) => {
+        return sendErrorResponse(res, error, `Error: ${error.message}`, 400);
+      });
+    } catch (error: any) {
+      return sendErrorResponse(res, error, `Error: ${error.message}`, 500);
+    }
+  }
 
 
 

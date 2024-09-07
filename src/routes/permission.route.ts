@@ -111,7 +111,7 @@ permissionRouter.delete(
 
 permissionRouter.get(
   "/search",
-  validateRequest(searchPermissionSchema, "params"),
+  validateRequest(searchPermissionSchema, "query"),
   checkPermission([
     PERMISSION_PERMISSIONS.READ,
     PERMISSION_PERMISSIONS.READ_OWN,

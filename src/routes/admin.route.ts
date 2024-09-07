@@ -4,12 +4,14 @@ import {
   deleteAdminByIdController,
   getAdminByIdController,
   getAllAdminsController,
+  searchAdminsTableController,
   updateAdminByIdController,
 } from "../controllers/admin.controller";
 import { validateRequest } from "../middlewares/requestValidator.middleware";
 import {
   adminByIdSchema,
   createAdminSchema,
+  searchAdminSchema,
   updateAdminSchema,
 } from "../validators/admin.validator";
 import { checkPermission } from "../middlewares/rbac.middleware";
@@ -76,4 +78,20 @@ adminRouter.put(
   }),
   validateRequest(adminByIdSchema),
   deleteAdminByIdController
+);
+
+// Method: GET
+// route: /admin/search
+// search admins
+
+adminRouter.get(
+  "/search",
+  validateRequest(searchAdminSchema, "query"),
+  checkPermission([
+    ADMIN_PERMISSIONS.READ,
+    ADMIN_PERMISSIONS.READ_OWN,
+  ]),
+  paginationMiddleware,
+  cacheMiddleware(ADMIN_TABLE),
+  searchAdminsTableController
 );

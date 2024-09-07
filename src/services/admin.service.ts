@@ -1,3 +1,4 @@
+import { FilterQuery } from "mongoose";
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
 import { ADMIN_PERMISSIONS, ADMIN_TABLE } from "../constant/admin.constant";
 import { Admins, IAdmin, IAdminDocument, ROLES, ROLES_OPTIONS } from "../models/admin.schema";
@@ -111,5 +112,15 @@ export const deleteAdminById = async (
     return deletedAdmin;
   } catch (error: any) {
     throw error;
+  }
+};
+
+// get searched admins
+export const getSearchedAdmins = async ({skip,limit,filters}:{skip:number,limit:number,filters:FilterQuery<IAdminDocument>}) => {
+  try {
+      const {data,pagination} = await fetchPaginatedData<IAdminDocument>(Admins,skip,limit,filters);
+      return {data, pagination};
+  } catch (error: any) {
+      throw new Error(error.message);
   }
 };

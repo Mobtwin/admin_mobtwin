@@ -2,6 +2,7 @@ import { Request } from "express";
 import Joi from "joi";
 import { IAdmin, ROLES, ROLES_OPTIONS } from "../models/admin.schema";
 import { Schema } from "mongoose";
+import { SearchParams } from "../utils/search";
 
 
 // Define a Joi schema for admin creation request
@@ -51,3 +52,24 @@ export interface UpdateAdminRequest extends Request {
 }
 
 
+// define joi schema for search admins request
+
+export interface SearchAdminRequest extends Request {
+    query: {
+        UserName?: string;
+        email?: string;
+        role?: string;
+    };
+}
+
+export const searchAdminSchema = Joi.object<SearchAdmin>({
+    UserName: Joi.string().optional(),
+    email: Joi.string().optional(),
+    role: Joi.string().optional(),
+});
+
+export interface SearchAdmin extends SearchParams {
+    UserName?: string;
+    email?: string;
+    role?: string;
+}

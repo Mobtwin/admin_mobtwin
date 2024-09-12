@@ -12,7 +12,8 @@ export const environment: {
   ACCESS_TOKEN_LIFE: string,
   REFRESH_TOKEN_LIFE: string,
   CLIENT_URL: string,
-  GITHUB_TOKEN: string
+  GITHUB_TOKEN: string,
+  REDIS_HOST: string,
 } = {
   PORT: process.env.PORT as string,
   MONGODB_URI: process.env.MONGODB_URI as string,
@@ -24,4 +25,6 @@ export const environment: {
   REFRESH_TOKEN_LIFE: process.env.REFRESH_TOKEN_LIFE as string,
   CLIENT_URL: process.env.CLIENT_URL as string,
   GITHUB_TOKEN: process.env.GITHUB_TOKEN as string,
+  REDIS_HOST: process.env.REDIS_HOST as string,
+  
 };

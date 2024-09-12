@@ -8,8 +8,7 @@ WORKDIR /var/www/admin_mobtwin
 COPY . .
 
 # Install dependencies using NPM
-RUN npm cache clean \
-    && npm install \
+RUN npm install \
     && npm run build
 
 # Install PM2 globally

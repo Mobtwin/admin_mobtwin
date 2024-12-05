@@ -42,5 +42,5 @@ jobs:
           git status
           npm install
           npm run build
-          pm2 restart admin
-          pm2 save
+          cd ..
+          docker compose up --build -d admin_mobtwin

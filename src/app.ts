@@ -45,11 +45,11 @@ app.use(logger);
 
 // dns validation(
 app.get(
-  "/.well-known/pki-validation/C7EA7631321E42E8EA295E53788D31D2.txt",
+  "/.well-known/pki-validation/9C8A8C1AA245B8F5185A2C31766CD4ED.txt",
   (req, res) => {
-    res.send(`BB0A67923E3D998C4F42AA87D6199D3D15E699198AC9E2CBE00F6A01885B837F
+    res.send(`28F8E3C99070885CECD6BF20314F0EAE4B64389DED6BEF7A956C95FD331DDF15
 comodoca.com
-e86268acdcf13c7`);
+621b7a5d39e7e15`);
   }
 );
 

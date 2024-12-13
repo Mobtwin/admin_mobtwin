@@ -1,4 +1,4 @@
-import { FilterQuery } from "mongoose";
+import { FilterQuery, ObjectId } from "mongoose";
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
 import { ADMIN_PERMISSIONS, ADMIN_TABLE } from "../constant/admin.constant";
 import { Admins, IAdmin, IAdminDocument, ROLES, ROLES_OPTIONS } from "../models/admin.schema";
@@ -71,9 +71,11 @@ export const updateAdminById = async (
   try {
     const toBeUpdated = await Admins.findById(id);
     if (!toBeUpdated) throw new Error("Admin not found!");
+    let roleId : ObjectId | undefined;
     if(admin.role) {
       const role = await Roles.findById(admin.role);
       if (!role) throw new Error("Invalid Field. Role not found!");
+      roleId = role._id as ObjectId
     }
     if (admin.email) {
       const existingAdminByEmail = await Admins.findOne({
@@ -90,7 +92,7 @@ export const updateAdminById = async (
     if (admin.password && !verifyPasswordStrength(admin.password))
       throw new Error("Password does not meet requirements!");
     if (admin.password) admin.password = await hashPassword(admin.password);
-    const updatedAdmin = await Admins.findByIdAndUpdate(id, admin, {
+    const updatedAdmin = await Admins.findByIdAndUpdate(id, {...admin,role:roleId}, {
       new: true,
     });
     if (!updatedAdmin) throw new Error("Admin not updated!");

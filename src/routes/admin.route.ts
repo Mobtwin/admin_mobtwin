@@ -76,7 +76,7 @@ adminRouter.put(
     table: ADMIN_TABLE,
     action: PERMISSIONS_ACTIONS.DELETE,
   }),
-  validateRequest(adminByIdSchema),
+  validateRequest(adminByIdSchema,"params"),
   deleteAdminByIdController
 );
 

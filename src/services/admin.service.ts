@@ -40,11 +40,11 @@ export const getAllAdmins = async ({readOwn=false,userId,skip,limit}:{readOwn:bo
   try {
     if(readOwn) {
       const itemsIds = await getOwnItemsByPermissionAction(userId,ADMIN_TABLE,PERMISSIONS_ACTIONS.READ)
-      const {data,pagination} = await fetchPaginatedData<IAdminDocument>(Admins,skip,limit,{_id:{$in:itemsIds}},"role");
+      const {data,pagination} = await fetchPaginatedData<IAdminDocument>(Admins,skip,limit,{_id:{$in:itemsIds},removed_at:{ $exists: false }},"role");
       if (!data.length) throw new Error("No admins found!");
       return {data,pagination};
     }
-    const {data,pagination} = await fetchPaginatedData<IAdminDocument>(Admins,skip,limit,{},"role");
+    const {data,pagination} = await fetchPaginatedData<IAdminDocument>(Admins,skip,limit,{removed_at:{ $exists: false }},"role");
     if (!data.length) throw new Error("No admins found!");
     return {data,pagination};
   } catch (error: any) {
@@ -56,7 +56,7 @@ export const getAllAdmins = async ({readOwn=false,userId,skip,limit}:{readOwn:bo
 export const getAdminById = async (id: string) => {
   try {
     const admin = await Admins.findById(id).populate('role').lean();
-    if (!admin) throw new Error("Admin not found!");
+    if (!admin || admin.removed_at) throw new Error("Admin not found!");
     return admin;
   } catch (error: any) {
     throw error;
@@ -70,7 +70,7 @@ export const updateAdminById = async (
 ) => {
   try {
     const toBeUpdated = await Admins.findById(id);
-    if (!toBeUpdated) throw new Error("Admin not found!");
+    if (!toBeUpdated || toBeUpdated.removed_at) throw new Error("Admin not found!");
     let roleId : ObjectId | undefined;
     if(admin.role) {
       const role = await Roles.findById(admin.role);
@@ -108,7 +108,7 @@ export const deleteAdminById = async (
 ) => {
   try {
     const toBeDeleted = await Admins.findById(id);
-    if (!toBeDeleted) throw new Error("Admin not found!");
+    if (!toBeDeleted || toBeDeleted.removed_at) throw new Error("Admin not found!");
     const deletedAdmin = await Admins.findByIdAndUpdate(id, { removed_at: Date.now() }, { new: true });
     if (!deletedAdmin) throw new Error("Admin not deleted!");
     return deletedAdmin;

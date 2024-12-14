@@ -113,11 +113,11 @@ export const assignItemSpicificPermission = async (
     // Check if item-specific permission already exists
     const permission = await ItemSpecificPermissions.findOne({adminId,table:resource.table,action});
     if(permission) {
-      const updatedPermission = await ItemSpecificPermissions.findOneAndUpdate({adminId,table:resource.table,action},{$addToSet:{items:resource.itemId}},{new:true});
+      const updatedPermission = await ItemSpecificPermissions.findOneAndUpdate({userId:adminId,table:resource.table,action},{$addToSet:{items:resource.itemId}},{new:true});
       if(!updatedPermission) throw new Error("Permission not updated!");
       return updatedPermission;
     }
-    const newPermission = await ItemSpecificPermissions.create({adminId,table:resource.table,action,items:[resource.itemId]});
+    const newPermission = await ItemSpecificPermissions.create({userId:adminId,table:resource.table,action,items:[resource.itemId]});
     if(!newPermission) throw new Error("Permission not created!");
     return newPermission;
   } catch (error: any) {
@@ -171,10 +171,10 @@ export const unassignItemSpecificPermissions = async (
     }
     if (!itemExists) throw new Error("Item not found!");
     // Check if item-specific permission already exists
-    const permission = await ItemSpecificPermissions.findOne({adminId,table:resource.table,action});
+    const permission = await ItemSpecificPermissions.findOne({userId:adminId,table:resource.table,action});
     if (!permission) throw new Error("admin doesn't have the Table Permission!");
     const updatedPermission = await ItemSpecificPermissions.findOneAndUpdate(
-      { adminId, table: resource.table, action },
+      { userId:adminId, table: resource.table, action },
       { $pull: { items: resource.itemId } },
       { new: true }
     );

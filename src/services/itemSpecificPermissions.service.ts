@@ -68,16 +68,16 @@ export const checkItemSpecificPermission = async (
 // assign item specific permission service
 export const assignItemSpicificPermission = async (
   action: IAction,
-  userId: string,
+  adminId: string,
   resource: {
     table: string;
     itemId: string;
   }
 ) => {
   try {
-    // check if user exists 
-    const userExists = await Users.findById(userId).lean();
-    if (!userExists) throw new Error("User not found!");
+    // check if admin exists 
+    const adminExists = await Admins.findById(adminId).lean();
+    if (!adminExists) throw new Error("admin not found!");
     // check if item exists
     let itemExists: any;
     switch (resource.table) {
@@ -111,13 +111,13 @@ export const assignItemSpicificPermission = async (
     }
     if (!itemExists) throw new Error("Item not found!");
     // Check if item-specific permission already exists
-    const permission = await ItemSpecificPermissions.findOne({userId,table:resource.table,action});
+    const permission = await ItemSpecificPermissions.findOne({adminId,table:resource.table,action});
     if(permission) {
-      const updatedPermission = await ItemSpecificPermissions.findOneAndUpdate({userId,table:resource.table,action},{$addToSet:{items:resource.itemId}},{new:true});
+      const updatedPermission = await ItemSpecificPermissions.findOneAndUpdate({adminId,table:resource.table,action},{$addToSet:{items:resource.itemId}},{new:true});
       if(!updatedPermission) throw new Error("Permission not updated!");
       return updatedPermission;
     }
-    const newPermission = await ItemSpecificPermissions.create({userId,table:resource.table,action,items:[resource.itemId]});
+    const newPermission = await ItemSpecificPermissions.create({adminId,table:resource.table,action,items:[resource.itemId]});
     if(!newPermission) throw new Error("Permission not created!");
     return newPermission;
   } catch (error: any) {
@@ -128,16 +128,16 @@ export const assignItemSpicificPermission = async (
 // unassign item-specific permissions service
 export const unassignItemSpecificPermissions = async (
   action: IAction,
-  userId: string,
+  adminId: string,
   resource: {
     table: string;
     itemId: string;
   }
 ) => {
   try {
-    // check if user exists 
-    const userExists = await Users.findById(userId).lean();
-    if (!userExists) throw new Error("User not found!");
+    // check if admin exists 
+    const adminExists = await Admins.findById(adminId).lean();
+    if (!adminExists) throw new Error("admin not found!");
     // check if item exists
     let itemExists: any;
     switch (resource.table) {
@@ -171,10 +171,10 @@ export const unassignItemSpecificPermissions = async (
     }
     if (!itemExists) throw new Error("Item not found!");
     // Check if item-specific permission already exists
-    const permission = await ItemSpecificPermissions.findOne({userId,table:resource.table,action});
-    if (!permission) throw new Error("User doesn't have the Table Permission!");
+    const permission = await ItemSpecificPermissions.findOne({adminId,table:resource.table,action});
+    if (!permission) throw new Error("admin doesn't have the Table Permission!");
     const updatedPermission = await ItemSpecificPermissions.findOneAndUpdate(
-      { userId, table: resource.table, action },
+      { adminId, table: resource.table, action },
       { $pull: { items: resource.itemId } },
       { new: true }
     );

@@ -72,7 +72,7 @@ export const getAllUsers = async ({
 export const getUserById = async (id: string) => {
   try {
     const user = await Users.findById(id);
-    if (!user) throw new Error("User not found!");
+    if (!user) throw new Error(`User with id ${id} not found!`);
     return user;
   } catch (error: any) {
     throw error;

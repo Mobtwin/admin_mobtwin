@@ -137,10 +137,7 @@ export const deleteAdminByIdController = async (req: AdminByIdRequest, res: Resp
         if (!req.user) 
             return sendErrorResponse(res,null, "Unauthorized!",401);
         const user = req.user;
-        if (user.role !== ROLES_OPTIONS.admin){
-            console.log("user.role !== ROLES_OPTIONS.admin")
-            return sendErrorResponse(res,null, "Unauthorized!",401);
-        }
+        console.log("user role: " + user.role)
         //validation
         if (!id)
             return sendErrorResponse(res,null, "Missing field. Admin ID is required",400);

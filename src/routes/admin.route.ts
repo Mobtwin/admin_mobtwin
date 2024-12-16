@@ -4,7 +4,7 @@ import {
   deleteAdminByIdController,
   getAdminByIdController,
   getAllAdminsController,
-  searchAdminsTableController,
+  searchAdminsTablController,
   updateAdminByIdController,
 } from "../controllers/admin.controller";
 import { validateRequest } from "../middlewares/requestValidator.middleware";
@@ -22,18 +22,85 @@ import paginationMiddleware from "../middlewares/pagination.middleware";
 import { paginationQuerySchema } from "../validators/pagination.validator";
 
 export const adminRouter = Router();
-// method: POST
-// path: /admin/create
-// Create a new admin
+/**
+ * @swagger
+ * tags:
+ *   name: Admins
+ *   description: API to manage admins
+ */
+
+/**
+ * @swagger
+ * /admin/create:
+ *   post:
+ *     tags: [Admins]
+ *     summary: Create a new admin
+ *     description: Create a new admin in the system with necessary validation and permission checks.
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       description: Admin object that needs to be added
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/CreateAdmin'
+ *     responses:
+ *       201:
+ *         description: Admin successfully created
+ *       400:
+ *         description: Bad request due to validation failure
+ *       401:
+ *         description: Unauthorized if user does not have Access Token
+ *       403:
+ *         description: Forbidden if user does not have permission to create admin
+ *       500:
+ *         description: Internal server error
+ */
 adminRouter.post(
   "/create",
   checkPermission(ADMIN_PERMISSIONS.CREATE),
   validateRequest(createAdminSchema),
   createAdminController
 );
-// method: GET
-// path: /admin
-// Get all admins
+/**
+ * @swagger
+ * /admin:
+ *   get:
+ *     tags: [Admins]
+ *     summary: Get all admins
+ *     description: Fetch a paginated list of all admins with caching and permission checks.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           description: Page number for pagination
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           description: Number of records per page
+ *     responses:
+ *       200:
+ *         description: A list of admins
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Admin'
+ *       400:
+ *         description: Invalid pagination query
+ *       401:
+ *         description: Unauthorized if user does not have Access Token
+ *       403:
+ *         description: Forbidden if user does not have permission to read or read_own admins
+ *       500:
+ *         description: Internal server error
+ */
 adminRouter.get(
   "/",
   checkPermission([ADMIN_PERMISSIONS.READ, ADMIN_PERMISSIONS.READ_OWN]),
@@ -42,9 +109,91 @@ adminRouter.get(
   paginationMiddleware,
   getAllAdminsController
 );
-// method: GET
-// path: /admin/:id
-// Get admin by id
+/**
+ * @swagger
+ * /admin/{id}:
+ *   get:
+ *     tags: [Admins]
+ *     summary: Get admin by ID
+ *     description: Retrieve an admin's details by their unique ID. Requires authentication and appropriate permissions.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The unique ID of the admin to retrieve
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Admin retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   $ref: '#/components/schemas/Admin'
+ *                 message:
+ *                   type: string
+ *                   example: Admin retrieved successfully!
+ *       400:
+ *         description: Bad request due to missing or invalid admin ID
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Missing field. Admin ID is required
+ *       401:
+ *         description: Unauthorized due to missing or invalid token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Unauthorized!
+ *       403:
+ *         description: Forbidden due to missing or invalid permissions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Forbidden Insufficient permissions!
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Error Something went wrong
+ */
 adminRouter.get(
   "/:id",
   validateRequest(adminByIdSchema, "params"),
@@ -55,9 +204,115 @@ adminRouter.get(
   cacheMiddleware(ADMIN_TABLE),
   getAdminByIdController
 );
-// method: PUT
-// path: /admin/:id
-// Update admin by id
+/**
+ * @swagger
+ * /admin/{id}:
+ *   put:
+ *     tags: [Admins]
+ *     summary: Update admin by ID
+ *     description: Update an admin's details by their unique ID. Requires authentication, appropriate permissions, and validation checks.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The unique ID of the admin to update
+ *     requestBody:
+ *       description: Admin object containing fields to update
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userName:
+ *                 type: string
+ *                 minLength: 4
+ *                 example: "newUserName"
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: "newemail@example.com"
+ *               password:
+ *                 type: string
+ *                 minLength: 8
+ *                 example: "newStrongPassword123"
+ *               role:
+ *                 type: string
+ *                 example: "admin"
+ *     responses:
+ *       200:
+ *         description: Admin updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   $ref: '#/components/schemas/Admin'
+ *                 message:
+ *                   type: string
+ *                   example: Admin updated successfully!
+ *       400:
+ *         description: Validation error or bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: UserName length must be at least 4 characters long
+ *       401:
+ *         description: Unauthorized access
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Unauthorized!
+ *       403:
+ *         description: Forbidden due to missing or invalid permissions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Forbidden Insufficient permissions!
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Error Something went wrong
+ */
+
 adminRouter.put(
   "/:id",
   checkPermission([ADMIN_PERMISSIONS.UPDATE], {
@@ -67,9 +322,89 @@ adminRouter.put(
   validateRequest(updateAdminSchema),
   updateAdminByIdController
 );
-// method: PUT
-// path: /admin/delete/:id
-// Delete admin by id
+/**
+ * @swagger
+ * /admin/delete/{id}:
+ *   put:
+ *     tags: [Admins]
+ *     summary: Delete admin by ID
+ *     description: Deletes an admin by their unique ID. Requires authentication, permissions, and validation checks.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The unique ID of the admin to delete
+ *     responses:
+ *       200:
+ *         description: Admin successfully deleted
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Admin deleted successfully!
+ *       400:
+ *         description: Validation error or bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Missing field. Admin ID is required
+ *       401:
+ *         description: Unauthorized access
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Unauthorized!
+ *       403:
+ *         description: Forbidden due to missing or invalid permissions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Forbidden Insufficient permissions!
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Error! Something went wrong
+ */
 adminRouter.put(
   "/delete/:id",
   checkPermission([ADMIN_PERMISSIONS.DELETE], {
@@ -80,12 +415,123 @@ adminRouter.put(
   deleteAdminByIdController
 );
 
-// Method: GET
-// route: /admin/search
-// search admins
+/**
+ * @swagger
+ * /admin/search/here:
+ *   get:
+ *     tags: [Admins]
+ *     summary: Search for admins
+ *     description: Retrieve a paginated list of admins based on search criteria. Includes filtering by username, email, and role.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: userName
+ *         schema:
+ *           type: string
+ *         description: Filter by admin username
+ *       - in: query
+ *         name: email
+ *         schema:
+ *           type: string
+ *         description: Filter by admin email
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *         description: The page number for pagination
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           example: 10
+ *         description: The number of results per page
+ *     responses:
+ *       200:
+ *         description: Admins retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Admins retrieved successfully!
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Admin'
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     page:
+ *                       type: integer
+ *                     limit:
+ *                       type: integer
+ *                     totalPages:
+ *                       type: integer
+ *                     totalResults:
+ *                       type: integer
+ *       400:
+ *         description: Validation error or bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Missing or invalid parameters
+ *       401:
+ *         description: Unauthorized access
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Unauthorized!
+ *       403:
+ *         description: Forbidden due to missing or invalid permissions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Forbidden Insufficient permissions!
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Error! Something went wrong
+ */
 
 adminRouter.get(
-  "/search",
+  "/search/here",
   validateRequest(searchAdminSchema, "query"),
   checkPermission([
     ADMIN_PERMISSIONS.READ,
@@ -93,5 +539,5 @@ adminRouter.get(
   ]),
   paginationMiddleware,
   cacheMiddleware(ADMIN_TABLE),
-  searchAdminsTableController
+  searchAdminsTablController
 );

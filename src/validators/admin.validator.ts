@@ -1,8 +1,8 @@
 import { Request } from "express";
 import Joi from "joi";
-import { IAdmin, ROLES, ROLES_OPTIONS } from "../models/admin.schema";
-import { Schema } from "mongoose";
+import { IAdmin } from "../models/admin.schema";
 import { SearchParams } from "../utils/search";
+import { PaginationQuery, PaginationQueryRequest } from "./pagination.validator";
 
 
 // Define a Joi schema for admin creation request
@@ -54,22 +54,21 @@ export interface UpdateAdminRequest extends Request {
 
 // define joi schema for search admins request
 
-export interface SearchAdminRequest extends Request {
+export interface SearchAdminRequest extends PaginationQueryRequest {
     query: {
-        UserName?: string;
+        userName?: string;
         email?: string;
-        role?: string;
     };
 }
 
-export const searchAdminSchema = Joi.object<SearchAdmin>({
-    UserName: Joi.string().optional(),
+export const searchAdminSchema = Joi.object<SearchAdmin&PaginationQuery>({
+    userName: Joi.string().optional(),
     email: Joi.string().optional(),
-    role: Joi.string().optional(),
+    page: Joi.number().optional().default(1),
+    limit: Joi.number().optional().default(10),
 });
 
 export interface SearchAdmin extends SearchParams {
-    UserName?: string;
+    userName?: string;
     email?: string;
-    role?: string;
 }

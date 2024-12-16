@@ -34,10 +34,10 @@ export const createAdminController = async (req: CreateAdminRequest, res: Respon
         //password validation
         if (!verifyPasswordStrength(password))
             return sendErrorResponse(res,null, "Password is weak. Try a stronger password with at least 8 characters, one uppercase, one lowercase, one number and one special character!",400);
-        //email validation
-        const validationResult = await validate(email);
-        if (!validationResult.valid)
-            return sendErrorResponse(res,null, "Invalid email: "+validationResult.reason,400);
+        // //email validation
+        // const validationResult = await validate(email,{});
+        // if (!validationResult.valid)
+        //     return sendErrorResponse(res,null, "Invalid email: "+validationResult.reason,400);
         //create admin
         createAdmin({userName, email, password, role},user.id).then((admin) => {
             logEvents(`${user.role}: ${user.userName} created by ${admin.role}: ${admin.userName}`, "actions.log");
@@ -159,12 +159,11 @@ export const deleteAdminByIdController = async (req: AdminByIdRequest, res: Resp
 
 
 // search admins table controller
-export const searchAdminsTableController = async (req: SearchAdminRequest, res: Response) => {
+export const searchAdminsTablController = async (req: SearchAdminRequest, res: Response) => {
     try {
       const searchParamas:SearchAdmin = {
-        UserName: req.query.UserName,
+        userName: req.query.userName,
         email: req.query.email,
-        role: req.query.role,
       };
       const searchFilters = constructSearchFilter<IAdminDocument>(searchParamas);
       // search admins table

@@ -25,6 +25,8 @@ import cookieParser from "cookie-parser";
 import { corsOptions } from "./config/cors.config";
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
+import { UserDefinition } from "./models/user.schema";
+import { PlansDefinition } from "./models/plan.schema";
 // initial the express server
 const app: Express = express();
 app.get("/", (req, res) => {
@@ -71,6 +73,287 @@ const swaggerDefinition = {
   ],
   components: {
     schemas: {
+      CreateUser: {
+        type: "object",
+        required: ["userName", "password", "email"],
+        properties: {
+          userName: { type: "string" },
+          password: { type: "string" },
+          email: { type: "string" },
+        },
+        example: {
+          userName: "admin",
+          password: "admin123",
+          email: "admin@example.com",
+        },
+      },
+      User: UserDefinition,
+      Plan: PlansDefinition,
+        "CreatePlan": {
+          "type": "object",
+          "required": [
+            "name",
+            "prefix",
+            "stripeProductId",
+            "stripeProductMonthlyPriceId",
+            "lookupKey",
+            "monthlyPrice",
+            "interval",
+            "intervalCount",
+            "trialDays",
+            "capability",
+            "mode",
+            "filters",
+            "pockets",
+            "builder"
+          ],
+          "properties": {
+            "name": { "type": "string" },
+            "prefix": { "type": "string" },
+            "description": { "type": "string", "nullable": true },
+            "stripeProductId": { "type": "string" },
+            "stripeProductMonthlyPriceId": { "type": "string" },
+            "lookupKey": { "type": "string" },
+            "poster": { "type": "string", "nullable": true },
+            "monthlyPrice": { "type": "number", "format": "float" },
+            "interval": { 
+              "type": "string", 
+              "enum": ["month", "year"] 
+            },
+            "intervalCount": { "type": "integer" },
+            "trialDays": { "type": "integer" },
+            "features": { 
+              "type": "array", 
+              "items": { "type": "string" },
+              "nullable": true 
+            },
+            "capability": { 
+              "type": "string", 
+              "enum": ["basic", "full"] 
+            },
+            "mode": { 
+              "type": "string", 
+              "enum": ["basic", "advanced"] 
+            },
+            "filters": {
+              "type": "object",
+              "required": ["limit", "sort", "skip", "nestedFilters"],
+              "properties": {
+                "limit": { "type": "integer" },
+                "sort": {
+                  "type": "object",
+                  "required": ["released", "updated", "installsExact", "currentVersionReviewsCount", "dailyReviewsCount"],
+                  "properties": {
+                    "released": { "type": "boolean" },
+                    "updated": { "type": "boolean" },
+                    "installsExact": { "type": "boolean" },
+                    "currentVersionReviewsCount": { "type": "boolean" },
+                    "dailyReviewsCount": { "type": "boolean" }
+                  }
+                },
+                "skip": { "type": "integer" },
+                "nestedFilters": {
+                  "type": "object",
+                  "required": ["match", "range", "term"],
+                  "properties": {
+                    "match": { "type": "boolean" },
+                    "range": { "type": "boolean" },
+                    "term": { "type": "boolean" }
+                  }
+                }
+              }
+            },
+            "pockets": {
+              "type": "object",
+              "required": ["limit", "maxItems"],
+              "properties": {
+                "limit": { "type": "integer" },
+                "maxItems": { "type": "integer" }
+              }
+            },
+            "builder": {
+              "type": "object",
+              "required": ["maxApps", "allowedApps", "allowedAds"],
+              "properties": {
+                "maxApps": { "type": "integer" },
+                "allowedApps": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "allowedAds": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+          },
+          "example": {
+            "name": "Premium Plan",
+            "prefix": "premium",
+            "description": "A premium subscription plan",
+            "stripeProductId": "prod_12345",
+            "stripeProductMonthlyPriceId": "price_67890",
+            "lookupKey": "premium_plan_123",
+            "poster": "https://example.com/poster.jpg",
+            "monthlyPrice": 29.99,
+            "interval": "month",
+            "intervalCount": 1,
+            "trialDays": 14,
+            "features": ["Feature 1", "Feature 2"],
+            "capability": "full",
+            "mode": "advanced",
+            "filters": {
+              "limit": 10,
+              "sort": {
+                "released": true,
+                "updated": true,
+                "installsExact": false,
+                "currentVersionReviewsCount": true,
+                "dailyReviewsCount": false
+              },
+              "skip": 5,
+              "nestedFilters": {
+                "match": true,
+                "range": true,
+                "term": false
+              }
+            },
+            "pockets": {
+              "limit": 20,
+              "maxItems": 50
+            },
+            "builder": {
+              "maxApps": 10,
+              "allowedApps": ["App 1", "App 2"],
+              "allowedAds": ["Ad 1", "Ad 2"]
+            }
+          }
+      },      
+        "UpdatePlan": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "name": { "type": "string" },
+            "prefix": { "type": "string" },
+            "description": { "type": "string", "nullable": true },
+            "stripeProductId": { "type": "string" },
+            "stripeProductMonthlyPriceId": { "type": "string" },
+            "lookupKey": { "type": "string" },
+            "poster": { "type": "string", "nullable": true },
+            "monthlyPrice": { "type": "number", "format": "float" },
+            "interval": { 
+              "type": "string", 
+              "enum": ["month", "year"] 
+            },
+            "intervalCount": { "type": "integer" },
+            "trialDays": { "type": "integer" },
+            "features": { 
+              "type": "array", 
+              "items": { "type": "string" },
+              "nullable": true 
+            },
+            "capability": { 
+              "type": "string", 
+              "enum": ["basic", "full"] 
+            },
+            "mode": { 
+              "type": "string", 
+              "enum": ["basic", "advanced"] 
+            },
+            "filters": {
+              "type": "object",
+              "required": ["limit", "sort", "skip", "nestedFilters"],
+              "properties": {
+                "limit": { "type": "integer" },
+                "sort": {
+                  "type": "object",
+                  "required": ["released", "updated", "installsExact", "currentVersionReviewsCount", "dailyReviewsCount"],
+                  "properties": {
+                    "released": { "type": "boolean" },
+                    "updated": { "type": "boolean" },
+                    "installsExact": { "type": "boolean" },
+                    "currentVersionReviewsCount": { "type": "boolean" },
+                    "dailyReviewsCount": { "type": "boolean" }
+                  }
+                },
+                "skip": { "type": "integer" },
+                "nestedFilters": {
+                  "type": "object",
+                  "required": ["match", "range", "term"],
+                  "properties": {
+                    "match": { "type": "boolean" },
+                    "range": { "type": "boolean" },
+                    "term": { "type": "boolean" }
+                  }
+                }
+              }
+            },
+            "pockets": {
+              "type": "object",
+              "required": ["limit", "maxItems"],
+              "properties": {
+                "limit": { "type": "integer" },
+                "maxItems": { "type": "integer" }
+              }
+            },
+            "builder": {
+              "type": "object",
+              "required": ["maxApps", "allowedApps", "allowedAds"],
+              "properties": {
+                "maxApps": { "type": "integer" },
+                "allowedApps": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "allowedAds": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+          },
+          "example": {
+            "name": "Premium Plan",
+            "prefix": "premium",
+            "description": "A premium subscription plan",
+            "stripeProductId": "prod_12345",
+            "stripeProductMonthlyPriceId": "price_67890",
+            "lookupKey": "premium_plan_123",
+            "poster": "https://example.com/poster.jpg",
+            "monthlyPrice": 29.99,
+            "interval": "month",
+            "intervalCount": 1,
+            "trialDays": 14,
+            "features": ["Feature 1", "Feature 2"],
+            "capability": "full",
+            "mode": "advanced",
+            "filters": {
+              "limit": 10,
+              "sort": {
+                "released": true,
+                "updated": true,
+                "installsExact": false,
+                "currentVersionReviewsCount": true,
+                "dailyReviewsCount": false
+              },
+              "skip": 5,
+              "nestedFilters": {
+                "match": true,
+                "range": true,
+                "term": false
+              }
+            },
+            "pockets": {
+              "limit": 20,
+              "maxItems": 50
+            },
+            "builder": {
+              "maxApps": 10,
+              "allowedApps": ["App 1", "App 2"],
+              "allowedAds": ["Ad 1", "Ad 2"]
+            }
+          }
+      },      
       CreateAdmin: {
         type: "object",
         required: ["userName", "password", "email", "role"],

@@ -1,5 +1,5 @@
-import { randomUUID } from "crypto";
-import { Schema, model, Document, Types, Model } from "mongoose";
+import { Schema, model, Document,  Model } from "mongoose";
+import mongooseToSwagger from "mongoose-to-swagger";
 
 export interface ISort {
   released: boolean;
@@ -145,3 +145,5 @@ planSchema.index({
 });
 
 export const Plans:Model<IPlanDocument> = model<IPlanDocument>("Plan", planSchema);
+export const PlansDefinition = mongooseToSwagger(Plans);
+

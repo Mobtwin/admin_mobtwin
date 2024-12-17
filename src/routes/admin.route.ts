@@ -47,15 +47,72 @@ export const adminRouter = Router();
  *             $ref: '#/components/schemas/CreateAdmin'
  *     responses:
  *       201:
- *         description: Admin successfully created
+ *         description: Admin Created Successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   $ref: '#/components/schemas/Admin'
+ *                 message:
+ *                   type: string
+ *                   example: Admin created successfully!
  *       400:
- *         description: Bad request due to validation failure
+ *         description: Bad request due to missing or invalid email address
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Missing field. email address is required
  *       401:
- *         description: Unauthorized if user does not have Access Token
+ *         description: Unauthorized due to missing or invalid token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Unauthorized!
  *       403:
- *         description: Forbidden if user does not have permission to create admin
+ *         description: Forbidden due to missing or invalid permissions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Forbidden Insufficient permissions!
  *       500:
  *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Error Something went wrong
  */
 adminRouter.post(
   "/create",
@@ -93,13 +150,57 @@ adminRouter.post(
  *               items:
  *                 $ref: '#/components/schemas/Admin'
  *       400:
- *         description: Invalid pagination query
+ *         description: Bad request due to missing or invalid fields or parameters
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Missing field.
  *       401:
- *         description: Unauthorized if user does not have Access Token
+ *         description: Unauthorized due to missing or invalid token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Unauthorized!
  *       403:
- *         description: Forbidden if user does not have permission to read or read_own admins
+ *         description: Forbidden due to missing or invalid permissions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Forbidden Insufficient permissions!
  *       500:
  *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Error Something went wrong
  */
 adminRouter.get(
   "/",

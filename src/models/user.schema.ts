@@ -1,5 +1,5 @@
 import { Schema, model, Document, Types, Model } from 'mongoose';
-
+import mongooseToSwagger from 'mongoose-to-swagger';
 export interface IDevice extends Document {
   ipAddress?: string;
   userAgent?: string;
@@ -149,3 +149,4 @@ const userSchema = new Schema<IUser>({
 });
 
 export const Users:Model<IUser> = model<IUser>('User', userSchema);
+export const UserDefinition = mongooseToSwagger(Users);

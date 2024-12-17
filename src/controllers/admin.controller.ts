@@ -167,7 +167,7 @@ export const searchAdminsTablController = async (req: SearchAdminRequest, res: R
       };
       const searchFilters = constructSearchFilter<IAdminDocument>(searchParamas);
       // search admins table
-      getSearchedAdmins({skip:res.locals.skip,limit:res.locals.limit,filters:searchFilters}).then(({data,pagination})=>{
+      getSearchedAdmins({skip:res.locals.skip,limit:res.locals.limit,filters:{...searchFilters,removed_at: { $exists: false }}}).then(({data,pagination})=>{
         return sendSuccessResponse(res, data, "Admins retrieved successfully!", 200,pagination);
       }).catch((error) => {
         return sendErrorResponse(res, error, `Error: ${error.message}`, 400);

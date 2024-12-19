@@ -1,7 +1,21 @@
 import multer from 'multer';
 import fs from 'fs';
 import { generateRandomCharacters } from '../utils/string.format';
-
+import { Request } from 'express';
+const imageFilter = (
+    req: Request,
+    file: Express.Multer.File,
+    cb: multer.FileFilterCallback
+  ) => {
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error("Only JPEG, PNG, WEBP and GIF files are allowed"));
+    }
+  };
+  // Multer setup for handling multipart/form-data
+const memoryStorage = multer.memoryStorage();
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         // Set the upload directory
@@ -50,3 +64,8 @@ export const multerAppsUpload = multer({
         }
     }
 });
+export const imageUpload = multer({
+    storage: memoryStorage,
+    limits: { fileSize: 2 * 1024 * 1024 },
+    fileFilter: imageFilter,
+  });

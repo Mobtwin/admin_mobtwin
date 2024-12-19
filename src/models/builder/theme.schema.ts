@@ -1,5 +1,6 @@
 import { Schema, model, Document, Model } from "mongoose";
 import { ITemplateDocument } from "./templates.schema";
+import mongooseToSwagger from 'mongoose-to-swagger';
 
 export const THEME_APPROVED = "approved";
 export const THEME_PENDING = "pending";
@@ -49,3 +50,4 @@ themeSchema.set('toObject', { virtuals: true });
 themeSchema.set('toJSON', { virtuals: true });
 // Create a Model.
 export const Theme: Model<IThemeDocument> = model<IThemeDocument>('Theme', themeSchema);
+export const ThemeDefinition = mongooseToSwagger(Theme);

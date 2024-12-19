@@ -27,6 +27,7 @@ import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import { UserDefinition } from "./models/user.schema";
 import { PlansDefinition } from "./models/plan.schema";
+import { ThemeDefinition } from "./models/builder/theme.schema";
 // initial the express server
 const app: Express = express();
 app.get("/", (req, res) => {
@@ -88,6 +89,43 @@ const swaggerDefinition = {
         },
       },
       User: UserDefinition,
+      Theme: ThemeDefinition,
+      CreateTheme : {
+        type: "object",
+        required: ["name", "repoName", "repoOwner", "templateId"],
+        properties: {
+          name: { type: "string" },
+          summary: { type: "string" }, // optional
+          repoName: { type: "string" },
+          repoOwner: { type: "string" },
+          templateId: { type: "string" },
+        },
+        example: {
+          name: "Dark Theme",
+          summary: "A dark theme for the application",
+          repoName: "theme-dark",
+          repoOwner: "developer123",
+          templateId: "template-001",
+        },
+      },
+      UpdateTheme : {
+        type: "object",
+        required: [],
+        properties: {
+          name: { type: "string" },
+          summary: { type: "string" }, // optional
+          repoName: { type: "string" },
+          repoOwner: { type: "string" },
+          templateId: { type: "string" },
+        },
+        example: {
+          name: "Dark Theme",
+          summary: "A dark theme for the application",
+          repoName: "theme-dark",
+          repoOwner: "developer123",
+          templateId: "template-001",
+        },
+      },
       Plan: PlansDefinition,
         "CreatePlan": {
           "type": "object",
@@ -449,6 +487,7 @@ app.use("/api/v1/template", routes.templateRouter);
 app.use("/api/v1/appsBuild", routes.appsBuildRouter);
 app.use("/api/v1/permission", routes.permissionRouter);
 app.use("/api/v1/role", routes.roleRouter);
+app.use("/api/v1/images", routes.uploadRouter);
 
 //not found route
 app.all("*", (req, res) => {

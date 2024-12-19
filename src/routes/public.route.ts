@@ -4,7 +4,13 @@ import { uploadImageController } from '../controllers/upload.controller';
 export const uploadRouter = express.Router();
 /**
  * @swagger
- * /upload-images:
+ * tags:
+ *   name: Images
+ *   description: API to manage users
+ */
+/**
+ * @swagger
+ * /images/upload-images:
  *   post:
  *     summary: Upload images
  *     description: Allows authenticated users to upload up to 20 images.

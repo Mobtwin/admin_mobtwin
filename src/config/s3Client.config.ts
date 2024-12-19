@@ -72,6 +72,7 @@ export const uploadFilesToSpaces = async (
     const results = await Promise.all(uploadPromises);
     return results; // Return an array of URLs for the uploaded files
   } catch (error: any) {
+    console.log({error});
     throw new Error(`Error uploading files: ${error.message}`);
   }
 };

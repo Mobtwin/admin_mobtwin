@@ -15,6 +15,10 @@ export const environment: {
   GITHUB_TOKEN: string,
   REDIS_HOST: string,
   REDIS_PORT: string,
+  STRIPE_SECRET_KEY: string,
+  DIGITAL_OCEAN_ACCESS_KEY:string,
+  DIGITAL_OCEAN_SECRET_KEY:string,
+  DIGITAL_OCEAN_BUCKET_NAME:string,
 } = {
   PORT: process.env.PORT as string,
   MONGODB_URI: process.env.MONGODB_URI as string,
@@ -28,5 +32,8 @@ export const environment: {
   GITHUB_TOKEN: process.env.GITHUB_TOKEN as string,
   REDIS_HOST: process.env.REDIS_HOST as string,
   REDIS_PORT: process.env.REDIS_PORT as string,
-  
+  STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY as string,
+  DIGITAL_OCEAN_ACCESS_KEY: process.env.DIGITAL_OCEAN_ACCESS_KEY as string,
+  DIGITAL_OCEAN_SECRET_KEY: process.env.DIGITAL_OCEAN_SECRET_KEY as string,
+  DIGITAL_OCEAN_BUCKET_NAME: process.env.DIGITAL_OCEAN_BUCKET_NAME as string
 };

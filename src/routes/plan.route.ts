@@ -431,7 +431,7 @@ planRouter.get(
 
 planRouter.put(
   "/:id",
-  validateRequest(updatePlanSchema),
+  // validateRequest(updatePlanSchema),
   checkPermission([PLAN_PERMISSIONS.UPDATE], {
     action: PERMISSIONS_ACTIONS.UPDATE,
     table: PLAN_TABLE,

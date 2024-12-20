@@ -69,7 +69,7 @@ const swaggerDefinition = {
   },
   servers: [
     {
-      url: `http://localhost:${environment.PORT}/api/v1`,
+      url: `${environment.HOST}/api/v1`,
     },
   ],
   components: {

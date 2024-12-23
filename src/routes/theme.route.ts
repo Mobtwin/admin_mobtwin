@@ -351,8 +351,8 @@ themeRouter.get(
 /**
  * @swagger
  * /theme/{id}:
- *   get:
- *     summary: Get theme by ID
+ *   put:
+ *     summary: Update theme by ID
  *     description: Retrieve a specific theme by its ID. Requires 'READ' permission.
  *     tags:
  *       - Themes

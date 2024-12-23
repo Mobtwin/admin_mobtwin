@@ -28,6 +28,7 @@ import swaggerUi from "swagger-ui-express";
 import { UserDefinition } from "./models/user.schema";
 import { PlansDefinition } from "./models/plan.schema";
 import { ThemeDefinition } from "./models/builder/theme.schema";
+import { TemplateDefinition } from "./models/builder/templates.schema";
 // initial the express server
 const app: Express = express();
 app.get("/", (req, res) => {
@@ -89,6 +90,31 @@ const swaggerDefinition = {
         },
       },
       User: UserDefinition,
+      CreateTemplate: {
+        type: "object",
+        required: ["name", "type"],
+        properties: {
+          name: { type: "string" },
+          type: { type: "string" },// application or game
+        },
+        example: {
+          name: "quizeers",
+          type: "application",
+        },
+      },
+      UpdateTemplate: {
+        type: "object",
+        required: [],
+        properties: {
+          name: { type: "string" },
+          type: { type: "string" },// application or game
+        },
+        example: {
+          name: "quizeers",
+          type: "application",
+        },
+      },
+      Template: TemplateDefinition,
       Theme: ThemeDefinition,
       CreateTheme : {
         type: "object",

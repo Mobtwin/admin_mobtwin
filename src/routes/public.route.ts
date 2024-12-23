@@ -6,7 +6,7 @@ export const uploadRouter = express.Router();
  * @swagger
  * tags:
  *   name: Images
- *   description: API to manage users
+ *   description: API to manage images
  */
 /**
  * @swagger

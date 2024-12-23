@@ -22,7 +22,12 @@ import paginationMiddleware from "../middlewares/pagination.middleware";
 import { paginationQuerySchema } from "../validators/pagination.validator";
 
 export const themeRouter = Router();
-
+/**
+ * @swagger
+ * tags:
+ *   name: Themes
+ *   description: API to manage Themes
+ */
 /**
  * @swagger
  * /theme:

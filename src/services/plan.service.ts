@@ -22,11 +22,11 @@ export const getAllPlans = async ({readOwn=false,userId,limit,skip}:{readOwn:boo
   try {
     if(readOwn){
       const planIds = await getOwnItemsByPermissionAction(userId,PLAN_TABLE,PERMISSIONS_ACTIONS.READ);
-      const {data,pagination} = await fetchPaginatedData<IPlanDocument>(Plans,skip,limit,{_id:{$in:planIds}});
+      const {data,pagination} = await fetchPaginatedData<IPlanDocument>(Plans,skip,limit,{_id:{$in:planIds},removed_at: { $exists: false }});
       return {data,pagination};
     }
     //get all plans
-    const {data,pagination} = await fetchPaginatedData<IPlanDocument>(Plans,skip,limit,{});
+    const {data,pagination} = await fetchPaginatedData<IPlanDocument>(Plans,skip,limit,{removed_at: { $exists: false }});
     return {data,pagination};
   } catch (error: any) {
     throw error;

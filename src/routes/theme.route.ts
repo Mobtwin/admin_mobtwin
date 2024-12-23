@@ -132,11 +132,11 @@ themeRouter.post(
  *       - bearerAuth: []
  *     parameters:
  *       - in: query
- *         name: skip
+ *         name: page
  *         schema:
  *           type: integer
  *           example: 0
- *         description: Number of records to skip (for pagination).
+ *         description: Number of page (for pagination).
  *       - in: query
  *         name: limit
  *         schema:

@@ -1,4 +1,5 @@
 import { Schema, model, Document, Model } from "mongoose";
+import mongooseToSwagger from "mongoose-to-swagger";
 
 export const TEMPLATE_TYPES = ["application", "game"];
 export const TEMPLATE_TYPES_OPTIONS = {
@@ -29,3 +30,5 @@ templateSchema.index({ name: 1 });
 
 // Create a Model.
 export const Templates: Model<ITemplateDocument> = model<ITemplateDocument>('Template', templateSchema);
+export const TemplateDefinition = mongooseToSwagger(Templates);
+

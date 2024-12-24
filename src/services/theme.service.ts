@@ -35,10 +35,10 @@ export const getAllThemes = async ({
   try {
     if (readOwn) {
       const themeIds = await getOwnItemsByPermissionAction(userId,THEME_TABLE,PERMISSIONS_ACTIONS.READ);
-      const { data, pagination } = await fetchPaginatedData<IThemeDocument>(Theme,skip,limit,{_id: { $in: themeIds }});
+      const { data, pagination } = await fetchPaginatedData<IThemeDocument>(Theme,skip,limit,{_id: { $in: themeIds },removed_at: { $exists: false }});
       return { data, pagination };
     }
-    const { data, pagination } = await fetchPaginatedData<IThemeDocument>(Theme,skip,limit,{});
+    const { data, pagination } = await fetchPaginatedData<IThemeDocument>(Theme,skip,limit,{removed_at: { $exists: false }});
       return { data, pagination };
   } catch (error: any) {
     throw error;
@@ -49,7 +49,7 @@ export const getAllThemes = async ({
 export const getThemeById = async (id: string) => {
   try {
     const theme = await Theme.findById(id);
-    if (!theme) throw new Error("Theme not found!");
+    if (!theme || theme.removed_at) throw new Error("Theme not found!");
     return theme;
   } catch (error: any) {
     throw error;
@@ -59,7 +59,7 @@ export const getThemeById = async (id: string) => {
 // update theme by id
 export const updateTheme = async (id: string, theme: UpdateTheme) => {
   try {
-    const updatedTheme = await Theme.findByIdAndUpdate(id, theme, {
+    const updatedTheme = await Theme.findOneAndUpdate({_id:id,removed_at: { $exists: false }}, theme, {
       new: true,
     });
     if (!updatedTheme) throw new Error("Theme not updated!");

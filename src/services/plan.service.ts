@@ -22,11 +22,11 @@ export const getAllPlans = async ({readOwn=false,userId,limit,skip}:{readOwn:boo
   try {
     if(readOwn){
       const planIds = await getOwnItemsByPermissionAction(userId,PLAN_TABLE,PERMISSIONS_ACTIONS.READ);
-      const {data,pagination} = await fetchPaginatedData<IPlanDocument>(Plans,skip,limit,{_id:{$in:planIds},removed_at: { $exists: false }});
+      const {data,pagination} = await fetchPaginatedData<IPlanDocument>(Plans,skip,limit,{_id:{$in:planIds},removed_at: null});
       return {data,pagination};
     }
     //get all plans
-    const {data,pagination} = await fetchPaginatedData<IPlanDocument>(Plans,skip,limit,{removed_at: { $exists: false }});
+    const {data,pagination} = await fetchPaginatedData<IPlanDocument>(Plans,skip,limit,{removed_at: null});
     return {data,pagination};
   } catch (error: any) {
     throw error;
@@ -38,7 +38,7 @@ export const getPlanById = async (id: string) => {
   try {
     //get plan by id
     const plan = await Plans.findById(id);
-    if (!plan) throw new Error("Plan not found!");
+    if (!plan || plan.removed_at) throw new Error("Plan not found!");
     return plan;
   } catch (error: any) {
     throw error;
@@ -49,7 +49,7 @@ export const getPlanById = async (id: string) => {
 export const updatePlanById = async (id: string, plan: UpdatePlan) => {
   try {
     //update plan by id
-    const updatedPlan = await Plans.findByIdAndUpdate(id, plan, { new: true });
+    const updatedPlan = await Plans.findOneAndUpdate({_id:id,removed_at:null}, plan, { new: true });
     if (!updatedPlan) throw new Error("Plan not updated!");
     return updatedPlan;
   } catch (error: any) {

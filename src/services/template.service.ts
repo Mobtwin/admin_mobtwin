@@ -22,11 +22,11 @@ export const getAllTemplates = async ({readOwn=false,userId,limit,skip}:{readOwn
     try {
         if(readOwn){
             const templateIds = await getOwnItemsByPermissionAction(userId,TEMPLATE_TABLE,PERMISSIONS_ACTIONS.READ)
-            const {data,pagination} = await fetchPaginatedData<ITemplateDocument>(Templates,skip,limit,{_id:{$in:templateIds}});
+            const {data,pagination} = await fetchPaginatedData<ITemplateDocument>(Templates,skip,limit,{_id:{$in:templateIds},removed_at: { $exists: false }});
             return {data,pagination};
         }
         // get all templates
-        const {data,pagination} = await fetchPaginatedData<ITemplateDocument>(Templates,skip,limit,{});
+        const {data,pagination} = await fetchPaginatedData<ITemplateDocument>(Templates,skip,limit,{removed_at: { $exists: false }});
         return {data,pagination};
     } catch (error: any) {
         throw error;
@@ -38,7 +38,7 @@ export const getTemplateById = async (id: string) => {
     try {
         // get template by id
         const template = await Templates.findById(id);
-        if (!template) throw new Error("Template not found!");
+        if (!template || template.removed_at) throw new Error("Template not found!");
         return template;
     } catch (error: any) {
         throw error;
@@ -49,7 +49,7 @@ export const getTemplateById = async (id: string) => {
 export const updateTemplateById = async (id: string, template: UpdateTemplate) => {
     try {
         // update template by id
-        const updatedTemplate = await Templates.findByIdAndUpdate(id, {...template}, { new: true });
+        const updatedTemplate = await Templates.findOneAndUpdate({_id:id,removed_at: { $exists: false }}, {...template}, { new: true });
         if (!updatedTemplate) throw new Error("Template not updated!");
         return updatedTemplate;
     } catch (error: any) {

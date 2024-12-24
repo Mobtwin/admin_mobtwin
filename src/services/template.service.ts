@@ -22,11 +22,11 @@ export const getAllTemplates = async ({readOwn=false,userId,limit,skip}:{readOwn
     try {
         if(readOwn){
             const templateIds = await getOwnItemsByPermissionAction(userId,TEMPLATE_TABLE,PERMISSIONS_ACTIONS.READ)
-            const {data,pagination} = await fetchPaginatedData<ITemplateDocument>(Templates,skip,limit,{_id:{$in:templateIds},removed_at: { $exists: false }});
+            const {data,pagination} = await fetchPaginatedData<ITemplateDocument>(Templates,skip,limit,{_id:{$in:templateIds},removed_at: null});
             return {data,pagination};
         }
         // get all templates
-        const {data,pagination} = await fetchPaginatedData<ITemplateDocument>(Templates,skip,limit,{removed_at: { $exists: false }});
+        const {data,pagination} = await fetchPaginatedData<ITemplateDocument>(Templates,skip,limit,{removed_at: null});
         return {data,pagination};
     } catch (error: any) {
         throw error;
@@ -49,7 +49,7 @@ export const getTemplateById = async (id: string) => {
 export const updateTemplateById = async (id: string, template: UpdateTemplate) => {
     try {
         // update template by id
-        const updatedTemplate = await Templates.findOneAndUpdate({_id:id,removed_at: { $exists: false }}, {...template}, { new: true });
+        const updatedTemplate = await Templates.findOneAndUpdate({_id:id,removed_at: null}, {...template}, { new: true });
         if (!updatedTemplate) throw new Error("Template not updated!");
         return updatedTemplate;
     } catch (error: any) {

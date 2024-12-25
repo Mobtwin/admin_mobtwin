@@ -2,12 +2,14 @@ import { Request, Response } from "express";
 import { sendErrorResponse, sendSuccessResponse } from "../utils/response";
 import { verifyPasswordStrength } from "../utils/string.format";
 import validate from "deep-email-validator";
-import { createUser, deleteUserById, getAllUsers, getUserById, updateUserById } from "../services/user.service";
+import { createUser, deleteUserById, getAllUsers, getSearchedUsers, getUserById, updateUserById } from "../services/user.service";
 import { ROLES, ROLES_OPTIONS } from "../models/admin.schema";
 import { logEvents } from "../middlewares/logger";
-import { CreateUserRequest, UpdateUserRequest, UserByIdRequest } from "../validators/user.validator";
+import { CreateUserRequest, SearchUsers, SearchUsersRequest, UpdateUserRequest, UserByIdRequest } from "../validators/user.validator";
 import { USER_PERMISSIONS, USER_TABLE } from "../constant/user.constant";
 import { invalidateCache } from "../middlewares/cache.middleware";
+import { IUser } from "../models/user.schema";
+import { constructSearchFilter } from "../utils/search";
 
 //create new user
 export const createUserController = async (req: CreateUserRequest, res: Response) => {

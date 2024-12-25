@@ -173,5 +173,28 @@ export const deleteUserByIdController = async (req: UserByIdRequest, res: Respon
 
 
 
+// search users table controller
+export const searchUsersTablController = async (req: SearchUsersRequest, res: Response) => {
+  try {
+    const searchParamas:SearchUsers = {
+      userName: req.query.userName,
+      email: req.query.email,
+    };
+    const searchFilters = constructSearchFilter<IUser>(searchParamas);
+    // search users table
+    getSearchedUsers({skip:res.locals.skip,limit:res.locals.limit,filters:{...searchFilters,removed_at: { $exists: false }}}).then(({data,pagination})=>{
+      return sendSuccessResponse(res, data, "Users retrieved successfully!", 200,pagination);
+    }).catch((error) => {
+      return sendErrorResponse(res, error, `Error: ${error.message}`, 400);
+    });
+  } catch (error: any) {
+    return sendErrorResponse(res, error, `Error: ${error.message}`, 500);
+  }
+}
+
+
+
+
+
 
 

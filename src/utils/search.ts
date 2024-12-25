@@ -25,18 +25,22 @@ export const searchInModel = async <T extends Document>(
   }
 };
 
+
 export function constructSearchFilter<T>(searchParams: SearchParams): FilterQuery<T> {
-    const filter: FilterQuery<T> = {};
-  
-    // Cast the filter to `any` to avoid TypeScript issues with indexing.
-    const filterAny = filter as any;
-  
-    // Loop through each search param and add it to the filter
-    for (const key in searchParams) {
-      if (searchParams[key]) {
-        filterAny[key] = { $regex: searchParams[key], $options: 'i' };
-      }
-    }
-  
-    return filter as FilterQuery<T>;
-  }
+  const orConditions: FilterQuery<T>[] = [];
+
+  // Loop through each search param and create an $or condition for each key
+  Object.keys(searchParams)
+    .filter(key => searchParams[key]) // Only include keys with a value
+    .forEach(key => {
+      const value = searchParams[key] as string; // Cast the value to string
+
+      // Push the condition into the orConditions array, ensuring the structure is correct
+      orConditions.push({
+        [key]: { $regex: value, $options: 'i' },
+      } as FilterQuery<T>);
+    });
+
+  // Return the $or condition, or an empty object if there are no conditions
+  return orConditions.length > 0 ? { $or: orConditions } : {};
+}

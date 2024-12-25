@@ -1,6 +1,8 @@
 import { Request } from "express";
 import Joi from "joi";
 import { IUser } from "../models/user.schema";
+import { PaginationQuery, PaginationQueryRequest } from "./pagination.validator";
+import { SearchParams } from "../utils/search";
 
 // Define a Joi schema for user creation request
 export const createUserSchema = Joi.object<CreateUser>({
@@ -54,5 +56,34 @@ export interface UpdateUserRequest extends Request {
     body: UpdateUser;
 }
 
+// define joi schema for search users request
+
+export interface SearchUsersRequest extends PaginationQueryRequest {
+    query: {
+        userName?: string;
+        email?: string;
+        firstName?: string;
+        lastName?: string;
+        phoneNumber?: string;
+    };
+}
+
+export const searchUsersSchema = Joi.object<SearchUsers&PaginationQuery>({
+    userName: Joi.string().optional(),
+    email: Joi.string().optional(),
+    firstName: Joi.string().optional(),
+    lastName: Joi.string().optional(),
+    phoneNumber: Joi.string().optional(),
+    page: Joi.number().optional().default(1),
+    limit: Joi.number().optional().default(10),
+});
+
+export interface SearchUsers extends SearchParams {
+    userName?: string;
+    email?: string;
+    firstName?: string;
+    lastName?: string;
+    phoneNumber?: string;
+}
 
 

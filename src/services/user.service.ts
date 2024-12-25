@@ -5,6 +5,7 @@ import { getOwnItemsByPermissionAction } from "./itemSpecificPermissions.service
 import { USER_TABLE } from "../constant/user.constant";
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
 import fetchPaginatedData from "../utils/pagination";
+import { FilterQuery } from "mongoose";
 
 //create user
 export const createUser = async (
@@ -58,10 +59,10 @@ export const getAllUsers = async ({
         USER_TABLE,
         PERMISSIONS_ACTIONS.READ
       );
-      const { data, pagination } = await fetchPaginatedData<IUser>(Users,skip,limit,{ _id: { $in: userIds } });
+      const { data, pagination } = await fetchPaginatedData<IUser>(Users,skip,limit,{ _id: { $in: userIds },removed_at: null });
       return { data, pagination };
     }
-    const { data, pagination } = await fetchPaginatedData<IUser>(Users,skip,limit,{});
+    const { data, pagination } = await fetchPaginatedData<IUser>(Users,skip,limit,{removed_at: null});
     return { data, pagination };
   } catch (error: any) {
     throw error;
@@ -71,7 +72,7 @@ export const getAllUsers = async ({
 //get user by id
 export const getUserById = async (id: string) => {
   try {
-    const user = await Users.findById(id);
+    const user = await Users.findOne({_id:id,removed_at: null});
     if (!user) throw new Error(`User with id ${id} not found!`);
     return user;
   } catch (error: any) {
@@ -124,5 +125,15 @@ export const deleteUserById = async (id: string) => {
     return user;
   } catch (error: any) {
     throw error;
+  }
+};
+
+// get searched users
+export const getSearchedUsers = async ({skip,limit,filters}:{skip:number,limit:number,filters:FilterQuery<IUser>}) => {
+  try {
+      const {data,pagination} = await fetchPaginatedData<IUser>(Users,skip,limit,filters);
+      return {data, pagination};
+  } catch (error: any) {
+      throw new Error(error.message);
   }
 };

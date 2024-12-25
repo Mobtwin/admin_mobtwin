@@ -4,11 +4,13 @@ import {
   deleteUserByIdController,
   getAllUsersController,
   getUserByIdController,
+  searchUsersTablController,
   updateUserByIdController,
 } from "../controllers/user.controller";
 import { validateRequest } from "../middlewares/requestValidator.middleware";
 import {
   createUserSchema,
+  searchUsersSchema,
   updateUserSchema,
   userByIdSchema,
 } from "../validators/user.validator";
@@ -565,4 +567,146 @@ userRouter.put(
     action: PERMISSIONS_ACTIONS.DELETE,
   }),
   deleteUserByIdController
+);
+
+/**
+ * @swagger
+ * /user/search/here:
+ *   get:
+ *     tags: [Users]
+ *     summary: Search for users
+ *     description: Retrieve a paginated list of users based on search criteria. Includes filtering by username, email, and role.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: userName
+ *         schema:
+ *           type: string
+ *         description: Filter by user username
+ *       - in: query
+ *         name: email
+ *         schema:
+ *           type: string
+ *         description: Filter by user email
+ *       - in: query
+ *         name: firstName
+ *         schema:
+ *           type: string
+ *         description: Filter by user firstName
+ *       - in: query
+ *         name: lastName
+ *         schema:
+ *           type: string
+ *         description: Filter by user lastName
+ *       - in: query
+ *         name: phoneNumber
+ *         schema:
+ *           type: string
+ *         description: Filter by user phoneNumber
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *         description: The page number for pagination
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           example: 10
+ *         description: The number of results per page
+ *     responses:
+ *       200:
+ *         description: Users retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Users retrieved successfully!
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/User'
+ *                 pagination:
+ *                   type: object
+ *                   properties:
+ *                     page:
+ *                       type: integer
+ *                     limit:
+ *                       type: integer
+ *                     totalPages:
+ *                       type: integer
+ *                     totalResults:
+ *                       type: integer
+ *       400:
+ *         description: Validation error or bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Missing or invalid parameters
+ *       401:
+ *         description: Unauthorized access
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Unauthorized!
+ *       403:
+ *         description: Forbidden due to missing or invalid permissions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Forbidden Insufficient permissions!
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Error! Something went wrong
+ */
+
+userRouter.get(
+  "/search/here",
+  validateRequest(searchUsersSchema, "query"),
+  checkPermission([
+    USER_PERMISSIONS.READ,
+    USER_PERMISSIONS.READ_OWN,
+  ]),
+  paginationMiddleware,
+  cacheMiddleware(USER_TABLE),
+  searchUsersTablController
 );

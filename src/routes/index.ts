@@ -7,6 +7,7 @@ import { planRouter } from "./plan.route";
 import { permissionRouter } from "./permission.route";
 import { roleRouter } from "./role.route";
 import { uploadRouter } from "./public.route";
+import { collectionRouter } from "./collection.route";
 
 
 const routes = {
@@ -18,7 +19,8 @@ const routes = {
     planRouter,
     roleRouter,
     permissionRouter,
-    uploadRouter
+    uploadRouter,
+    collectionRouter
 };
 
 export default routes;

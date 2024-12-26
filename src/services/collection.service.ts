@@ -2,9 +2,9 @@ import { createCollection, updateCollection } from "../config/graphql.config";
 import { CreateCollection, UpdateCollectionById } from "../validators/collection.validator";
 
 // create a new collection
-export const createCollectionService = async (collection: CreateCollection,platform:"as"|"gp") => {
+export const createCollectionService = async (collection: CreateCollection,platform:"as"|"gp",token:string) => {
   try {
-    const result = await createCollection(collection, platform);
+    const result = await createCollection(collection, platform,token);
     return result;
   } catch (error: any) {
     throw error;
@@ -13,9 +13,9 @@ export const createCollectionService = async (collection: CreateCollection,platf
 
 // update a collection
 
-export const updateCollectionService = async (collectionId: string, collection: UpdateCollectionById, platform:"as"|"gp") => {
+export const updateCollectionService = async (collectionId: string, collection: UpdateCollectionById, platform:"as"|"gp",token:string) => {
   try {
-    const result = await updateCollection(collection, platform, collectionId);
+    const result = await updateCollection(collection, platform, collectionId,token);
     return result;
   } catch (error: any) {
     throw error;

@@ -7,11 +7,17 @@ import { CreateCollection, UpdateCollectionById } from '../validators/collection
 const GRAPHQL_API_URL = 'https://api.mobtwintest.com/graphql';
 
 // Helper function to send a GraphQL mutation request
-const sendGraphQLRequest = async (query: string, variables: any) => {
+const sendGraphQLRequest = async (query: string, variables: any,token:string) => {
   try {
     const response = await axios.post(GRAPHQL_API_URL, {
       query,
       variables,
+    },{
+        headers:{
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer YOUR_API_TOKEN_HERE', // Replace with your actual API token
+        }
     });
     return response.data;
   } catch (error:any) {
@@ -20,7 +26,7 @@ const sendGraphQLRequest = async (query: string, variables: any) => {
 };
 
 // Mutation for createCollection
-export const createCollection = async (collection: CreateCollection,platform:"as"|"gp") => {
+export const createCollection = async (collection: CreateCollection,platform:"as"|"gp",token:string) => {
   const query = `
     mutation CreateCollection($platform: String!, $collection: JSON!) {
       createCollection(platform: $platform, collection: $collection) {
@@ -36,11 +42,11 @@ export const createCollection = async (collection: CreateCollection,platform:"as
     collection: collection,
   };
   
-  return await sendGraphQLRequest(query, variables);
+  return await sendGraphQLRequest(query, variables,token);
 };
 
 // Mutation for updateCollection
-export const updateCollection = async (collection: UpdateCollectionById,platform:"as"|"gp",id:string) => {
+export const updateCollection = async (collection: UpdateCollectionById,platform:"as"|"gp",id:string,token:string) => {
   const query = `
     mutation UpdateCollection($id: String!, $platform: String!, $collection: JSON!) {
       updateCollection(id: $id, platform: $platform, collection: $collection) {
@@ -57,7 +63,7 @@ export const updateCollection = async (collection: UpdateCollectionById,platform
     collection: collection,
   };
 
-  return await sendGraphQLRequest(query, variables);
+  return await sendGraphQLRequest(query, variables,token);
 };
 
 // // Mutation for deleteCollection

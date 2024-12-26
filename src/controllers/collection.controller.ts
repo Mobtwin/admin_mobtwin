@@ -19,7 +19,7 @@ export const createCollectionController = async (
     const user = req.user;
 
     //create collection
-    createCollectionService(req.body, req.query.platform)
+    createCollectionService(req.body, req.query.platform,req.user.token||"")
       .then((value) => {
         logEvents(
           `Collection: ${value.name} created by ${user.role}: ${user.userName}`,
@@ -63,7 +63,7 @@ export const updateCollectionController = async (
     const user = req.user;
     const collectionId = req.params.id;
     const collection = req.body;
-    updateCollectionService(collectionId, collection, req.query.platform).then((value) => {
+    updateCollectionService(collectionId, collection, req.query.platform,req.user.token||"").then((value) => {
         logEvents(
             `Collection: ${value.name} updated by ${user.role}: ${user.userName}`,
             "actions.log"

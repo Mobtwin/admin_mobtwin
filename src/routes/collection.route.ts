@@ -357,7 +357,7 @@ collectionRouter.put(
  *         name: platform
  *         schema:
  *           type: string
- *           example: "gp" or "as"
+ *           example: gp or as
  *         description: Platform for which the collection is being deleted.
  *     responses:
  *       200:

@@ -17,6 +17,100 @@ export const collectionRouter = Router();
  *   name: Collections
  *   description: API to manage collections
  */
+/**
+ * @swagger
+ * /collection:
+ *   get:
+ *     summary: Retrieve all collections
+ *     description: Fetch all collections with pagination and caching support. Requires READ or READ_OWN permissions.
+ *     tags:
+ *       - Collections
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *         description: The page number for pagination.
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           example: 10
+ *         description: The number of collections per page.
+ *     responses:
+ *       200:
+ *         description: Collections fetched successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Collections fetched successfully!
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Collection'
+ *       400:
+ *         description: Bad request due to validation errors or invalid input.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Missing pagination parameters
+ *       401:
+ *         description: Unauthorized - Missing or invalid JWT token.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Unauthorized!
+ *       403:
+ *         description: Forbidden. User lacks sufficient permissions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Forbidden. Insufficient permissions!
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Error! Unable to fetch collections
+ */
 
 collectionRouter.get(
   "/",

@@ -24,7 +24,15 @@ const sendGraphQLRequest = async (query: string, variables: any,token:string) =>
     throw new Error(`GraphQL request failed: ${error.message}`);
   }
 };
-
+// Query for getCollections
+export const getCollections = async (token: string) => {
+  const query = `
+    query GetCollections {
+      getCollections
+    }
+  `;
+  return await sendGraphQLRequest(query, {}, token);
+};
 // Mutation for createCollection
 export const createCollection = async (collection: CreateCollection,platform:"as"|"gp",token:string) => {
   const query = `
@@ -66,21 +74,21 @@ export const updateCollection = async (collection: UpdateCollectionById,platform
   return await sendGraphQLRequest(query, variables,token);
 };
 
-// // Mutation for deleteCollection
-// export const deleteCollection = async (input: DeleteCollectionInput, user: any) => {
-//   const query = `
-//     mutation DeleteCollection($id: String!, $platform: String!) {
-//       deleteCollection(id: $id, platform: $platform) {
-//         id
-//         platform
-//         success
-//       }
-//     }
-//   `;
-//   const variables = {
-//     id: input.id,
-//     platform: input.platform,
-//   };
+// Mutation for deleteCollection
+export const deleteCollection = async (platform:"as"|"gp",id:string, token: string) => {
+  const query = `
+    mutation DeleteCollection($id: String!, $platform: String!) {
+      deleteCollection(id: $id, platform: $platform) {
+        id
+        platform
+        success
+      }
+    }
+  `;
+  const variables = {
+    id: id,
+    platform: platform,
+  };
 
-//   return await sendGraphQLRequest(query, variables);
-// };
+  return await sendGraphQLRequest(query, variables,token);
+};

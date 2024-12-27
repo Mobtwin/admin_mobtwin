@@ -82,3 +82,18 @@ export const updateCollectionByIdSchema = Joi.object<UpdateCollectionById>({
     logs: Joi.array().items(Joi.string()).optional(),
     apps: Joi.array().items(Joi.object()).optional(),
 });
+
+// define joi schema for delete collection request by id
+
+export interface DeleteCollectionByIdRequest extends Request {
+    params: {
+        id: string;
+    };
+    query: {
+        platform: 'gp'|"as";
+    };
+}
+
+export const deleteCollectionByIdSchema = Joi.object({
+    id: Joi.string().required(),
+});

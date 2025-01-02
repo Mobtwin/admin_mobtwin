@@ -1,12 +1,12 @@
 import { CorsOptions } from "cors";
 
 export const allowedOrigins = [
-    'https://mobtwintest.com',
-    'https://dashboard.mobtwintest.com',
-    'https://api.mobtwintest.com',
-    'https://user.mobtwintest.com',
+    'https://mobtwin.com',
+    'https://dashboard.mobtwin.com',
+    'https://api.mobtwin.com',
+    'https://user.mobtwin.com',
     'https://100.42.182.147',
-    'https://admin.mobtwintest.com'
+    'https://admin.mobtwin.com'
 ];
 
 

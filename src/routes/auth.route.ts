@@ -20,7 +20,7 @@ export const authRouter = Router();
  */
 /**
  * @swagger
- * /login:
+ * /auth/login:
  *   post:
  *     summary: Admin login
  *     description: Authenticates an admin user with their email and password. Returns an access token on successful login.

@@ -46,7 +46,7 @@ serverAdapter.setBasePath("/admin");
 app.use("/admin", serverAdapter.getRouter());
 
 // middleware to handle CORS
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(cookieParser());
 // middleware to handle request logs
 app.use(logger);

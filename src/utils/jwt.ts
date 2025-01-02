@@ -56,7 +56,7 @@ export const checkToken = async (token: string,type:"access"|"refresh") => {
 
 
 export const createTokens = async(res: Response, payload: Express.User) => {
-  const accessToken = await generateToken(payload, '3d', "access");
+  const accessToken = await generateToken(payload, '30s', "access");
   const refreshToken = await generateToken(payload, '1d', "refresh");
 
   res.cookie(environment.COOKIE_NAME, refreshToken, {
@@ -75,7 +75,7 @@ export const refreshToken = (req: Request, res: Response) => {
 
   try {
     const decoded = jwt.verify(refreshToken, environment.JWT_REFRESH_SECRET);
-    const accessToken = generateToken(decoded, '3d', "access");
+    const accessToken = generateToken(decoded, '30s', "access");
     delete (decoded as any).exp;
     delete (decoded as any).iat;
     return accessToken;

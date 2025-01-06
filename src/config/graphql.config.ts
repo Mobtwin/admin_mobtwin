@@ -2,9 +2,10 @@
 
 import axios from 'axios';
 import { CreateCollection, UpdateCollectionById } from '../validators/collection.validator';
+import { environment } from '../utils/loadEnvironment';
 
 // Define your GraphQL API endpoint
-const GRAPHQL_API_URL = 'https://api.mobtwin.com/graphql';
+const GRAPHQL_API_URL = environment.GRAPHQL_API_URL;
 
 // Helper function to send a GraphQL mutation request
 const sendGraphQLRequest = async (query: string, variables: any,token:string) => {

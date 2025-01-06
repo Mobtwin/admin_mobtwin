@@ -12,12 +12,13 @@ import { Admins } from '../models/admin.schema';
 import { PERMISSION_PERMISSIONS } from '../constant/permission.constant';
 import { ROLE_PERMISSIONS } from '../constant/role.constant';
 import { ITEM_SPECIFIC_PERMISSION_PERMISSIONS } from '../constant/itemSpecificPermission.constant';
+import { COLLECTION_PERMISSIONS } from '../constant/collection.constant';
 
 
 const rolesData = [
   {
     name: 'Admin',
-    permissions: [...Object.values(ADMIN_PERMISSIONS),...Object.values(APPS_BUILD_PERMISSIONS),...Object.values(USER_PERMISSIONS),...Object.values(THEME_PERMISSIONS),...Object.values(TEMPLATE_PERMISSIONS),...Object.values(PLAN_PERMISSIONS),...Object.values(PERMISSION_PERMISSIONS),...Object.values(ROLE_PERMISSIONS),...Object.values(ITEM_SPECIFIC_PERMISSION_PERMISSIONS)],
+    permissions: [...Object.values(ADMIN_PERMISSIONS),...Object.values(APPS_BUILD_PERMISSIONS),...Object.values(USER_PERMISSIONS),...Object.values(THEME_PERMISSIONS),...Object.values(TEMPLATE_PERMISSIONS),...Object.values(PLAN_PERMISSIONS),...Object.values(PERMISSION_PERMISSIONS),...Object.values(ROLE_PERMISSIONS),...Object.values(ITEM_SPECIFIC_PERMISSION_PERMISSIONS),...Object.values(COLLECTION_PERMISSIONS)],
   },
   {
     name: 'Checker',

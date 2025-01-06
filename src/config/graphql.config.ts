@@ -4,7 +4,7 @@ import axios from 'axios';
 import { CreateCollection, UpdateCollectionById } from '../validators/collection.validator';
 
 // Define your GraphQL API endpoint
-const GRAPHQL_API_URL = 'https://api.mobtwintest.com/graphql';
+const GRAPHQL_API_URL = 'https://api.mobtwin.com/graphql';
 
 // Helper function to send a GraphQL mutation request
 const sendGraphQLRequest = async (query: string, variables: any,token:string) => {
@@ -16,7 +16,7 @@ const sendGraphQLRequest = async (query: string, variables: any,token:string) =>
         headers:{
             'Content-Type': 'application/json',
             'Accept': 'application/json',
-            'Authorization': 'Bearer YOUR_API_TOKEN_HERE', // Replace with your actual API token
+            'Authorization': `Bearer ${token}`, // Replace with your actual API token
         }
     });
     return response.data;

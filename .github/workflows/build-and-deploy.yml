@@ -43,6 +43,16 @@ jobs:
       with:
         name: build-artifacts
 
+    - name: Transfer artifacts and deploy
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        source: build-artifacts.tar.gz
+        target: /var/www/admin_mobtwin/
+
     - name: Deploy application
       uses: appleboy/ssh-action@master
       with:

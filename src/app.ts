@@ -185,659 +185,659 @@ const swaggerDefinition = {
 				},
 			},
 			Plan: PlansDefinition,
-			CreatePlan: {
-				type: "object",
-				required: [
-					"name",
-					"prefix",
-					"stripeProductId",
-					"stripeProductMonthlyPriceId",
-					"lookupKey",
-					"monthlyPrice",
-					"interval",
-					"intervalCount",
-					"trialDays",
-					"capability",
-					"mode",
-					"filters",
-					"pockets",
-					"builder",
-				],
-				properties: {
-					name: {
-						type: "string"
-					},
-					prefix: {
-						type: "string"
-					},
-					description: {
-						type: "string",
-						nullable: true
-					},
-					stripeProductId: {
-						type: "string"
-					},
-					stripeProductMonthlyPriceId: {
-						type: "string"
-					},
-					lookupKey: {
-						type: "string"
-					},
-					poster: {
-						type: "string",
-						nullable: true
-					},
-					monthlyPrice: {
-						type: "number",
-						format: "float"
-					},
-					interval: {
-						type: "string",
-						enum: ["month", "year"],
-					},
-					intervalCount: {
-						type: "integer"
-					},
-					trialDays: {
-						type: "integer"
-					},
-					features: {
-						type: "array",
-						items: {
-							type: "string"
-						},
-						nullable: true,
-					},
-					capability: {
-						type: "string",
-						enum: ["basic", "full"],
-					},
-					mode: {
-						type: "string",
-						enum: ["basic", "advanced"],
-					},
-					filters: {
-						type: "object",
-						required: ["limit", "sort", "skip", "nestedFilters"],
-						properties: {
-							limit: {
-								type: "integer"
-							},
-							sort: {
-								type: "object",
-								required: [
-									"released",
-									"updated",
-									"installsExact",
-									"currentVersionReviewsCount",
-									"dailyReviewsCount",
-								],
-								properties: {
-									released: {
-										type: "boolean"
-									},
-									updated: {
-										type: "boolean"
-									},
-									installsExact: {
-										type: "boolean"
-									},
-									currentVersionReviewsCount: {
-										type: "boolean"
-									},
-									dailyReviewsCount: {
-										type: "boolean"
-									},
-								},
-							},
-							skip: {
-								type: "integer"
-							},
-							nestedFilters: {
-								type: "object",
-								required: ["match", "range", "term"],
-								properties: {
-									match: {
-										type: "boolean"
-									},
-									range: {
-										type: "boolean"
-									},
-									term: {
-										type: "boolean"
-									},
-								},
-							},
-						},
-					},
-					pockets: {
-						type: "object",
-						required: ["limit", "maxItems"],
-						properties: {
-							limit: {
-								type: "integer"
-							},
-							maxItems: {
-								type: "integer"
-							},
-						},
-					},
-					builder: {
-						type: "object",
-						required: ["maxApps", "allowedApps", "allowedAds"],
-						properties: {
-							maxApps: {
-								type: "integer"
-							},
-							allowedApps: {
-								type: "array",
-								items: {
-									type: "string"
-								},
-							},
-							allowedAds: {
-								type: "array",
-								items: {
-									type: "string"
-								},
-							},
-						},
-					},
-					isUpsell: {
-						type: "boolean"
-					},
-					coupon: {
-						type: "string",
-						nullable: true
-					},
-					analytics: {
-						type: "object",
-						required: ["limit"],
-						properties: {
-							limit: {
-								type: "integer"
-							},
-						},
-					},
-					iconGenerator: {
-						type: "object",
-						required: ["limit"],
-						properties: {
-							limit: {
-								type: "integer"
-							},
-						},
-					},
-					asoGenerator: {
-						type: "object",
-						required: ["limit"],
-						properties: {
-							limit: {
-								type: "integer"
-							},
-						},
-					},
-					keywordsAnalytics: {
-						type: "object",
-						required: ["limit"],
-						properties: {
-							limit: {
-								type: "integer"
-							},
-						},
-					},
-					pagesGenerator: {
-						type: "object",
-						required: ["limit"],
-						properties: {
-							limit: {
-								type: "integer"
-							},
-						},
-					},
-					planUsage: {
-						type: "object",
-						required: ["builder", "asoGenerator", "analytics", "iconGenerator"],
-						properties: {
-							builder: {
-								type: "object",
-								required: ["count", "androidCount", "iosCount"],
-								properties: {
-									count: {
-										type: "integer"
-									},
-									androidCount: {
-										type: "integer"
-									},
-									iosCount: {
-										type: "integer"
-									},
-								},
-							},
-							asoGenerator: {
-								type: "object",
-								required: ["count"],
-								properties: {
-									count: {
-										type: "integer"
-									},
-								},
-							},
-							analytics: {
-								type: "object",
-								required: ["count"],
-								properties: {
-									count: {
-										type: "integer"
-									},
-								},
-							},
-							iconGenerator: {
-								type: "object",
-								required: ["count"],
-								properties: {
-									count: {
-										type: "integer"
-									},
-								},
-							},
-						},
-					},
-				},
-				example: {
-					name: "Premium Plan",
-					prefix: "premium",
-					description: "A premium subscription plan",
-					stripeProductId: "prod_12345",
-					stripeProductMonthlyPriceId: "price_67890",
-					lookupKey: "premium_plan_123",
-					poster: "https://example.com/poster.jpg",
-					monthlyPrice: 29.99,
-					interval: "month",
-					intervalCount: 1,
-					trialDays: 14,
-					features: ["Feature 1", "Feature 2"],
-					capability: "full",
-					mode: "advanced",
-					filters: {
-						limit: 10,
-						sort: {
-							released: true,
-							updated: true,
-							installsExact: false,
-							currentVersionReviewsCount: true,
-							dailyReviewsCount: false,
-						},
-						skip: 5,
-						nestedFilters: {
-							match: true,
-							range: true,
-							term: false,
-						},
-					},
-					pockets: {
-						limit: 20,
-						maxItems: 50,
-					},
-					builder: {
-						maxApps: 10,
-						allowedApps: ["App 1", "App 2"],
-						allowedAds: ["Ad 1", "Ad 2"],
-					},
-					isUpsell: true,
-					coupon: "coupon123",
-					analytics: {
-						limit: 1000,
-					},
-					iconGenerator: {
-						limit: 100,
-					},
-					asoGenerator: {
-						limit: 100,
-					},
-					keywordsAnalytics: {
-						limit: 100,
-					},
-					pagesGenerator: {
-						limit: 100,
-					},
-					planUsage: {
-						builder: {
-							count: 100,
-							androidCount: 50,
-							iosCount: 50,
-						},
-						asoGenerator: {
-							count: 100,
-						},
-						analytics: {
-							count: 100,
-						},
-						iconGenerator: {
-							count: 100,
-						},
-					},
-				},
-			},
-			UpdatePlan: {
-				type: "object",
-				required: [],
-				properties: {
-					name: {
-						type: "string"
-					},
-					prefix: {
-						type: "string"
-					},
-					description: {
-						type: "string",
-						nullable: true
-					},
-					stripeProductId: {
-						type: "string"
-					},
-					stripeProductMonthlyPriceId: {
-						type: "string"
-					},
-					lookupKey: {
-						type: "string"
-					},
-					poster: {
-						type: "string",
-						nullable: true
-					},
-					monthlyPrice: {
-						type: "number",
-						format: "float"
-					},
-					interval: {
-						type: "string",
-						enum: ["month", "year"],
-					},
-					intervalCount: {
-						type: "integer"
-					},
-					trialDays: {
-						type: "integer"
-					},
-					features: {
-						type: "array",
-						items: {
-							type: "string"
-						},
-						nullable: true,
-					},
-					capability: {
-						type: "string",
-						enum: ["basic", "full"],
-					},
-					mode: {
-						type: "string",
-						enum: ["basic", "advanced"],
-					},
-					filters: {
-						type: "object",
-						required: ["limit", "sort", "skip", "nestedFilters"],
-						properties: {
-							limit: {
-								type: "integer"
-							},
-							sort: {
-								type: "object",
-								required: [
-									"released",
-									"updated",
-									"installsExact",
-									"currentVersionReviewsCount",
-									"dailyReviewsCount",
-								],
-								properties: {
-									released: {
-										type: "boolean"
-									},
-									updated: {
-										type: "boolean"
-									},
-									installsExact: {
-										type: "boolean"
-									},
-									currentVersionReviewsCount: {
-										type: "boolean"
-									},
-									dailyReviewsCount: {
-										type: "boolean"
-									},
-								},
-							},
-							skip: {
-								type: "integer"
-							},
-							nestedFilters: {
-								type: "object",
-								required: ["match", "range", "term"],
-								properties: {
-									match: {
-										type: "boolean"
-									},
-									range: {
-										type: "boolean"
-									},
-									term: {
-										type: "boolean"
-									},
-								},
-							},
-						},
-					},
-					pockets: {
-						type: "object",
-						required: ["limit", "maxItems"],
-						properties: {
-							limit: {
-								type: "integer"
-							},
-							maxItems: {
-								type: "integer"
-							},
-						},
-					},
-					builder: {
-						type: "object",
-						required: ["maxApps", "allowedApps", "allowedAds"],
-						properties: {
-							maxApps: {
-								type: "integer"
-							},
-							allowedApps: {
-								type: "array",
-								items: {
-									type: "string"
-								},
-							},
-							allowedAds: {
-								type: "array",
-								items: {
-									type: "string"
-								},
-							},
-						},
-					},
-					isUpsell: {
-						type: "boolean"
-					},
-					coupon: {
-						type: "string",
-						nullable: true
-					},
-					analytics: {
-						type: "object",
-						required: ["limit"],
-						properties: {
-							limit: {
-								type: "integer"
-							},
-						},
-					},
-					iconGenerator: {
-						type: "object",
-						required: ["limit"],
-						properties: {
-							limit: {
-								type: "integer"
-							},
-						},
-					},
-					asoGenerator: {
-						type: "object",
-						required: ["limit"],
-						properties: {
-							limit: {
-								type: "integer"
-							},
-						},
-					},
-					keywordsAnalytics: {
-						type: "object",
-						required: ["limit"],
-						properties: {
-							limit: {
-								type: "integer"
-							},
-						},
-					},
-					pagesGenerator: {
-						type: "object",
-						required: ["limit"],
-						properties: {
-							limit: {
-								type: "integer"
-							},
-						},
-					},
-					planUsage: {
-						type: "object",
-						required: ["builder", "asoGenerator", "analytics", "iconGenerator"],
-						properties: {
-							builder: {
-								type: "object",
-								required: ["count", "androidCount", "iosCount"],
-								properties: {
-									count: {
-										type: "integer"
-									},
-									androidCount: {
-										type: "integer"
-									},
-									iosCount: {
-										type: "integer"
-									},
-								},
-							},
-							asoGenerator: {
-								type: "object",
-								required: ["count"],
-								properties: {
-									count: {
-										type: "integer"
-									},
-								},
-							},
-							analytics: {
-								type: "object",
-								required: ["count"],
-								properties: {
-									count: {
-										type: "integer"
-									},
-								},
-							},
-							iconGenerator: {
-								type: "object",
-								required: ["count"],
-								properties: {
-									count: {
-										type: "integer"
-									},
-								},
-							},
-						},
-					},
-				},
-				example: {
-					name: "Premium Plan",
-					prefix: "premium",
-					description: "A premium subscription plan",
-					stripeProductId: "prod_12345",
-					stripeProductMonthlyPriceId: "price_67890",
-					lookupKey: "premium_plan_123",
-					poster: "https://example.com/poster.jpg",
-					monthlyPrice: 29.99,
-					interval: "month",
-					intervalCount: 1,
-					trialDays: 14,
-					features: ["Feature 1", "Feature 2"],
-					capability: "full",
-					mode: "advanced",
-					filters: {
-						limit: 10,
-						sort: {
-							released: true,
-							updated: true,
-							installsExact: false,
-							currentVersionReviewsCount: true,
-							dailyReviewsCount: false,
-						},
-						skip: 5,
-						nestedFilters: {
-							match: true,
-							range: true,
-							term: false,
-						},
-					},
-					pockets: {
-						limit: 20,
-						maxItems: 50,
-					},
-					builder: {
-						maxApps: 10,
-						allowedApps: ["App 1", "App 2"],
-						allowedAds: ["Ad 1", "Ad 2"],
-					},
-					isUpsell: false,
-					coupon: null,
-					analytics: {
-						limit: 1000,
-					},
-					iconGenerator: {
-						limit: 100,
-					},
-					asoGenerator: {
-						limit: 100,
-					},
-					keywordsAnalytics: {
-						limit: 100,
-					},
-					pagesGenerator: {
-						limit: 100,
-					},
-					planUsage: {
-						builder: {
-							count: 1000,
-							androidCount: 500,
-							iosCount: 500,
-						},
-						asoGenerator: {
-							count: 100,
-						},
-						analytics: {
-							count: 1000,
-						},
-						iconGenerator: {
-							count: 100,
-						},
-					},
-				},
-			},
+			// CreatePlan: {
+			// 	type: "object",
+			// 	required: [
+			// 		"name",
+			// 		"prefix",
+			// 		"stripeProductId",
+			// 		"stripeProductMonthlyPriceId",
+			// 		"lookupKey",
+			// 		"monthlyPrice",
+			// 		"interval",
+			// 		"intervalCount",
+			// 		"trialDays",
+			// 		"capability",
+			// 		"mode",
+			// 		"filters",
+			// 		"pockets",
+			// 		"builder",
+			// 	],
+			// 	properties: {
+			// 		name: {
+			// 			type: "string"
+			// 		},
+			// 		prefix: {
+			// 			type: "string"
+			// 		},
+			// 		description: {
+			// 			type: "string",
+			// 			nullable: true
+			// 		},
+			// 		stripeProductId: {
+			// 			type: "string"
+			// 		},
+			// 		stripeProductMonthlyPriceId: {
+			// 			type: "string"
+			// 		},
+			// 		lookupKey: {
+			// 			type: "string"
+			// 		},
+			// 		poster: {
+			// 			type: "string",
+			// 			nullable: true
+			// 		},
+			// 		monthlyPrice: {
+			// 			type: "number",
+			// 			format: "float"
+			// 		},
+			// 		interval: {
+			// 			type: "string",
+			// 			enum: ["month", "year"],
+			// 		},
+			// 		intervalCount: {
+			// 			type: "integer"
+			// 		},
+			// 		trialDays: {
+			// 			type: "integer"
+			// 		},
+			// 		features: {
+			// 			type: "array",
+			// 			items: {
+			// 				type: "string"
+			// 			},
+			// 			nullable: true,
+			// 		},
+			// 		capability: {
+			// 			type: "string",
+			// 			enum: ["basic", "full"],
+			// 		},
+			// 		mode: {
+			// 			type: "string",
+			// 			enum: ["basic", "advanced"],
+			// 		},
+			// 		filters: {
+			// 			type: "object",
+			// 			required: ["limit", "sort", "skip", "nestedFilters"],
+			// 			properties: {
+			// 				limit: {
+			// 					type: "integer"
+			// 				},
+			// 				sort: {
+			// 					type: "object",
+			// 					required: [
+			// 						"released",
+			// 						"updated",
+			// 						"installsExact",
+			// 						"currentVersionReviewsCount",
+			// 						"dailyReviewsCount",
+			// 					],
+			// 					properties: {
+			// 						released: {
+			// 							type: "boolean"
+			// 						},
+			// 						updated: {
+			// 							type: "boolean"
+			// 						},
+			// 						installsExact: {
+			// 							type: "boolean"
+			// 						},
+			// 						currentVersionReviewsCount: {
+			// 							type: "boolean"
+			// 						},
+			// 						dailyReviewsCount: {
+			// 							type: "boolean"
+			// 						},
+			// 					},
+			// 				},
+			// 				skip: {
+			// 					type: "integer"
+			// 				},
+			// 				nestedFilters: {
+			// 					type: "object",
+			// 					required: ["match", "range", "term"],
+			// 					properties: {
+			// 						match: {
+			// 							type: "boolean"
+			// 						},
+			// 						range: {
+			// 							type: "boolean"
+			// 						},
+			// 						term: {
+			// 							type: "boolean"
+			// 						},
+			// 					},
+			// 				},
+			// 			},
+			// 		},
+			// 		pockets: {
+			// 			type: "object",
+			// 			required: ["limit", "maxItems"],
+			// 			properties: {
+			// 				limit: {
+			// 					type: "integer"
+			// 				},
+			// 				maxItems: {
+			// 					type: "integer"
+			// 				},
+			// 			},
+			// 		},
+			// 		builder: {
+			// 			type: "object",
+			// 			required: ["maxApps", "allowedApps", "allowedAds"],
+			// 			properties: {
+			// 				maxApps: {
+			// 					type: "integer"
+			// 				},
+			// 				allowedApps: {
+			// 					type: "array",
+			// 					items: {
+			// 						type: "string"
+			// 					},
+			// 				},
+			// 				allowedAds: {
+			// 					type: "array",
+			// 					items: {
+			// 						type: "string"
+			// 					},
+			// 				},
+			// 			},
+			// 		},
+			// 		isUpsell: {
+			// 			type: "boolean"
+			// 		},
+			// 		coupon: {
+			// 			type: "string",
+			// 			nullable: true
+			// 		},
+			// 		analytics: {
+			// 			type: "object",
+			// 			required: ["limit"],
+			// 			properties: {
+			// 				limit: {
+			// 					type: "integer"
+			// 				},
+			// 			},
+			// 		},
+			// 		iconGenerator: {
+			// 			type: "object",
+			// 			required: ["limit"],
+			// 			properties: {
+			// 				limit: {
+			// 					type: "integer"
+			// 				},
+			// 			},
+			// 		},
+			// 		asoGenerator: {
+			// 			type: "object",
+			// 			required: ["limit"],
+			// 			properties: {
+			// 				limit: {
+			// 					type: "integer"
+			// 				},
+			// 			},
+			// 		},
+			// 		keywordsAnalytics: {
+			// 			type: "object",
+			// 			required: ["limit"],
+			// 			properties: {
+			// 				limit: {
+			// 					type: "integer"
+			// 				},
+			// 			},
+			// 		},
+			// 		pagesGenerator: {
+			// 			type: "object",
+			// 			required: ["limit"],
+			// 			properties: {
+			// 				limit: {
+			// 					type: "integer"
+			// 				},
+			// 			},
+			// 		},
+			// 		planUsage: {
+			// 			type: "object",
+			// 			required: ["builder", "asoGenerator", "analytics", "iconGenerator"],
+			// 			properties: {
+			// 				builder: {
+			// 					type: "object",
+			// 					required: ["count", "androidCount", "iosCount"],
+			// 					properties: {
+			// 						count: {
+			// 							type: "integer"
+			// 						},
+			// 						androidCount: {
+			// 							type: "integer"
+			// 						},
+			// 						iosCount: {
+			// 							type: "integer"
+			// 						},
+			// 					},
+			// 				},
+			// 				asoGenerator: {
+			// 					type: "object",
+			// 					required: ["count"],
+			// 					properties: {
+			// 						count: {
+			// 							type: "integer"
+			// 						},
+			// 					},
+			// 				},
+			// 				analytics: {
+			// 					type: "object",
+			// 					required: ["count"],
+			// 					properties: {
+			// 						count: {
+			// 							type: "integer"
+			// 						},
+			// 					},
+			// 				},
+			// 				iconGenerator: {
+			// 					type: "object",
+			// 					required: ["count"],
+			// 					properties: {
+			// 						count: {
+			// 							type: "integer"
+			// 						},
+			// 					},
+			// 				},
+			// 			},
+			// 		},
+			// 	},
+			// 	example: {
+			// 		name: "Premium Plan",
+			// 		prefix: "premium",
+			// 		description: "A premium subscription plan",
+			// 		stripeProductId: "prod_12345",
+			// 		stripeProductMonthlyPriceId: "price_67890",
+			// 		lookupKey: "premium_plan_123",
+			// 		poster: "https://example.com/poster.jpg",
+			// 		monthlyPrice: 29.99,
+			// 		interval: "month",
+			// 		intervalCount: 1,
+			// 		trialDays: 14,
+			// 		features: ["Feature 1", "Feature 2"],
+			// 		capability: "full",
+			// 		mode: "advanced",
+			// 		filters: {
+			// 			limit: 10,
+			// 			sort: {
+			// 				released: true,
+			// 				updated: true,
+			// 				installsExact: false,
+			// 				currentVersionReviewsCount: true,
+			// 				dailyReviewsCount: false,
+			// 			},
+			// 			skip: 5,
+			// 			nestedFilters: {
+			// 				match: true,
+			// 				range: true,
+			// 				term: false,
+			// 			},
+			// 		},
+			// 		pockets: {
+			// 			limit: 20,
+			// 			maxItems: 50,
+			// 		},
+			// 		builder: {
+			// 			maxApps: 10,
+			// 			allowedApps: ["App 1", "App 2"],
+			// 			allowedAds: ["Ad 1", "Ad 2"],
+			// 		},
+			// 		isUpsell: true,
+			// 		coupon: "coupon123",
+			// 		analytics: {
+			// 			limit: 1000,
+			// 		},
+			// 		iconGenerator: {
+			// 			limit: 100,
+			// 		},
+			// 		asoGenerator: {
+			// 			limit: 100,
+			// 		},
+			// 		keywordsAnalytics: {
+			// 			limit: 100,
+			// 		},
+			// 		pagesGenerator: {
+			// 			limit: 100,
+			// 		},
+			// 		planUsage: {
+			// 			builder: {
+			// 				count: 100,
+			// 				androidCount: 50,
+			// 				iosCount: 50,
+			// 			},
+			// 			asoGenerator: {
+			// 				count: 100,
+			// 			},
+			// 			analytics: {
+			// 				count: 100,
+			// 			},
+			// 			iconGenerator: {
+			// 				count: 100,
+			// 			},
+			// 		},
+			// 	},
+			// },
+			// UpdatePlan: {
+			// 	type: "object",
+			// 	required: [],
+			// 	properties: {
+			// 		name: {
+			// 			type: "string"
+			// 		},
+			// 		prefix: {
+			// 			type: "string"
+			// 		},
+			// 		description: {
+			// 			type: "string",
+			// 			nullable: true
+			// 		},
+			// 		stripeProductId: {
+			// 			type: "string"
+			// 		},
+			// 		stripeProductMonthlyPriceId: {
+			// 			type: "string"
+			// 		},
+			// 		lookupKey: {
+			// 			type: "string"
+			// 		},
+			// 		poster: {
+			// 			type: "string",
+			// 			nullable: true
+			// 		},
+			// 		monthlyPrice: {
+			// 			type: "number",
+			// 			format: "float"
+			// 		},
+			// 		interval: {
+			// 			type: "string",
+			// 			enum: ["month", "year"],
+			// 		},
+			// 		intervalCount: {
+			// 			type: "integer"
+			// 		},
+			// 		trialDays: {
+			// 			type: "integer"
+			// 		},
+			// 		features: {
+			// 			type: "array",
+			// 			items: {
+			// 				type: "string"
+			// 			},
+			// 			nullable: true,
+			// 		},
+			// 		capability: {
+			// 			type: "string",
+			// 			enum: ["basic", "full"],
+			// 		},
+			// 		mode: {
+			// 			type: "string",
+			// 			enum: ["basic", "advanced"],
+			// 		},
+			// 		filters: {
+			// 			type: "object",
+			// 			required: ["limit", "sort", "skip", "nestedFilters"],
+			// 			properties: {
+			// 				limit: {
+			// 					type: "integer"
+			// 				},
+			// 				sort: {
+			// 					type: "object",
+			// 					required: [
+			// 						"released",
+			// 						"updated",
+			// 						"installsExact",
+			// 						"currentVersionReviewsCount",
+			// 						"dailyReviewsCount",
+			// 					],
+			// 					properties: {
+			// 						released: {
+			// 							type: "boolean"
+			// 						},
+			// 						updated: {
+			// 							type: "boolean"
+			// 						},
+			// 						installsExact: {
+			// 							type: "boolean"
+			// 						},
+			// 						currentVersionReviewsCount: {
+			// 							type: "boolean"
+			// 						},
+			// 						dailyReviewsCount: {
+			// 							type: "boolean"
+			// 						},
+			// 					},
+			// 				},
+			// 				skip: {
+			// 					type: "integer"
+			// 				},
+			// 				nestedFilters: {
+			// 					type: "object",
+			// 					required: ["match", "range", "term"],
+			// 					properties: {
+			// 						match: {
+			// 							type: "boolean"
+			// 						},
+			// 						range: {
+			// 							type: "boolean"
+			// 						},
+			// 						term: {
+			// 							type: "boolean"
+			// 						},
+			// 					},
+			// 				},
+			// 			},
+			// 		},
+			// 		pockets: {
+			// 			type: "object",
+			// 			required: ["limit", "maxItems"],
+			// 			properties: {
+			// 				limit: {
+			// 					type: "integer"
+			// 				},
+			// 				maxItems: {
+			// 					type: "integer"
+			// 				},
+			// 			},
+			// 		},
+			// 		builder: {
+			// 			type: "object",
+			// 			required: ["maxApps", "allowedApps", "allowedAds"],
+			// 			properties: {
+			// 				maxApps: {
+			// 					type: "integer"
+			// 				},
+			// 				allowedApps: {
+			// 					type: "array",
+			// 					items: {
+			// 						type: "string"
+			// 					},
+			// 				},
+			// 				allowedAds: {
+			// 					type: "array",
+			// 					items: {
+			// 						type: "string"
+			// 					},
+			// 				},
+			// 			},
+			// 		},
+			// 		isUpsell: {
+			// 			type: "boolean"
+			// 		},
+			// 		coupon: {
+			// 			type: "string",
+			// 			nullable: true
+			// 		},
+			// 		analytics: {
+			// 			type: "object",
+			// 			required: ["limit"],
+			// 			properties: {
+			// 				limit: {
+			// 					type: "integer"
+			// 				},
+			// 			},
+			// 		},
+			// 		iconGenerator: {
+			// 			type: "object",
+			// 			required: ["limit"],
+			// 			properties: {
+			// 				limit: {
+			// 					type: "integer"
+			// 				},
+			// 			},
+			// 		},
+			// 		asoGenerator: {
+			// 			type: "object",
+			// 			required: ["limit"],
+			// 			properties: {
+			// 				limit: {
+			// 					type: "integer"
+			// 				},
+			// 			},
+			// 		},
+			// 		keywordsAnalytics: {
+			// 			type: "object",
+			// 			required: ["limit"],
+			// 			properties: {
+			// 				limit: {
+			// 					type: "integer"
+			// 				},
+			// 			},
+			// 		},
+			// 		pagesGenerator: {
+			// 			type: "object",
+			// 			required: ["limit"],
+			// 			properties: {
+			// 				limit: {
+			// 					type: "integer"
+			// 				},
+			// 			},
+			// 		},
+			// 		planUsage: {
+			// 			type: "object",
+			// 			required: ["builder", "asoGenerator", "analytics", "iconGenerator"],
+			// 			properties: {
+			// 				builder: {
+			// 					type: "object",
+			// 					required: ["count", "androidCount", "iosCount"],
+			// 					properties: {
+			// 						count: {
+			// 							type: "integer"
+			// 						},
+			// 						androidCount: {
+			// 							type: "integer"
+			// 						},
+			// 						iosCount: {
+			// 							type: "integer"
+			// 						},
+			// 					},
+			// 				},
+			// 				asoGenerator: {
+			// 					type: "object",
+			// 					required: ["count"],
+			// 					properties: {
+			// 						count: {
+			// 							type: "integer"
+			// 						},
+			// 					},
+			// 				},
+			// 				analytics: {
+			// 					type: "object",
+			// 					required: ["count"],
+			// 					properties: {
+			// 						count: {
+			// 							type: "integer"
+			// 						},
+			// 					},
+			// 				},
+			// 				iconGenerator: {
+			// 					type: "object",
+			// 					required: ["count"],
+			// 					properties: {
+			// 						count: {
+			// 							type: "integer"
+			// 						},
+			// 					},
+			// 				},
+			// 			},
+			// 		},
+			// 	},
+			// 	example: {
+			// 		name: "Premium Plan",
+			// 		prefix: "premium",
+			// 		description: "A premium subscription plan",
+			// 		stripeProductId: "prod_12345",
+			// 		stripeProductMonthlyPriceId: "price_67890",
+			// 		lookupKey: "premium_plan_123",
+			// 		poster: "https://example.com/poster.jpg",
+			// 		monthlyPrice: 29.99,
+			// 		interval: "month",
+			// 		intervalCount: 1,
+			// 		trialDays: 14,
+			// 		features: ["Feature 1", "Feature 2"],
+			// 		capability: "full",
+			// 		mode: "advanced",
+			// 		filters: {
+			// 			limit: 10,
+			// 			sort: {
+			// 				released: true,
+			// 				updated: true,
+			// 				installsExact: false,
+			// 				currentVersionReviewsCount: true,
+			// 				dailyReviewsCount: false,
+			// 			},
+			// 			skip: 5,
+			// 			nestedFilters: {
+			// 				match: true,
+			// 				range: true,
+			// 				term: false,
+			// 			},
+			// 		},
+			// 		pockets: {
+			// 			limit: 20,
+			// 			maxItems: 50,
+			// 		},
+			// 		builder: {
+			// 			maxApps: 10,
+			// 			allowedApps: ["App 1", "App 2"],
+			// 			allowedAds: ["Ad 1", "Ad 2"],
+			// 		},
+			// 		isUpsell: false,
+			// 		coupon: null,
+			// 		analytics: {
+			// 			limit: 1000,
+			// 		},
+			// 		iconGenerator: {
+			// 			limit: 100,
+			// 		},
+			// 		asoGenerator: {
+			// 			limit: 100,
+			// 		},
+			// 		keywordsAnalytics: {
+			// 			limit: 100,
+			// 		},
+			// 		pagesGenerator: {
+			// 			limit: 100,
+			// 		},
+			// 		planUsage: {
+			// 			builder: {
+			// 				count: 1000,
+			// 				androidCount: 500,
+			// 				iosCount: 500,
+			// 			},
+			// 			asoGenerator: {
+			// 				count: 100,
+			// 			},
+			// 			analytics: {
+			// 				count: 1000,
+			// 			},
+			// 			iconGenerator: {
+			// 				count: 100,
+			// 			},
+			// 		},
+			// 	},
+			// },
 			CreateAdmin: {
 				type: "object",
 				required: ["userName", "password", "email", "role"],

@@ -9,6 +9,7 @@ WORKDIR /var/www/admin_mobtwin
 
 # Copy only the production dependencies
 COPY package*.json ./
+COPY .env ./.env
 RUN npm ci --only=production
 
 # Copy the built application (dist folder) from the pipeline

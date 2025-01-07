@@ -44,6 +44,39 @@ export const createPlanSchema = Joi.object<CreatePlan>({
         allowedApps: Joi.array().items(Joi.string()).required(),
         allowedAds: Joi.array().items(Joi.string()).required(),
     }).required(),
+    isUpsell: Joi.boolean().required(),
+    coupon: Joi.string().optional(),
+    analytics: Joi.object({
+        limit: Joi.alternatives(Joi.number(), Joi.string().valid('unlimited')).required(),
+    }).required(),
+    iconGenerator: Joi.object({
+        limit: Joi.number().required(),
+    }).required(),
+    asoGenerator: Joi.object({
+        limit: Joi.number().required(),
+    }).required(),
+    keywordsAnalytics: Joi.object({
+        limit: Joi.number().required(),
+    }).required(),
+    pagesGenerator: Joi.object({
+        limit: Joi.number().required(),
+    }).required(),
+    planUsage: Joi.object({
+        builder: Joi.object({
+            count: Joi.number().required(),
+            androidCount: Joi.number().required(),
+            iosCount: Joi.number().required(),
+        }).required(),
+        asoGenerator: Joi.object({
+            count: Joi.number().required(),
+        }).required(),
+        analytics: Joi.object({
+            count: Joi.number().required(),
+        }).required(),
+        iconGenerator: Joi.object({
+            count: Joi.number().required(),
+        }).required(),
+    }).required(),
 });
 export interface CreatePlan extends IPlan {}
 export interface CreatePlanRequest extends Request {
@@ -90,6 +123,39 @@ export const updatePlanSchema = Joi.object<UpdatePlan>({
         maxApps: Joi.number().optional(),
         allowedApps: Joi.array().items(Joi.string()).optional(),
         allowedAds: Joi.array().items(Joi.string()).optional(),
+    }).optional(),
+    isUpsell: Joi.boolean().optional(),
+    coupon: Joi.string().optional(),
+    analytics: Joi.object({
+        limit: Joi.alternatives(Joi.number(), Joi.string().valid('unlimited')).optional(),
+    }).optional(),
+    iconGenerator: Joi.object({
+        limit: Joi.number().optional(),
+    }).optional(),
+    asoGenerator: Joi.object({
+        limit: Joi.number().optional(),
+    }).optional(),
+    keywordsAnalytics: Joi.object({
+        limit: Joi.number().optional(),
+    }).optional(),
+    pagesGenerator: Joi.object({
+        limit: Joi.number().optional(),
+    }).optional(),
+    planUsage: Joi.object({
+        builder: Joi.object({
+            count: Joi.number().optional(),
+            androidCount: Joi.number().optional(),
+            iosCount: Joi.number().optional(),
+        }).optional(),
+        asoGenerator: Joi.object({
+            count: Joi.number().optional(),
+        }).optional(),
+        analytics: Joi.object({
+            count: Joi.number().optional(),
+        }).optional(),
+        iconGenerator: Joi.object({
+            count: Joi.number().optional(),
+        }).optional(),
     }).optional(),
 });
 export interface UpdatePlan extends Partial<Omit<IPlan,"removed_at">> {}

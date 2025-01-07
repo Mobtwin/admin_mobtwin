@@ -256,6 +256,79 @@ const swaggerDefinition = {
               },
             },
           },
+          isUpsell: { type: "boolean" },
+          coupon: { type: "string", nullable: true },
+          analytics: {
+            type: "object",
+            required: ["limit"],
+            properties: {
+              limit: { type: "integer" },
+            },
+          },
+          iconGenerator: {
+            type: "object",
+            required: ["limit"],
+            properties: {
+              limit: { type: "integer" },
+            },
+          },
+          asoGenerator: {
+            type: "object",
+            required: ["limit"],
+            properties: {
+              limit: { type: "integer" },
+            },
+          },
+          keywordsAnalytics: { 
+            type: "object", 
+            required: ["limit"],
+            properties: {
+              limit: { type: "integer" },
+            }, 
+          },
+          pagesGenerator: {
+            type: "object",
+            required: ["limit"],
+            properties: {
+              limit: { type: "integer" },
+            },
+          },
+          planUsage: {
+            type: "object",
+            required: ["builder", "asoGenerator", "analytics", "iconGenerator"],
+            properties: {
+              builder: {
+                type: "object",
+                required: ["count", "androidCount", "iosCount"],
+                properties: {
+                  count: { type: "integer" },
+                  androidCount: { type: "integer" },
+                  iosCount: { type: "integer" },
+                },
+              },
+              asoGenerator: {
+                type: "object",
+                required: ["count"],
+                properties: {
+                  count: { type: "integer" },
+                },
+              },
+              analytics: {
+                type: "object",
+                required: ["count"],
+                properties: {
+                  count: { type: "integer" },
+                },
+              },
+              iconGenerator: {
+                type: "object",
+                required: ["count"],
+                properties: {
+                  count: { type: "integer" },
+                },
+              },
+            },
+          }
         },
         example: {
           name: "Premium Plan",
@@ -296,6 +369,39 @@ const swaggerDefinition = {
             maxApps: 10,
             allowedApps: ["App 1", "App 2"],
             allowedAds: ["Ad 1", "Ad 2"],
+          },
+          isUpsell: true,
+          coupon: "coupon123",
+          analytics: {
+            limit: 1000,
+          },
+          iconGenerator: {
+            limit: 100,
+          },
+          asoGenerator: {
+            limit: 100,
+          },
+          keywordsAnalytics: {
+            limit: 100,
+          },
+          pagesGenerator: {
+            limit: 100,
+          },
+          planUsage: {
+            builder: {
+              count: 100,
+              androidCount: 50,
+              iosCount: 50,
+            },
+            asoGenerator: {
+              count: 100,
+            },
+            analytics: {
+              count: 100,
+            },
+            iconGenerator: {
+              count: 100,
+            },
           },
         },
       },
@@ -387,6 +493,79 @@ const swaggerDefinition = {
               },
             },
           },
+          isUpsell: { type: "boolean" },
+          coupon: { type: "string", nullable: true },
+          analytics: {
+            type: "object",
+            required: ["limit"],
+            properties: {
+              limit: { type: "integer" },
+            },
+          },
+          iconGenerator: {
+            type: "object",
+            required: ["limit"],
+            properties: {
+              limit: { type: "integer" },
+            },
+          },
+          asoGenerator: {
+            type: "object",
+            required: ["limit"],
+            properties: {
+              limit: { type: "integer" },
+            },
+          },
+          keywordsAnalytics: {
+            type: "object",
+            required: ["limit"],
+            properties: {
+              limit: { type: "integer" },
+            },
+          },
+          pagesGenerator: {
+            type: "object",
+            required: ["limit"],
+            properties: {
+              limit: { type: "integer" },
+            },
+          },
+          planUsage: {
+            type: "object",
+            required: ["builder", "asoGenerator", "analytics", "iconGenerator"],
+            properties: {
+              builder: {
+                type: "object",
+                required: ["count", "androidCount", "iosCount"],
+                properties: {
+                  count: { type: "integer" },
+                  androidCount: { type: "integer" },
+                  iosCount: { type: "integer" },
+                },
+              },
+              asoGenerator: {
+                type: "object",
+                required: ["count"],
+                properties: {
+                  count: { type: "integer" },
+                },
+              },
+              analytics: {
+                type: "object",
+                required: ["count"],
+                properties: {
+                  count: { type: "integer" },
+                },
+              },
+              iconGenerator: {
+                type: "object",
+                required: ["count"],
+                properties: {
+                  count: { type: "integer" },
+                },
+              },
+            },
+          },
         },
         example: {
           name: "Premium Plan",
@@ -427,6 +606,39 @@ const swaggerDefinition = {
             maxApps: 10,
             allowedApps: ["App 1", "App 2"],
             allowedAds: ["Ad 1", "Ad 2"],
+          },
+          isUpsell: false,
+          coupon: null,
+          analytics: {
+            limit: 1000,
+          },
+          iconGenerator: {
+            limit: 100,
+          },
+          asoGenerator: {
+            limit: 100,
+            },
+          keywordsAnalytics: {
+            limit: 100,
+            },
+          pagesGenerator: {
+            limit: 100,
+          },
+          planUsage: {
+            builder: {
+              count: 1000,
+              androidCount: 500,
+              iosCount: 500,
+            },
+            asoGenerator: {
+              count: 100,
+            },
+            analytics: {
+              count: 1000,
+            },
+            iconGenerator: {
+              count: 100,
+            },
           },
         },
       },

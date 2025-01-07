@@ -8,13 +8,13 @@ FROM stage
 WORKDIR /var/www/admin_mobtwin
 
 # Copy only the production dependencies
-COPY package*.json ./
-COPY .env ./.env
+# COPY package*.json ./
+COPY . .
 RUN npm ci --only=production
 
 # Copy the built application (dist folder) from the pipeline
-COPY dist ./dist
-COPY ecosystem.config.js ./ecosystem.config.js
+# COPY dist ./dist
+# COPY ecosystem.config.js ./ecosystem.config.js
 
 # Expose the port that your API service listens on
 EXPOSE 3004

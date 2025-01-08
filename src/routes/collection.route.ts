@@ -2,9 +2,8 @@ import { Router } from "express";
 import { checkPermission } from "../middlewares/rbac.middleware";
 import { COLLECTION_PERMISSIONS, COLLECTION_TABLE } from "../constant/collection.constant";
 import { validateRequest } from "../middlewares/requestValidator.middleware";
-import { updatePermissionByIdSchema } from "../validators/permission.validator";
 import { createCollectionController, deleteCollectionController, getAllCollectionsController, updateCollectionController } from "../controllers/collection.controller";
-import { createCollectionSchema, deleteCollectionByIdSchema } from "../validators/collection.validator";
+import { createCollectionSchema, deleteCollectionByIdSchema, updateCollectionByIdSchema } from "../validators/collection.validator";
 import cacheMiddleware from "../middlewares/cache.middleware";
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
 import { paginationQuerySchema } from "../validators/pagination.validator";
@@ -331,7 +330,7 @@ collectionRouter.put(
     table: COLLECTION_TABLE,
     action: PERMISSIONS_ACTIONS.UPDATE,
   }),
-  validateRequest(updatePermissionByIdSchema),
+  validateRequest(updateCollectionByIdSchema),
   updateCollectionController
 );
 

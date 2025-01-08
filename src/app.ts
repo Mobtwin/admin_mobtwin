@@ -1596,7 +1596,23 @@ const options: swaggerJSDoc.Options = {
 };
 // Initialize swagger-jsdoc
 const swaggerSpec = swaggerJSDoc(options);
+// Basic Authentication Middleware
+app.use('/api-docs', (req, res, next) => {
+  const auth = { username: 'MFfzPbSL', password: 'RAcC7TNxlZiO' }; // Change these credentials
 
+  // Parse login credentials from the Authorization header
+  const b64auth = (req.headers.authorization || '').split(' ')[1] || '';
+  const [user, pass] = Buffer.from(b64auth, 'base64').toString().split(':');
+
+  // Validate login credentials
+  if (user === auth.username && pass === auth.password) {
+      return next(); // Access granted
+  }
+
+  // Access denied
+  res.set('WWW-Authenticate', 'Basic realm="401"'); // Prompt for login
+  res.status(401).send('Authentication required.'); // Unauthorized
+});
 // Serve Swagger UI
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 

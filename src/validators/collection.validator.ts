@@ -34,7 +34,7 @@ export const createCollectionSchema = Joi.object<CreateCollection>({
         sort: Joi.object({
             released: Joi.number().optional(),
         }).optional(),
-    }).required(),
+    }).optional(),
     plan: Joi.array().items(Joi.string()).required(),
     keywords: Joi.array().items(Joi.string()).optional(),
     logs: Joi.array().items(Joi.string()).optional(),

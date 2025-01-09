@@ -1641,6 +1641,7 @@ app.use("/api/v1/permission", routes.permissionRouter);
 app.use("/api/v1/role", routes.roleRouter);
 app.use("/api/v1/images", routes.uploadRouter);
 app.use("/api/v1/collection", routes.collectionRouter);
+app.use("/api/v1/scrapper", routes.scrapperRouter);
 
 //not found route
 app.all("*", (req, res) => {

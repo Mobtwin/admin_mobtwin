@@ -19,7 +19,8 @@ export const environment: {
   DIGITAL_OCEAN_ACCESS_KEY:string,
   DIGITAL_OCEAN_SECRET_KEY:string,
   DIGITAL_OCEAN_BUCKET_NAME:string,
-  GRAPHQL_API_URL:string
+  GRAPHQL_API_URL:string,
+  SCRAPPER_API_URL:string
 } = {
   PORT: process.env.PORT as string,
   MONGODB_URI: process.env.MONGODB_URI as string,
@@ -38,4 +39,5 @@ export const environment: {
   DIGITAL_OCEAN_SECRET_KEY: process.env.DIGITAL_OCEAN_SECRET_KEY as string,
   DIGITAL_OCEAN_BUCKET_NAME: process.env.DIGITAL_OCEAN_BUCKET_NAME as string,
   GRAPHQL_API_URL: process.env.GRAPHQL_API_URL as string,
+  SCRAPPER_API_URL: process.env.SCRAPPER_API_URL as string
 };

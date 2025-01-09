@@ -8,6 +8,7 @@ import { permissionRouter } from "./permission.route";
 import { roleRouter } from "./role.route";
 import { uploadRouter } from "./public.route";
 import { collectionRouter } from "./collection.route";
+import { scrapperRouter } from "./scrapper.route";
 
 
 const routes = {
@@ -20,7 +21,8 @@ const routes = {
     roleRouter,
     permissionRouter,
     uploadRouter,
-    collectionRouter
+    collectionRouter,
+    scrapperRouter
 };
 
 export default routes;

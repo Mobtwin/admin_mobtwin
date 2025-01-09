@@ -22,6 +22,7 @@ const sendGraphQLRequest = async (query: string, variables: any,token:string) =>
     });
     return response.data;
   } catch (error:any) {
+    console.log(error)
     throw new Error(`GraphQL request failed: ${error.message}`);
   }
 };

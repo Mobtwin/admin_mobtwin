@@ -36,14 +36,14 @@ export const getCollections = async (token: string) => {
 };
 // Mutation for createCollection
 export const createCollection = async (collection: CreateCollection,platform:"as"|"gp",token:string) => {
+  console.log({
+    collection,
+    platform,
+    token,
+  })
   const query = `
     mutation CreateCollection($platform: String!, $collection: JSON!) {
-      createCollection(platform: $platform, collection: $collection) {
-        id
-        platform
-        collection
-        success
-      }
+      createCollection(platform: $platform, collection: $collection) {}
     }
   `;
   const variables = {

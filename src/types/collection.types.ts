@@ -49,7 +49,7 @@ export interface Collection {
   plan: string[];
   description?: string;
   filter: string; // Assuming 'filter' is a string, possibly a JSON path or filter type
-  filterValues: {
+  filterValues?: {
     limit: number;
     query?: CollectionQuery;
     sort?: CollectionSort;

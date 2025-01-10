@@ -78,7 +78,7 @@ export const updateCollectionByIdSchema = Joi.object<UpdateCollectionById>({
         sort: Joi.object({
             released: Joi.number().optional(),
         }).optional(),
-    }).required(),
+    }).optional(),
     plan: Joi.array().items(Joi.string()).optional(),
     keywords: Joi.array().items(Joi.string()).optional(),
     logs: Joi.array().items(Joi.string()).optional(),

@@ -1359,6 +1359,10 @@ const swaggerDefinition = {
             },
             description: "List of apps associated with the collection",
           },
+          poster: {
+            type: "string",
+            description: "The poster image for the collection",
+          }
         },
         example: {
           name: "Top Games",

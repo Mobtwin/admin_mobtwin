@@ -43,7 +43,7 @@ export const createCollection = async (collection: CreateCollection,platform:"as
     token,
   })
   const query = `
-    mutation CreateCollection($platform: String!, $collection: JSON!) {
+    mutation Mutation($platform: String!, $collection: Collection!) {
       createCollection(platform: $platform, collection: $collection) {}
     }
   `;

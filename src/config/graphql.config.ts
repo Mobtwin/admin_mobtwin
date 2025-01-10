@@ -69,7 +69,7 @@ export const updateCollection = async (collection: UpdateCollectionById,platform
 // Mutation for deleteCollection
 export const deleteCollection = async (platform:"as"|"gp",id:string, token: string) => {
   const query = `
-    mutation DeleteCollection($id: String!, $platform: String!) {
+    mutation Mutation($id: String!, $platform: String!) {
       deleteCollection(id: $id, platform: $platform)
     }
   `;

@@ -434,6 +434,6 @@ collectionRouter.delete(
     table: COLLECTION_TABLE,
     action: PERMISSIONS_ACTIONS.DELETE,
   }),
-  validateRequest(deleteCollectionByIdSchema),
+  validateRequest(deleteCollectionByIdSchema,"params"),
   deleteCollectionController
 );

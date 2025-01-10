@@ -11,6 +11,7 @@ export interface CreateCollectionRequest extends Request {
 }
 export const createCollectionSchema = Joi.object<CreateCollection>({
     name: Joi.string().required(),
+    poster:Joi.string().required(),
     description: Joi.string().optional(),
     filter: Joi.string().required(),
     filterValues: Joi.object({
@@ -53,6 +54,7 @@ export interface UpdateCollectionByIdRequest extends Request {
 }
 export const updateCollectionByIdSchema = Joi.object<UpdateCollectionById>({
     name: Joi.string().optional(),
+    poster: Joi.string().optional(),
     description: Joi.string().optional(),
     filter: Joi.string().optional(),
     filterValues: Joi.object({

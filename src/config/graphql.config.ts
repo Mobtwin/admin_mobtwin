@@ -44,7 +44,7 @@ export const createCollection = async (collection: CreateCollection,platform:"as
   })
   const query = `
     mutation Mutation($platform: String!, $collection: Collection!) {
-      createCollection(platform: $platform, collection: $collection) {}
+      createCollection(platform: $platform, collection: $collection)
     }
   `;
   const variables = {

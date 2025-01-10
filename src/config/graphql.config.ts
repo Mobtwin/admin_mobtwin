@@ -37,11 +37,6 @@ export const getCollections = async (token: string) => {
 };
 // Mutation for createCollection
 export const createCollection = async (collection: CreateCollection,platform:"as"|"gp",token:string) => {
-  console.log({
-    collection,
-    platform,
-    token,
-  })
   const query = `
     mutation Mutation($platform: String!, $collection: Collection!) {
       createCollection(platform: $platform, collection: $collection)
@@ -58,13 +53,8 @@ export const createCollection = async (collection: CreateCollection,platform:"as
 // Mutation for updateCollection
 export const updateCollection = async (collection: UpdateCollectionById,platform:"as"|"gp",id:string,token:string) => {
   const query = `
-    mutation UpdateCollection($id: String!, $platform: String!, $collection: JSON!) {
-      updateCollection(id: $id, platform: $platform, collection: $collection) {
-        id
-        platform
-        collection
-        success
-      }
+    mutation UpdateCollection($id: String!, $platform: String!, $collection: Collection!) {
+      updateCollection(id: $id, platform: $platform, collection: $collection)
     }
   `;
   const variables = {
@@ -80,11 +70,7 @@ export const updateCollection = async (collection: UpdateCollectionById,platform
 export const deleteCollection = async (platform:"as"|"gp",id:string, token: string) => {
   const query = `
     mutation DeleteCollection($id: String!, $platform: String!) {
-      deleteCollection(id: $id, platform: $platform) {
-        id
-        platform
-        success
-      }
+      deleteCollection(id: $id, platform: $platform)
     }
   `;
   const variables = {

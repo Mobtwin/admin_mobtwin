@@ -24,20 +24,20 @@ export interface GAppPreview {
 
 export interface CollectionQuery {
   installsExact?: {
-    $gte?: number;
-    $lte?: number;
+    gte?: number;
+    lte?: number;
   };
   type?: string;
   published?: boolean;
   dailyInstalls?: {
-    $gte?: number;
+    gte?: number;
   };
   timeLine?: {
     field?: string;
   }; // Dot notation for nested field
   currentVersionReviewsCount?: {
-    $gte?: number;
-    $lte?: number;
+    gte?: number;
+    lte?: number;
   };
 }
 

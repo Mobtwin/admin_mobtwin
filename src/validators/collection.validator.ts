@@ -18,20 +18,20 @@ export const createCollectionSchema = Joi.object<CreateCollection>({
         limit: Joi.number().required(),
         query: Joi.object({
             installsExact: Joi.object({
-                $gte: Joi.number().optional(),
-                $lte: Joi.number().optional(),
+                gte: Joi.number().optional(),
+                lte: Joi.number().optional(),
             }).optional(),
             type: Joi.string().optional(),
             published: Joi.boolean().optional(),
             dailyInstalls: Joi.object({
-                $gte: Joi.number().optional(),
+                gte: Joi.number().optional(),
             }).optional(),
             timeLine: Joi.object({
                 field: Joi.string().optional(),
             }).optional(),
             currentVersionReviewsCount: Joi.object({
-                $gte: Joi.number().optional(),
-                $lte: Joi.number().optional(),
+                gte: Joi.number().optional(),
+                lte: Joi.number().optional(),
             }).optional(),
         }).optional(),
         sort: Joi.object({
@@ -63,20 +63,20 @@ export const updateCollectionByIdSchema = Joi.object<UpdateCollectionById>({
         limit: Joi.number().required(),
         query: Joi.object({
             installsExact: Joi.object({
-                $gte: Joi.number().optional(),
-                $lte: Joi.number().optional(),
+                gte: Joi.number().optional(),
+                lte: Joi.number().optional(),
             }).optional(),
             type: Joi.string().optional(),
             published: Joi.boolean().optional(),
             dailyInstalls: Joi.object({
-                $gte: Joi.number().optional(),
+                gte: Joi.number().optional(),
             }).optional(),
             timeLine: Joi.object({
                 field: Joi.string().optional(),
             }).optional(),
             currentVersionReviewsCount: Joi.object({
-                $gte: Joi.number().optional(),
-                $lte: Joi.number().optional(),
+                gte: Joi.number().optional(),
+                lte: Joi.number().optional(),
             }).optional(),
         }).optional(),
         sort: Joi.object({

@@ -32,7 +32,9 @@ export interface CollectionQuery {
   dailyInstalls?: {
     $gte?: number;
   };
-  "timeLine.field"?: string; // Dot notation for nested field
+  timeLine?: {
+    field?: string;
+  }; // Dot notation for nested field
   currentVersionReviewsCount?: {
     $gte?: number;
     $lte?: number;

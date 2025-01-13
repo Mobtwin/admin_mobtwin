@@ -26,7 +26,9 @@ export const createCollectionSchema = Joi.object<CreateCollection>({
             dailyInstalls: Joi.object({
                 $gte: Joi.number().optional(),
             }).optional(),
-            "timeLine.field": Joi.string().optional(),
+            timeLine: Joi.object({
+                field: Joi.string().optional(),
+            }).optional(),
             currentVersionReviewsCount: Joi.object({
                 $gte: Joi.number().optional(),
                 $lte: Joi.number().optional(),
@@ -35,7 +37,7 @@ export const createCollectionSchema = Joi.object<CreateCollection>({
         sort: Joi.object({
             released: Joi.number().optional(),
         }).optional(),
-    }).optional(),
+    }).required(),
     plan: Joi.array().items(Joi.string()).required(),
     keywords: Joi.array().items(Joi.string()).optional(),
     logs: Joi.array().items(Joi.string()).optional(),
@@ -69,7 +71,9 @@ export const updateCollectionByIdSchema = Joi.object<UpdateCollectionById>({
             dailyInstalls: Joi.object({
                 $gte: Joi.number().optional(),
             }).optional(),
-            "timeLine.field": Joi.string().optional(),
+            timeLine: Joi.object({
+                field: Joi.string().optional(),
+            }).optional(),
             currentVersionReviewsCount: Joi.object({
                 $gte: Joi.number().optional(),
                 $lte: Joi.number().optional(),

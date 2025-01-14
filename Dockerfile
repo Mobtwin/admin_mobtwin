@@ -2,6 +2,7 @@
 FROM node:20 AS stage
 # Set NODE_ENV to production
 ENV NODE_ENV=production
+ENV PORT=3004
 RUN npm install pm2 -g
 FROM stage
 # Set the working directory inside the container
@@ -17,7 +18,7 @@ RUN npm ci --only=production
 # COPY ecosystem.config.js ./ecosystem.config.js
 
 # Expose the port that your API service listens on
-EXPOSE 8080
+EXPOSE 3004
 
 
 # Start the application

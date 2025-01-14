@@ -17,7 +17,7 @@ RUN npm ci --only=production
 # COPY ecosystem.config.js ./ecosystem.config.js
 
 # Expose the port that your API service listens on
-EXPOSE 3004
+EXPOSE 8080
 
 
 # Start the application

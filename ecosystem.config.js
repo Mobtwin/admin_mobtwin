@@ -8,11 +8,6 @@ module.exports = {
         watch: false,            // Set to true to auto-reload the app on file changes
         max_memory_restart: '1G', // Restart the app if memory usage exceeds this value
   
-        env: {
-          NODE_ENV: 'production', // Environment variables as needed
-          PORT: 3004              // Example environment variable
-        },
-  
       }
       // Add more apps as needed
     ],

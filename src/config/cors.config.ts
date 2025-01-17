@@ -7,6 +7,7 @@ export const allowedOrigins = [
     'https://user.mobtwin.com',
     'https://100.42.182.147',
     'https://admin.mobtwin.com',
+    "https://aso.mobtwin.com"
 ];
 
 

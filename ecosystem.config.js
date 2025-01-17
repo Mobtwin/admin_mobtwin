@@ -6,7 +6,7 @@ module.exports = {
         instances: 1,            // Adjust according to your needs
         autorestart: true,       // Enable automatic restart
         watch: false,            // Set to true to auto-reload the app on file changes
-        max_memory_restart: '1G', // Restart the app if memory usage exceeds this value
+        max_memory_restart: '2G', // Restart the app if memory usage exceeds this value
   
       }
       // Add more apps as needed

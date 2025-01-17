@@ -118,7 +118,7 @@ export const deleteUserById = async (id: string) => {
   try {
     const user = await Users.findByIdAndUpdate(
       id,
-      { removed_at: Date.now() },
+      { removed_at: Date.now(),devices:[] },
       { new: true }
     );
     if (!user) throw new Error("User not found!");

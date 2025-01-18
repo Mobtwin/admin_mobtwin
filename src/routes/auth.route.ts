@@ -3,6 +3,7 @@ import {
   loginController,
   logoutController,
   refreshTokenController,
+  requestLoginVerificationController,
 } from "../controllers/auth.controller";
 import { validateRequest } from "../middlewares/requestValidator.middleware";
 import {
@@ -41,6 +42,11 @@ export const authRouter = Router();
  *                 type: string
  *                 format: password
  *                 example: "Password123!"
+ *               code:
+ *                 type: number
+ *                 required: false
+ *                 format: password
+ *                 example: "123456"
  *     responses:
  *       200:
  *         description: Login successful.
@@ -270,3 +276,74 @@ authRouter.post(
   authMiddleWare,
   logoutController
 );
+/**
+ * @swagger
+ * /auth/login-verification:
+ *   post:
+ *     summary: Request login verification
+ *     description: Sends a verification code to the admin's registered email after validating credentials.
+ *     tags:
+ *       - Authentication
+ *     requestBody:
+ *       description: Admin's email and password for requesting a login verification code.
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: admin@example.com
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: Password123!
+ *     responses:
+ *       200:
+ *         description: Verification code sent successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Verification code sent successfully!"
+ *       400:
+ *         description: Bad request due to missing or invalid fields.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: "Missing field. Email is required!"
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: "Error: Unable to send verification code"
+ */
+
+authRouter.post(
+  '/login-verification', 
+  validateRequest(loginAdminSchema),
+  requestLoginVerificationController
+); 

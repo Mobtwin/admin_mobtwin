@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createAdminController,
   deleteAdminByIdController,
+  deleteAdminSessionController,
   getAdminByIdController,
   getAllAdminsController,
   searchAdminsTablController,
@@ -11,6 +12,7 @@ import { validateRequest } from "../middlewares/requestValidator.middleware";
 import {
   adminByIdSchema,
   createAdminSchema,
+  deleteAdminSessionSchema,
   searchAdminSchema,
   updateAdminSchema,
 } from "../validators/admin.validator";
@@ -119,6 +121,103 @@ adminRouter.post(
   checkPermission(ADMIN_PERMISSIONS.CREATE),
   validateRequest(createAdminSchema),
   createAdminController
+);
+/**
+ * @swagger
+ * /admin/logout:
+ *   post:
+ *     summary: Delete an admin session (logout).
+ *     description: Allows an authorized admin to delete the session of another admin, effectively logging them out.
+ *     tags:
+ *       - Admin
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       description: Details for deleting the admin session.
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - adminId
+ *             properties:
+ *               adminId:
+ *                 type: string
+ *                 description: The unique ID of the admin whose session will be deleted.
+ *                 example: "64f3b2c9d47b4e1a4f123456"
+ *     responses:
+ *       200:
+ *         description: Admin session deleted successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Admin session deleted successfully!"
+ *       400:
+ *         description: Bad request due to missing or invalid fields.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: "Missing field. adminId is required."
+ *       401:
+ *         description: Unauthorized access.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: "Unauthorized!"
+ *       403:
+ *         description: Forbidden due to missing or invalid permissions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: Forbidden Insufficient permissions!
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: "Error: Something went wrong on the server."
+ */
+adminRouter.post(
+  "/logout",
+  checkPermission(ADMIN_PERMISSIONS.UPDATE),
+  validateRequest(deleteAdminSessionSchema),
+  deleteAdminSessionController
 );
 /**
  * @swagger

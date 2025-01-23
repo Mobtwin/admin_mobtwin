@@ -3,9 +3,9 @@ import { sendErrorResponse, sendSuccessResponse } from "../utils/response";
 import { IAdminDocument, ROLES, ROLES_OPTIONS } from "../models/admin.schema";
 import validate from 'deep-email-validator'
 import { verifyPasswordStrength } from "../utils/string.format";
-import { createAdmin, deleteAdminById, getAdminById, getAllAdmins, getSearchedAdmins, updateAdminById } from "../services/admin.service";
+import { createAdmin, deleteAdminById, deleteAdminSession, getAdminById, getAllAdmins, getSearchedAdmins, updateAdminById } from "../services/admin.service";
 import { logEvents } from "../middlewares/logger";
-import { AdminByIdRequest, CreateAdminRequest, SearchAdmin, SearchAdminRequest, UpdateAdminRequest } from "../validators/admin.validator";
+import { AdminByIdRequest, CreateAdminRequest, DeleteAdminSessionRequest, SearchAdmin, SearchAdminRequest, UpdateAdminRequest } from "../validators/admin.validator";
 import { ADMIN_PERMISSIONS, ADMIN_TABLE } from "../constant/admin.constant";
 import { invalidateCache } from "../middlewares/cache.middleware";
 import { constructSearchFilter } from "../utils/search";
@@ -43,6 +43,32 @@ export const createAdminController = async (req: CreateAdminRequest, res: Respon
             logEvents(`${user.role}: ${user.userName} created by ${admin.role}: ${admin.userName}`, "actions.log");
             invalidateCache(ADMIN_TABLE).then(() => {
                 return sendSuccessResponse(res, admin, 'Admin created successfully!', 200);
+            }).catch((error) => {
+                return sendErrorResponse(res, error, `Error: ${error.message}`, 400);
+            });
+        }).catch((error) => {
+            return sendErrorResponse(res, error, `Error: ${error.message}`, 400);
+        });
+    } catch (error:any) {
+        return sendErrorResponse(res, error, `Error: ${error.message}`, 500);
+    }
+}
+//delete admin session = logout
+export const deleteAdminSessionController = async (req: DeleteAdminSessionRequest, res: Response) => {
+    try {
+        const { adminId } = req.body;
+        //authorization
+        if (!req.user) 
+            return sendErrorResponse(res,null, "Unauthorized!",401);
+        const user = req.user;
+        //validation
+        if(!adminId)
+            return sendErrorResponse(res,null, "Missing field. adminId is required",400);
+        //create admin
+        deleteAdminSession(adminId).then(({message}) => {
+            logEvents(`${user.role}: ${user.userName} deleted session of Admin: ${adminId}`, "actions.log");
+            invalidateCache(ADMIN_TABLE).then(() => {
+                return sendSuccessResponse(res, null, message, 200);
             }).catch((error) => {
                 return sendErrorResponse(res, error, `Error: ${error.message}`, 400);
             });

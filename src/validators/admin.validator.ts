@@ -72,3 +72,16 @@ export interface SearchAdmin extends SearchParams {
     userName?: string;
     email?: string;
 }
+
+
+// Define a Joi schema for admin creation request
+export const deleteAdminSessionSchema = Joi.object<DeleteAdminSession>({
+    adminId: Joi.string().required(),
+});
+export interface DeleteAdminSession {
+    adminId: string;
+}
+
+export interface DeleteAdminSessionRequest extends Request {
+    body: DeleteAdminSession; 
+}

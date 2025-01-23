@@ -35,6 +35,22 @@ export const createAdmin = async (admin: IAdmin,userId:string) => {
   }
 };
 
+//delete admin session service
+export const deleteAdminSession = async (adminId: string) => {
+  try {
+    const admin = await Admins.findById(adminId);
+    if (!admin) throw new Error("Admin not found!");
+    const updatedAdmin = await Admins.updateOne(
+      { _id: adminId,removed_at: {$exists:false} },
+      { devices:[] }
+    );
+    if (!updatedAdmin.modifiedCount) throw new Error("Admin session removal failed!");
+    return {message:"Admin session removed successfully!"};
+  } catch (error: any) {
+    throw error;
+  }
+};
+
 //get all admins service
 export const getAllAdmins = async ({readOwn=false,userId,skip,limit}:{readOwn:boolean,userId:string,skip:number,limit:number}) => {
   try {

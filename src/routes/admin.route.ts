@@ -129,7 +129,7 @@ adminRouter.post(
  *     summary: Delete an admin session (logout).
  *     description: Allows an authorized admin to delete the session of another admin, effectively logging them out.
  *     tags:
- *       - Admin
+ *       - Admins
  *     security:
  *       - bearerAuth: []
  *     requestBody:

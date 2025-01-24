@@ -265,6 +265,9 @@ const swaggerDefinition = {
               limit: {
                 type: "integer",
               },
+              preOrder: {
+                type: "boolean",
+              },
               sort: {
                 type: "object",
                 required: [
@@ -583,6 +586,9 @@ const swaggerDefinition = {
             properties: {
               limit: {
                 type: "integer",
+              },
+              preOrder: {
+                type: "boolean",
               },
               sort: {
                 type: "object",

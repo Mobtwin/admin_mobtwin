@@ -37,6 +37,7 @@ export interface IFilters {
   range:IRange;
   skip: number;
   nestedFilters: INestedFilters;
+  preOrder: boolean;
 }
 
 export interface IPockets {

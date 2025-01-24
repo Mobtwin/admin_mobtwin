@@ -21,6 +21,7 @@ export const createPlanSchema = Joi.object<CreatePlan>({
     mode: Joi.string().valid('basic', 'advanced').required(),
     filters: Joi.object({
         limit: Joi.number().required(),
+        preOrder: Joi.boolean().required().default(false),
         sort: Joi.object({
             released: Joi.boolean().required(),
             updated: Joi.boolean().required(),
@@ -101,6 +102,7 @@ export const updatePlanSchema = Joi.object<UpdatePlan>({
     mode: Joi.string().valid('basic', 'advanced').optional(),
     filters: Joi.object({
         limit: Joi.number().optional(),
+        preOrder: Joi.boolean().optional(),
         sort: Joi.object({
             released: Joi.boolean().optional(),
             updated: Joi.boolean().optional(),

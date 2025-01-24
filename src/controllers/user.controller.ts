@@ -32,9 +32,9 @@ export const createUserController = async (req: CreateUserRequest, res: Response
     if (!verifyPasswordStrength(password))
       return sendErrorResponse(res,null,"Password is weak. Try a stronger password with at least 8 characters, one uppercase, one lowercase, one number and one special character!",400);
     //email validation
-    const validationResult = await validate(email);
-    if (!validationResult.valid)
-      return sendErrorResponse(res,null,"Invalid email: " + validationResult.reason,400);
+    // const validationResult = await validate(email);
+    // if (!validationResult.valid)
+    //   return sendErrorResponse(res,null,"Invalid email: " + validationResult.reason,400);
     createUser(userName, email, password, ipAddress)
       .then((value) => {
         logEvents(`User: ${value.userName} created by ${user.role}: ${user.userName}`, "actions.log");

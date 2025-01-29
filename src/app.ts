@@ -29,6 +29,10 @@ import { UserDefinition } from "./models/user.schema";
 import { PlansDefinition } from "./models/plan.schema";
 import { ThemeDefinition } from "./models/builder/theme.schema";
 import { TemplateDefinition } from "./models/builder/templates.schema";
+
+import {checkRedisConnection} from "./utils/redis";
+
+
 // initial the express server
 const app: Express = express();
 app.get("/", (req, res) => {
@@ -1673,7 +1677,8 @@ mongoose
   .connect(environment.MONGODB_URI as string)
   .then((_value: mongoose.Mongoose) => {
     console.log("🎉 connection established successfully with mongo db");
-    app.listen(environment.PORT, () => {
+    app.listen(environment.PORT, async() => {
+      await checkRedisConnection();
       console.log(`🚀 Server is running on port: ${environment.PORT}`);
       // seedRolesAndPermissions();
     });

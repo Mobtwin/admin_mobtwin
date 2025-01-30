@@ -6,6 +6,7 @@ import { logEvents } from "../middlewares/logger";
 import { COLLECTION_TABLE } from "../constant/collection.constant";
 import { invalidateCache } from "../middlewares/cache.middleware";
 import { PaginationQueryRequest } from "../validators/pagination.validator";
+import { deleteAllRedisCache } from "../utils/redis";
 
 // get all collections
 export const getAllCollectionsController = async (req: PaginationQueryRequest, res: Response) => {
@@ -86,6 +87,7 @@ export const updateCollectionController = async (
             `Collection: ${value.name} updated by ${user.role}: ${user.userName}`,
             "actions.log"
         );
+        deleteAllRedisCache();
         invalidateCache(COLLECTION_TABLE)
            .then(() => {
                 return sendSuccessResponse(
@@ -130,6 +132,7 @@ export const deleteCollectionController = async (
           `Collection: ${value.name} deleted by ${user.role}: ${user.userName}`,
           "actions.log"
         );
+        deleteAllRedisCache();
         invalidateCache(COLLECTION_TABLE)
           .then(() => {
             return sendSuccessResponse(

@@ -13,7 +13,7 @@ import {
   getAppsImageController,
   getAvatarController,
 } from "./controllers/public.conroller";
-import { seedRolesAndPermissions } from "./scripts/role.seeder";
+// import { seedRolesAndPermissions } from "./scripts/role.seeder";
 //bullMQ
 import { createBullBoard } from "@bull-board/api";
 import { BullMQAdapter } from "@bull-board/api/bullMQAdapter";
@@ -35,7 +35,7 @@ import {checkRedisConnection} from "./utils/redis";
 
 // initial the express server
 const app: Express = express();
-app.get("/", (req, res) => {
+app.get("/", (_req, res) => {
   res.send("welcome to the api");
 });
 
@@ -58,7 +58,7 @@ app.use(logger);
 // dns validation(
 app.get(
   "/.well-known/pki-validation/9C8A8C1AA245B8F5185A2C31766CD4ED.txt",
-  (req, res) => {
+  (_req, res) => {
     res.send(`28F8E3C99070885CECD6BF20314F0EAE4B64389DED6BEF7A956C95FD331DDF15
 comodoca.com
 621b7a5d39e7e15`);

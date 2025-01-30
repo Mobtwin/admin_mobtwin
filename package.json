@@ -50,6 +50,7 @@
     "@types/stripe": "^8.0.417",
     "@types/swagger-ui-express": "^4.1.7",
     "@types/uuid": "^10.0.0",
+    "admin_mobtwin": "file:",
     "bcrypt": "^5.1.1",
     "bullmq": "^5.12.11",
     "cookie-parser": "^1.4.6",

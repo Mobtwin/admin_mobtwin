@@ -20,5 +20,18 @@ export const checkRedisConnection = async () => {
         redis.disconnect(); // Close the connection after checking
     }
 };
+/**
+* Deletes all Redis cache entries.
+* @returns Promise<boolean> - True if successful, false otherwise.
+*/
+export async function deleteAllRedisCache(): Promise<boolean> {
+ try {
+   await redisClient.flushall();
+   return true;
+ } catch (error) {
+   console.error("Error deleting all cache keys:", error);
+   return false;
+ }
+}
 
 export default redisClient;

@@ -24,7 +24,7 @@ export const loginAdmin = async (
   userAgent?: string
 ) => {
   const admin = await Admins.findOne({ email: credential.email }).select(
-    "_id password email userName role removed_at devices"
+    "_id password email userName role removed_at devices role"
   );
   if (!admin) {
     throw new Error("invalid credentials");
@@ -204,7 +204,7 @@ export const loginWithCode = async (email: string, password: string, code: numbe
     if (!validateCodeVerification("device verification", email, code)) {
         throw new Error('invalid verification code');
     }
-    const admin = await Admins.findOne({ email }).select('password isVerified devices email userName avatar plan loginAttempts _id removed_at').lean();
+    const admin = await Admins.findOne({ email }).select('password isVerified devices email userName avatar plan loginAttempts _id removed_at role').lean();
     if (!admin) {
         throw new Error('invalid credentials');
     }

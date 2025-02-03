@@ -57,6 +57,7 @@ export interface Collection {
     sort?: CollectionSort;
   };
   keywords?: string[];
+  tags?: string[];
   logs?: string[];
   apps?: GAppPreview[];
 }

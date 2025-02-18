@@ -56,14 +56,14 @@ app.use(cookieParser());
 app.use(logger);
 
 // dns validation(
-app.get(
-  "/.well-known/pki-validation/9C8A8C1AA245B8F5185A2C31766CD4ED.txt",
-  (_req, res) => {
-    res.send(`28F8E3C99070885CECD6BF20314F0EAE4B64389DED6BEF7A956C95FD331DDF15
-comodoca.com
-621b7a5d39e7e15`);
-  }
-);
+  app.get(
+    "/.well-known/pki-validation/2280DCF2B0F5D3414E5AC7C43BFEF750.txt",
+    (_req, res) => {
+      res.send(`765D94EE0D817B78B6A861E5D0CCEA0C73B57C1DE05AD2405655675C102BFF02
+  comodoca.com
+  8320f152a168360`);
+    }
+  );
 // Swagger definition
 const swaggerDefinition = {
   openapi: "3.0.0",

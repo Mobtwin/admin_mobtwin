@@ -14,6 +14,8 @@ export interface ITheme {
     repoName: string;
     repoOwner: string;
     status: ThemeStatus;
+    posters: string[];
+    featured: boolean;
     templateId: Schema.Types.ObjectId;
 
 }
@@ -30,6 +32,8 @@ const themeSchema = new Schema<IThemeDocument>({
     summary: { type: String },
     repoName: { type: String, required: true, unique: true},
     repoOwner: { type: String, required: true },
+    posters: {type: [String],required:true},
+    featured: {type: Boolean, default: false},
     status: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
     // Use a reference to the Template model. This allows us to associate a theme with a specific template.
     templateId: { type: Schema.Types.ObjectId, required: true, },

@@ -30,8 +30,7 @@ import { PlansDefinition } from "./models/plan.schema";
 import { ThemeDefinition } from "./models/builder/theme.schema";
 import { TemplateDefinition } from "./models/builder/templates.schema";
 
-import {checkRedisConnection} from "./utils/redis";
-
+import { checkRedisConnection } from "./utils/redis";
 
 // initial the express server
 const app: Express = express();
@@ -56,14 +55,14 @@ app.use(cookieParser());
 app.use(logger);
 
 // dns validation(
-  app.get(
-    "/.well-known/pki-validation/2280DCF2B0F5D3414E5AC7C43BFEF750.txt",
-    (_req, res) => {
-      res.send(`765D94EE0D817B78B6A861E5D0CCEA0C73B57C1DE05AD2405655675C102BFF02
+app.get(
+  "/.well-known/pki-validation/2280DCF2B0F5D3414E5AC7C43BFEF750.txt",
+  (_req, res) => {
+    res.send(`765D94EE0D817B78B6A861E5D0CCEA0C73B57C1DE05AD2405655675C102BFF02
   comodoca.com
   8320f152a168360`);
-    }
-  );
+  }
+);
 // Swagger definition
 const swaggerDefinition = {
   openapi: "3.0.0",
@@ -153,6 +152,16 @@ const swaggerDefinition = {
           templateId: {
             type: "string",
           },
+          featured: {
+            type: "boolean",
+            default: false,
+          },
+          posters: {
+            type: "array",
+            items: {
+              type: "string",
+            },
+          }
         },
         example: {
           name: "Dark Theme",
@@ -181,6 +190,16 @@ const swaggerDefinition = {
           templateId: {
             type: "string",
           },
+          featured: {
+            type: "boolean",
+            default: false,
+          },
+          posters: {
+            type: "array",
+            items: {
+              type: "string",
+            },
+          }
         },
         example: {
           name: "Dark Theme",
@@ -1372,7 +1391,7 @@ const swaggerDefinition = {
           poster: {
             type: "string",
             description: "The poster image for the collection",
-          }
+          },
         },
         example: {
           name: "Top Games",
@@ -1606,26 +1625,26 @@ const swaggerDefinition = {
 // Options for swagger-jsdoc
 const options: swaggerJSDoc.Options = {
   swaggerDefinition,
-  apis: ["./src/routes/*.ts","./dist/routes/*.js"], // Path to the API files
+  apis: ["./src/routes/*.ts", "./dist/routes/*.js"], // Path to the API files
 };
 // Initialize swagger-jsdoc
 const swaggerSpec = swaggerJSDoc(options);
 // Basic Authentication Middleware
-app.use('/api-docs', (req, res, next) => {
-  const auth = { username: 'MFfzPbSL', password: 'RAcC7TNxlZiO' }; // Change these credentials
+app.use("/api-docs", (req, res, next) => {
+  const auth = { username: "MFfzPbSL", password: "RAcC7TNxlZiO" }; // Change these credentials
 
   // Parse login credentials from the Authorization header
-  const b64auth = (req.headers.authorization || '').split(' ')[1] || '';
-  const [user, pass] = Buffer.from(b64auth, 'base64').toString().split(':');
+  const b64auth = (req.headers.authorization || "").split(" ")[1] || "";
+  const [user, pass] = Buffer.from(b64auth, "base64").toString().split(":");
 
   // Validate login credentials
   if (user === auth.username && pass === auth.password) {
-      return next(); // Access granted
+    return next(); // Access granted
   }
 
   // Access denied
-  res.set('WWW-Authenticate', 'Basic realm="401"'); // Prompt for login
-  res.status(401).send('Authentication required.'); // Unauthorized
+  res.set("WWW-Authenticate", 'Basic realm="401"'); // Prompt for login
+  res.status(401).send("Authentication required."); // Unauthorized
 });
 // Serve Swagger UI
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
@@ -1677,7 +1696,7 @@ mongoose
   .connect(environment.MONGODB_URI as string)
   .then((_value: mongoose.Mongoose) => {
     console.log("🎉 connection established successfully with mongo db");
-    app.listen(environment.PORT, async() => {
+    app.listen(environment.PORT, async () => {
       await checkRedisConnection();
       console.log(`🚀 Server is running on port: ${environment.PORT}`);
       // seedRolesAndPermissions();

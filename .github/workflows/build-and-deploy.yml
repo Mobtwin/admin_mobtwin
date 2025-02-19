@@ -1,7 +1,7 @@
 # Controls when the action will run.
 on:
   push:
-    branches: [ origin/dev ]
+    branches: [ dev ]
 
 jobs:
   build:

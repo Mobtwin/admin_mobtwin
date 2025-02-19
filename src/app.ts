@@ -169,6 +169,8 @@ const swaggerDefinition = {
           repoName: "theme-dark",
           repoOwner: "developer123",
           templateId: "template-001",
+          featured: true,
+          posters: ["poster1.jpg", "poster2.jpg"],
         },
       },
       UpdateTheme: {
@@ -207,6 +209,8 @@ const swaggerDefinition = {
           repoName: "theme-dark",
           repoOwner: "developer123",
           templateId: "template-001",
+          featured: true,
+          posters: ["poster1.jpg", "poster2.jpg"],
         },
       },
       Plan: PlansDefinition,

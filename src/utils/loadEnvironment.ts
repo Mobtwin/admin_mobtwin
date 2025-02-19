@@ -22,7 +22,9 @@ export const environment: {
   GRAPHQL_API_URL:string,
   SCRAPPER_API_URL:string,
   EMAIL_USER: string,
-  EMAIL_PASSWORD: string
+  EMAIL_PASSWORD: string,
+  GCP_CREDENTIALS_BASE64: string,
+  GCP_BUCKET_NAME: string
 } = {
   PORT: process.env.PORT as string,
   MONGODB_URI: process.env.MONGODB_URI as string,
@@ -43,5 +45,7 @@ export const environment: {
   GRAPHQL_API_URL: process.env.GRAPHQL_API_URL as string,
   SCRAPPER_API_URL: process.env.SCRAPPER_API_URL as string,
   EMAIL_USER: process.env.EMAIL_USER as string,
-  EMAIL_PASSWORD: process.env.EMAIL_PASSWORD as string
+  EMAIL_PASSWORD: process.env.EMAIL_PASSWORD as string,
+  GCP_CREDENTIALS_BASE64: process.env.GCP_CREDENTIALS_BASE64 as string,
+  GCP_BUCKET_NAME: process.env.GCP_BUCKET_NAME as string,
 };

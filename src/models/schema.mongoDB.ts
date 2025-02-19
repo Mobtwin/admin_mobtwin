@@ -1,5 +1,4 @@
-import mongoose, { model, Model, Schema } from "mongoose";
-import { IGAppDocument } from "../types/dashboard.types";
+import mongoose, { Schema } from "mongoose";
 
 const timeLineEntrySchema = new Schema({
   date: Date,
@@ -21,28 +20,29 @@ export const gAppPreviewSchema = new Schema({
   released: Date,
   timeLine: {type:[timeLineEntrySchema], default: []},
 });
+export const collectionQueryTimeline = new Schema({
+  field: { type: String }, 
+},{_id:false});
 export const collectionQuerySchema = new Schema({
   installsExact: {
-    $gte: { type: Number },
-    $lte: { type: Number },
+    gte: { type: Number },
+    lte: { type: Number },
   },
   type: { type: String },
   published: { type: Boolean },
   dailyInstalls: {
-    $gte: { type: Number },
+    gte: { type: Number },
   },
-  timeLine: { 
-    field: { type: String },
-  }, // Dot notation for nested field
+  timeLine:{type:collectionQueryTimeline}, // Dot notation for nested field
   currentVersionReviewsCount: {
-    $gte: { type: Number },
-    $lte: { type: Number },
+    gte: { type: Number },
+    lte: { type: Number },
   },
-});
+},{_id:false});
 export const collectionSortSchema = new Schema({
   released: { type: Number },
 
-});
+},{_id:false});
 export const collectionSchema = new Schema({
   poster: String,
   name: {
@@ -63,6 +63,7 @@ export const collectionSchema = new Schema({
     sort: { type: collectionSortSchema },
   },
   keywords: [String],
+  tags: [String],
   logs: {
     type: [String],
     default: []
@@ -104,6 +105,7 @@ export const iosCollectionSchema = new Schema({
     sort: { type: collectionSortSchema },
   },
   keywords: [String],
+  tags: [String],
   logs: {
     type: [String],
     default: []
@@ -310,7 +312,6 @@ appSchema.index({
   devName: 1,
   devId: 1,
 });
-export const G_Apps: Model<IGAppDocument>  = model<IGAppDocument>('g_apps', appSchema);
 
 export const gpTopChartSchema = new Schema({
   _id: String,
@@ -657,6 +658,10 @@ const country = new mongoose.Schema({
   name: String,
   code: String,
 });
+const syncElasticSchema = new mongoose.Schema({
+  ios: {type:Number,required: true},
+  android: {type:Number,required: true},
+});
 
 export const constantsSchema = new Schema({
   g_play: gAppConstantsSchema,
@@ -664,6 +669,7 @@ export const constantsSchema = new Schema({
   steam: String,
   version: Number,
   countries: [country],
+  syncElastic : syncElasticSchema,
 });
 
 const proxySchema = new Schema({

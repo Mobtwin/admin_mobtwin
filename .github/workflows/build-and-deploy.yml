@@ -1,7 +1,7 @@
 # Controls when the action will run.
 on:
   push:
-    branches: [ main ]
+    branches: [ origin/dev ]
 
 jobs:
   build:
@@ -46,7 +46,7 @@ jobs:
         port: 22
         script: |
           cd /var/www/admin_mobtwin
-          git pull
+          git pull origin dev
     - name: Download build artifacts
       uses: actions/download-artifact@v4
       with:

@@ -40,6 +40,7 @@ export const createCollectionSchema = Joi.object<CreateCollection>({
     }).required(),
     plan: Joi.array().items(Joi.string()).required(),
     keywords: Joi.array().items(Joi.string()).optional(),
+    tags: Joi.array().items(Joi.string()).optional(),
     logs: Joi.array().items(Joi.string()).optional(),
     apps: Joi.array().items(Joi.object()).optional(),
 });
@@ -85,6 +86,7 @@ export const updateCollectionByIdSchema = Joi.object<UpdateCollectionById>({
     }).optional(),
     plan: Joi.array().items(Joi.string()).optional(),
     keywords: Joi.array().items(Joi.string()).optional(),
+    tags: Joi.array().items(Joi.string()).optional(),
     logs: Joi.array().items(Joi.string()).optional(),
     apps: Joi.array().items(Joi.object()).optional(),
 });

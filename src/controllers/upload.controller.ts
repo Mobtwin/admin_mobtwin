@@ -1,12 +1,11 @@
 import { Request, Response } from "express";
 import { sendErrorResponse, sendSuccessResponse } from "../utils/response";
-import { uploadFilesToSpaces } from "../config/s3Client.config";
+import { uploadImagesToGoogleCloud } from "../config/bucket.config";
 
 export const uploadImageController = async (req: Request, res: Response) => {
     const user = req.user;
     if (!user) return sendErrorResponse(res,null, "Unauthorized!", 401);
-    const userId = user.id;
-    uploadFilesToSpaces(req, `admin/images`)
+    uploadImagesToGoogleCloud(req, `admin/images`)
       .then((imagesLink) => {
         return sendSuccessResponse(res, { image: imagesLink[0] }, "Image uploaded successfully", 200);// [0] because upload single image
       })

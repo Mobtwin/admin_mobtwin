@@ -13,6 +13,8 @@ export const createThemeSchema = Joi.object<CreateTheme>({
     repoName: Joi.string().required(),
     repoOwner: Joi.string().required(),
     templateId: Joi.string().required(),
+    posters: Joi.array().items(Joi.string()).required(),
+    featured: Joi.boolean().optional().default(false),
 });
 
 //define a Joi schema for theme update request
@@ -27,6 +29,8 @@ export const updateThemeSchema = Joi.object<UpdateTheme>({
     repoName: Joi.string().optional(),
     repoOwner: Joi.string().optional(),
     templateId: Joi.string().optional(),
+    posters: Joi.array().items(Joi.string()).optional(),
+    featured: Joi.boolean().optional(),
 });
 
 // define a Joi schema for theme id request

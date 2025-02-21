@@ -62,7 +62,7 @@ export const createTokens = async(res: Response, payload: Express.User) => {
   res.cookie(environment.COOKIE_NAME, refreshToken, {
     httpOnly: true,
     secure: false,// process.env.NODE_ENV === 'production'
-    sameSite: 'lax',
+    sameSite: 'none',
     maxAge: 1 * 24 * 60 * 60 * 1000, // 1 days
   });
 

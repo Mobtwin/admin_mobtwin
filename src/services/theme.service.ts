@@ -1,3 +1,4 @@
+import { generateSignedUrl } from "../config/bucket.config";
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
 import { THEME_TABLE } from "../constant/theme.constant";
 import { IThemeDocument, Theme } from "../models/builder/theme.schema";
@@ -14,7 +15,11 @@ export const createTheme = async (theme: CreateTheme, userId: string) => {
       table: THEME_TABLE,
       itemId: newTheme._id as string,
     });
-    return newTheme;
+    const posters = await Promise.all(newTheme.posters.map(async(poster)=>{
+      const posterUrl = await generateSignedUrl(poster,60);
+      return posterUrl;
+    }));
+    return {...newTheme,posters};
   } catch (error: any) {
     throw error;
   }
@@ -36,10 +41,24 @@ export const getAllThemes = async ({
     if (readOwn) {
       const themeIds = await getOwnItemsByPermissionAction(userId,THEME_TABLE,PERMISSIONS_ACTIONS.READ);
       const { data, pagination } = await fetchPaginatedData<IThemeDocument>(Theme,skip,limit,{_id: { $in: themeIds },removed_at: null});
-      return { data, pagination };
+      const dataWithUrls = await Promise.all(data.map(async(theme)=>{
+        const posters = await Promise.all(theme.posters.map(async(poster)=>{
+          const posterUrl = await generateSignedUrl(poster,60);
+          return posterUrl;
+        }));
+        return {...theme, posters};
+      }));
+      return { data:dataWithUrls, pagination };
     }
     const { data, pagination } = await fetchPaginatedData<IThemeDocument>(Theme,skip,limit,{removed_at: null});
-      return { data, pagination };
+    const dataWithUrls = await Promise.all(data.map(async(theme)=>{
+      const posters = await Promise.all(theme.posters.map(async(poster)=>{
+        const posterUrl = await generateSignedUrl(poster,60);
+        return posterUrl;
+      }));
+      return {...theme, posters};
+    }));
+      return { data:dataWithUrls, pagination };
   } catch (error: any) {
     throw error;
   }
@@ -50,7 +69,11 @@ export const getThemeById = async (id: string) => {
   try {
     const theme = await Theme.findById(id);
     if (!theme || theme.removed_at) throw new Error("Theme not found!");
-    return theme;
+    const posters = await Promise.all(theme.posters.map(async(poster)=>{
+      const posterUrl = await generateSignedUrl(poster,60);
+      return posterUrl;
+    }));
+    return {...theme,posters};
   } catch (error: any) {
     throw error;
   }
@@ -63,7 +86,11 @@ export const updateTheme = async (id: string, theme: UpdateTheme) => {
       new: true,
     });
     if (!updatedTheme) throw new Error("Theme not updated!");
-    return updatedTheme;
+    const posters = await Promise.all(updatedTheme.posters.map(async(poster)=>{
+      const posterUrl = await generateSignedUrl(poster,60);
+      return posterUrl;
+    }));
+    return {...updatedTheme,posters};
   } catch (error: any) {
     throw error;
   }

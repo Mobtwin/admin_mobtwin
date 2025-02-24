@@ -46,7 +46,7 @@ export const getAllThemes = async ({
           const posterUrl = await generateSignedUrl(poster,60);
           return posterUrl;
         }));
-        return {...theme, posters};
+        return {...theme._doc, posters};
       }));
       return { data:dataWithUrls, pagination };
     }
@@ -56,7 +56,7 @@ export const getAllThemes = async ({
         const posterUrl = await generateSignedUrl(poster,60);
         return posterUrl;
       }));
-      return {...theme, posters};
+      return {...theme._doc, posters};
     }));
       return { data:dataWithUrls, pagination };
   } catch (error: any) {
@@ -67,7 +67,7 @@ export const getAllThemes = async ({
 // get theme by id
 export const getThemeById = async (id: string) => {
   try {
-    const theme = await Theme.findById(id);
+    const theme = await Theme.findById(id).lean();
     if (!theme || theme.removed_at) throw new Error("Theme not found!");
     const posters = await Promise.all(theme.posters.map(async(poster)=>{
       const posterUrl = await generateSignedUrl(poster,60);
@@ -84,7 +84,7 @@ export const updateTheme = async (id: string, theme: UpdateTheme) => {
   try {
     const updatedTheme = await Theme.findOneAndUpdate({_id:id,removed_at: null}, theme, {
       new: true,
-    });
+    }).lean();
     if (!updatedTheme) throw new Error("Theme not updated!");
     const posters = await Promise.all(updatedTheme.posters.map(async(poster)=>{
       const posterUrl = await generateSignedUrl(poster,60);
@@ -100,7 +100,7 @@ export const updateThemeStatus = async (id: string, theme: UpdateThemeStatus) =>
   try {
     const updatedTheme = await Theme.findByIdAndUpdate(id, theme, {
       new: true,
-    });
+    }).lean();
     if (!updatedTheme) throw new Error("Theme not updated!");
     return updatedTheme;
   } catch (error: any) {
@@ -115,7 +115,7 @@ export const deleteTheme = async (id: string) => {
       id,
       { removed_at: new Date() },
       { new: true }
-    );
+    ).lean();
     if (!deletedTheme) throw new Error("Theme not deleted!");
     return deletedTheme;
   } catch (error: any) {

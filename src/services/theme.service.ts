@@ -46,7 +46,7 @@ export const getAllThemes = async ({
           const posterUrl = await generateSignedUrl(poster,60);
           return posterUrl;
         }));
-        return {...theme._doc, posters};
+        return {...theme._doc, postersWithUrl:posters};
       }));
       return { data:dataWithUrls, pagination };
     }
@@ -56,7 +56,7 @@ export const getAllThemes = async ({
         const posterUrl = await generateSignedUrl(poster,60);
         return posterUrl;
       }));
-      return {...theme._doc, posters};
+      return {...theme._doc, postersWithUrl:posters};
     }));
       return { data:dataWithUrls, pagination };
   } catch (error: any) {
@@ -73,7 +73,7 @@ export const getThemeById = async (id: string) => {
       const posterUrl = await generateSignedUrl(poster,60);
       return posterUrl;
     }));
-    return {...theme,posters};
+    return {...theme,postersWithUrl:posters};
   } catch (error: any) {
     throw error;
   }
@@ -90,7 +90,7 @@ export const updateTheme = async (id: string, theme: UpdateTheme) => {
       const posterUrl = await generateSignedUrl(poster,60);
       return posterUrl;
     }));
-    return {...updatedTheme,posters};
+    return {...updatedTheme,postersWithUrl:posters};
   } catch (error: any) {
     throw error;
   }

@@ -19,7 +19,7 @@ const bucketName = environment.GCP_BUCKET_NAME;
 export const uploadImagesToGoogleCloud = async (
   req: Request,
   path: string
-): Promise<string[]> => {
+): Promise<{url:string,path:string}[]> => {
   const files = req.files as Express.Multer.File[]; // Assuming files are uploaded using middleware like multer
   const file = req.file as Express.Multer.File;
 
@@ -62,7 +62,12 @@ export const uploadImagesToGoogleCloud = async (
 
   try {
     const results = await Promise.all(uploadPromises);
-    return results; // Return an array of URLs for the uploaded files
+    const resultsWithSignedUrls = await Promise.all(results.map(async (fileKey) => {
+      const url =  await generateSignedUrl(fileKey, 60);
+      return {url, path: fileKey};
+    }
+    ));
+    return resultsWithSignedUrls; // Return an array of URLs for the uploaded files
   } catch (error: any) {
     console.error("Error uploading files:", error.message);
     throw new Error(`Error uploading files: ${error.message}`);

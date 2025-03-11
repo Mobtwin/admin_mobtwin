@@ -16,7 +16,9 @@ export const allowedOrigins = [
     "https://aso.mobtwintest.com",
     "196.64.254.208",
     "196.64.254.208:5173",
-    "localhost:5173"
+    "localhost:5173",
+    "105.156.50.8",
+    "105.156.50.8:5173",
 ];
 
 

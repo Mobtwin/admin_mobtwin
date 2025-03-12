@@ -1364,22 +1364,7 @@ const swaggerDefinition = {
             type: "array",
             items: { type: "string" },
             description: "Optional list of keywords.",
-          },
-          tags: {
-            type: "array",
-            items: { type: "string" },
-            description: "Optional list of tags.",
-          },
-          logs: {
-            type: "array",
-            items: { type: "string" },
-            description: "Optional logs related to the collection.",
-          },
-          apps: {
-            type: "array",
-            items: { type: "object" },
-            description: "Optional list of apps related to the collection.",
-          },
+          }
         },
         example: {
           name: "Top Trending Apps",
@@ -1412,9 +1397,6 @@ const swaggerDefinition = {
           },
           plan: ["free", "premium"],
           keywords: ["trending", "top apps"],
-          tags: ["games", "entertainment"],
-          logs: ["log1", "log2"],
-          apps: [{ appId: "1234", name: "Cool Game" }],
         },
       },      
       UpdateCollection: {

@@ -1288,28 +1288,31 @@ const swaggerDefinition = {
       },
       CreateCollection: {
         type: "object",
-        required: ["name", "filter", "filterValues", "plan"],
+        required: ["name", "poster", "filter", "filterValues", "plan"],
         properties: {
           name: {
             type: "string",
-            description: "The name of the collection",
+            description: "The name of the collection.",
+          },
+          poster: {
+            type: "string",
+            description: "URL of the collection poster.",
           },
           description: {
             type: "string",
-            description: "A brief description of the collection",
+            description: "Optional description of the collection.",
           },
           filter: {
             type: "string",
-            description: "The filter type or category for the collection",
+            description: "Filter criteria for the collection.",
           },
           filterValues: {
             type: "object",
             required: ["limit"],
             properties: {
               limit: {
-                type: "integer",
-                description:
-                  "The limit of the number of items in the collection",
+                type: "number",
+                description: "The limit for the collection.",
               },
               query: {
                 type: "object",
@@ -1317,40 +1320,29 @@ const swaggerDefinition = {
                   installsExact: {
                     type: "object",
                     properties: {
-                      $gte: {
-                        type: "integer",
-                      },
-                      $lte: {
-                        type: "integer",
-                      },
+                      gte: { type: "number" },
+                      lte: { type: "number" },
                     },
                   },
-                  type: {
-                    type: "string",
-                  },
-                  published: {
-                    type: "boolean",
-                  },
+                  type: { type: "string" },
+                  published: { type: "boolean" },
                   dailyInstalls: {
                     type: "object",
                     properties: {
-                      $gte: {
-                        type: "integer",
-                      },
+                      gte: { type: "number" },
                     },
                   },
-                  "timeLine.field": {
-                    type: "string",
+                  timeLine: {
+                    type: "object",
+                    properties: {
+                      field: { type: "string" },
+                    },
                   },
                   currentVersionReviewsCount: {
                     type: "object",
                     properties: {
-                      $gte: {
-                        type: "integer",
-                      },
-                      $lte: {
-                        type: "integer",
-                      },
+                      gte: { type: "number" },
+                      lte: { type: "number" },
                     },
                   },
                 },
@@ -1358,102 +1350,73 @@ const swaggerDefinition = {
               sort: {
                 type: "object",
                 properties: {
-                  released: {
-                    type: "integer",
-                    description: "Sort by release date (timestamp)",
-                  },
+                  released: { type: "number" },
                 },
               },
             },
           },
           plan: {
             type: "array",
-            items: {
-              type: "string",
-            },
-            description: "List of plans for the collection",
+            items: { type: "string" },
+            description: "List of plan identifiers.",
           },
           keywords: {
             type: "array",
-            items: {
-              type: "string",
-            },
-            description: "List of keywords related to the collection",
+            items: { type: "string" },
+            description: "Optional list of keywords.",
+          },
+          tags: {
+            type: "array",
+            items: { type: "string" },
+            description: "Optional list of tags.",
           },
           logs: {
             type: "array",
-            items: {
-              type: "string",
-            },
-            description:
-              "Log entries for tracking collection creation and updates",
+            items: { type: "string" },
+            description: "Optional logs related to the collection.",
           },
           apps: {
             type: "array",
-            items: {
-              type: "object",
-            },
-            description: "List of apps associated with the collection",
-          },
-          poster: {
-            type: "string",
-            description: "The poster image for the collection",
+            items: { type: "object" },
+            description: "Optional list of apps related to the collection.",
           },
         },
         example: {
-          name: "Top Games",
-          description: "A collection of the best games",
-          filter: "gameType",
+          name: "Top Trending Apps",
+          poster: "https://example.com/poster.jpg",
+          description: "A collection of trending apps.",
+          filter: "popular",
           filterValues: {
             limit: 10,
             query: {
               installsExact: {
-                $gte: 1000,
-                $lte: 50000,
+                gte: 10000,
+                lte: 1000000,
               },
               type: "game",
               published: true,
               dailyInstalls: {
-                $gte: 200,
+                gte: 500,
               },
-              "timeLine.field": "rating",
+              timeLine: {
+                field: "createdAt",
+              },
               currentVersionReviewsCount: {
-                $gte: 1000,
-                $lte: 5000,
+                gte: 50,
+                lte: 5000,
               },
             },
             sort: {
-              released: -1,
+              released: 1,
             },
           },
           plan: ["free", "premium"],
-          keywords: ["top", "games", "popular"],
-          logs: ["Collection created", "Collection updated"],
-          apps: [
-            {
-              _id: "app123",
-              rank: 1,
-              previousRank: 2,
-              name: "SuperGame",
-              icon: "https://example.com/icon.png",
-              installs: 1000000,
-              installsExact: 1100000,
-              dailyInstalls: 5000,
-              released: "2022-01-01T12:00:00Z",
-              timeLine: [
-                {
-                  date: "2023-12-25T14:00:00Z",
-                  field: "rating",
-                  before: ["3 stars"],
-                  after: ["4 stars"],
-                  lang: "en",
-                  country: "US",
-                },
-              ],
-            },
-          ],
+          keywords: ["trending", "top apps"],
+          tags: ["games", "entertainment"],
+          logs: ["log1", "log2"],
+          apps: [{ appId: "1234", name: "Cool Game" }],
         },
-      },
+      },      
       UpdateCollection: {
         type: "object",
         required: [],

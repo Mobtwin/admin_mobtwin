@@ -1,4 +1,3 @@
-import validate from "deep-email-validator";
 import { IUser, Users } from "../models/user.schema";
 import { hashPassword } from "../utils/hashing";
 import { getOwnItemsByPermissionAction } from "./itemSpecificPermissions.service";
@@ -72,7 +71,10 @@ export const getAllUsers = async ({
             return user;
           }
           const avatarWithUrl = await generateSignedUrl(user.avatar, 60);
-          return { ...user, avatar: avatarWithUrl };
+          if (Object.keys(user).includes("_id")) {
+            return { ...(user as any)._doc, avatarWithUrl };
+          }
+          return { ...user, avatarWithUrl };
         })
       );
       return { data: dataWithUrls, pagination };
@@ -89,7 +91,10 @@ export const getAllUsers = async ({
           return user;
         }
         const avatarWithUrl = await generateSignedUrl(user.avatar, 60);
-        return { ...user, avatar: avatarWithUrl };
+        if (Object.keys(user).includes("_id")) {
+          return { ...(user as any)._doc, avatarWithUrl };
+        }
+        return { ...user, avatarWithUrl };
       })
     );
     return { data: dataWithUrls, pagination };
@@ -101,9 +106,13 @@ export const getAllUsers = async ({
 //get user by id
 export const getUserById = async (id: string) => {
   try {
-    const user = await Users.findOne({ _id: id, removed_at: null });
+    const user = await Users.findOne({ _id: id, removed_at: null }).lean();
     if (!user) throw new Error(`User with id ${id} not found!`);
-    return user;
+    if (!user.avatar || (user.avatar ?? "").startsWith("https://")) {
+      return user;
+    }
+    const avatarWithUrl = await generateSignedUrl(user.avatar, 60);
+    return {...user, avatar: avatarWithUrl};
   } catch (error: any) {
     throw error;
   }
@@ -174,7 +183,18 @@ export const getSearchedUsers = async ({
       limit,
       filters
     );
-    return { data, pagination };
+    const dataWithUrls = await Promise.all(
+      data.map(async (user) => {
+        if (!user.avatar || (user.avatar?? "").startsWith("https://")) {
+          return user;
+        }
+        const avatarWithUrl = await generateSignedUrl(user.avatar, 60);
+        if (Object.keys(user).includes("_id")) {
+          return { ...(user as any)._doc, avatarWithUrl };
+        }
+        return {...user, avatarWithUrl };
+      }));
+    return { data: dataWithUrls, pagination };
   } catch (error: any) {
     throw new Error(error.message);
   }

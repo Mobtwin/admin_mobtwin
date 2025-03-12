@@ -18,11 +18,11 @@ export const getAllCollectionsController = async (req: PaginationQueryRequest, r
     getAllCollectionsService(user.token||"")
       .then(async(value) => {
         const resultsWithImages = await Promise.all(value.map(async(collection: any) => {
-          if (collection.poster) {
+          if (collection.poster && !collection.poster.startsWith("http://")) {
             const image = await generateSignedUrl(collection.poster, 60);
             return {...collection, posterWithUrl: image };
           }
-          return collection;
+          return {...collection, posterWithUrl: collection.poster };
         }));
         return sendSuccessResponse(res, resultsWithImages, "Collections fetched successfully!", 200);
       }).catch((error) => {

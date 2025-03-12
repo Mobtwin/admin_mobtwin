@@ -67,14 +67,13 @@ export const getAllUsers = async ({
       );
       const dataWithUrls = await Promise.all(
         data.map(async (user) => {
-          if (!user.avatar || (user.avatar ?? "").startsWith("https://")) {
-            return user;
+          const userObj = user.toObject();
+
+          if (!userObj.avatar || (userObj.avatar ?? "").startsWith("https://")) {
+            return userObj;
           }
-          const avatarWithUrl = await generateSignedUrl(user.avatar, 60);
-          if (Object.keys(user).includes("_id")) {
-            return { ...(user as any)._doc, avatarWithUrl };
-          }
-          return { ...user, avatarWithUrl };
+          const avatarWithUrl = await generateSignedUrl(userObj.avatar, 60);
+          return { ...userObj, avatarWithUrl };
         })
       );
       return { data: dataWithUrls, pagination };
@@ -87,14 +86,12 @@ export const getAllUsers = async ({
     );
     const dataWithUrls = await Promise.all(
       data.map(async (user) => {
-        if (!user.avatar || (user.avatar ?? "").startsWith("https://")) {
-          return user;
+        const userObj = user.toObject();
+        if (!userObj.avatar || (userObj.avatar ?? "").startsWith("https://")) {
+          return userObj;
         }
-        const avatarWithUrl = await generateSignedUrl(user.avatar, 60);
-        if (Object.keys(user).includes("_id")) {
-          return { ...(user as any)._doc, avatarWithUrl };
-        }
-        return { ...user, avatarWithUrl };
+        const avatarWithUrl = await generateSignedUrl(userObj.avatar, 60);
+        return { ...userObj, avatarWithUrl };
       })
     );
     return { data: dataWithUrls, pagination };
@@ -112,7 +109,7 @@ export const getUserById = async (id: string) => {
       return user;
     }
     const avatarWithUrl = await generateSignedUrl(user.avatar, 60);
-    return {...user, avatar: avatarWithUrl};
+    return { ...user, avatar: avatarWithUrl };
   } catch (error: any) {
     throw error;
   }
@@ -185,15 +182,14 @@ export const getSearchedUsers = async ({
     );
     const dataWithUrls = await Promise.all(
       data.map(async (user) => {
-        if (!user.avatar || (user.avatar?? "").startsWith("https://")) {
-          return user;
+        const userObj = user.toObject();
+        if (!userObj.avatar || (userObj.avatar ?? "").startsWith("https://")) {
+          return userObj;
         }
-        const avatarWithUrl = await generateSignedUrl(user.avatar, 60);
-        if (Object.keys(user).includes("_id")) {
-          return { ...(user as any)._doc, avatarWithUrl };
-        }
-        return {...user, avatarWithUrl };
-      }));
+        const avatarWithUrl = await generateSignedUrl(userObj.avatar, 60);
+        return { ...userObj, avatarWithUrl };
+      })
+    );
     return { data: dataWithUrls, pagination };
   } catch (error: any) {
     throw new Error(error.message);

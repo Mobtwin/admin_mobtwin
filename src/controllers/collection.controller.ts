@@ -17,13 +17,23 @@ export const getAllCollectionsController = async (req: PaginationQueryRequest, r
     //get all collections
     getAllCollectionsService(user.token||"")
       .then(async(value) => {
-        const resultsWithImages = await Promise.all(value.map(async(collection: any) => {
+        const gp = value.data.getCollections.gp;
+        const as = value.data.getCollections.as;
+        const gpWithImages = await Promise.all(gp.map(async(collection: any) => {
           if (collection.poster && !collection.poster.startsWith("http://")) {
             const image = await generateSignedUrl(collection.poster, 60);
             return {...collection, posterWithUrl: image };
           }
           return {...collection, posterWithUrl: collection.poster };
         }));
+        const asWithImages = await Promise.all(as.map(async(collection: any) => {
+          if (collection.poster && !collection.poster.startsWith("http://")) {
+            const image = await generateSignedUrl(collection.poster, 60);
+            return {...collection, posterWithUrl: image };
+          }
+          return {...collection, posterWithUrl: collection.poster };
+        }));
+        const resultsWithImages = { gp: gpWithImages, as: asWithImages };
         return sendSuccessResponse(res, resultsWithImages, "Collections fetched successfully!", 200);
       }).catch((error) => {
         return sendErrorResponse(res, error, `Error: ${error.message}`, 500);

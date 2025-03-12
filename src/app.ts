@@ -31,9 +31,12 @@ import { ThemeDefinition } from "./models/builder/theme.schema";
 import { TemplateDefinition } from "./models/builder/templates.schema";
 
 import { checkRedisConnection } from "./utils/redis";
+import { transporter } from "./config/mailer.config";
 
 // initial the express server
 const app: Express = express();
+// ✅ Trust proxy headers (important if running behind a proxy like Nginx, Cloudflare, or Vercel)
+app.set("trust proxy", 1);
 app.get("/", (_req, res) => {
   res.send("welcome to the api");
 });
@@ -1702,6 +1705,13 @@ mongoose
     console.log("🎉 connection established successfully with mongo db");
     app.listen(environment.PORT, async () => {
       await checkRedisConnection();
+      transporter.verify((error, success) => {
+        if (error) {
+          console.error("Error connecting to the mail server:", error);
+        } else {
+          console.log("Server is ready to send emails:", success);
+        }
+      });
       console.log(`🚀 Server is running on port: ${environment.PORT}`);
       // seedRolesAndPermissions();
     });

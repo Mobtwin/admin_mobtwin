@@ -13,7 +13,7 @@ export const createCollectionSchema = Joi.object<CreateCollection>({
     name: Joi.string().required(),
     poster:Joi.string().required(),
     description: Joi.string().optional(),
-    filter: Joi.string().required(),
+    filter: Joi.string().optional(),
     filterValues: Joi.object({
         limit: Joi.number().required(),
         query: Joi.object({

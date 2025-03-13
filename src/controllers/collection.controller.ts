@@ -20,15 +20,15 @@ export const getAllCollectionsController = async (req: PaginationQueryRequest, r
         const gp = value.data.getCollections.gp;
         const as = value.data.getCollections.as;
         const gpWithImages = await Promise.all(gp.map(async(collection: any) => {
-          if (collection.poster && !collection.poster.startsWith("http://")) {
-            const image = await generateSignedUrl(collection.poster, 60);
+          if (collection.poster && !collection.poster.startsWith("https://")) {
+            const image = await generateSignedUrl(collection.poster, 240);
             return {...collection, posterWithUrl: image };
           }
           return {...collection, posterWithUrl: collection.poster };
         }));
         const asWithImages = await Promise.all(as.map(async(collection: any) => {
-          if (collection.poster && !collection.poster.startsWith("http://")) {
-            const image = await generateSignedUrl(collection.poster, 60);
+          if (collection.poster && !collection.poster.startsWith("https://")) {
+            const image = await generateSignedUrl(collection.poster, 240);
             return {...collection, posterWithUrl: image };
           }
           return {...collection, posterWithUrl: collection.poster };
@@ -56,7 +56,7 @@ export const createCollectionController = async (
     //create collection
     createCollectionService(req.body, req.query.platform,req.user.token||"")
       .then(async(value) => {
-        const posterUrl = await generateSignedUrl(value.data.createCollection.poster, 60);
+        const posterUrl = await generateSignedUrl(value.data.createCollection.poster, 240);
         const collection = {
           ...value.data.createCollection,
           posterWithUrl: posterUrl,

@@ -140,9 +140,13 @@ export const updateUserById = async (id: string, userInfo: Partial<IUser>) => {
       id,
       { ...userInfo },
       { new: true }
-    );
+    ).lean();
     if (!updatedUser) throw new Error("User not updated!");
-    return user;
+    if (updatedUser.avatar && updatedUser.avatar.startsWith("https://")) {
+      return updatedUser;
+    }
+    const userWithUrl = updatedUser.avatar ? await generateSignedUrl(updatedUser.avatar, 60) : updatedUser.avatar;
+    return {...updatedUser, avatarWithUrl: userWithUrl};
   } catch (error: any) {
     throw error;
   }

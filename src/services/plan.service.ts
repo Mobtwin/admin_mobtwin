@@ -14,11 +14,10 @@ export const createPlan = async (plan: CreatePlan) => {
     if (!newPlan) throw new Error("Plan not created!");
     //generate signed url for poster
     if (newPlan.poster) {
-      if (!newPlan.poster.includes("https://")) {
+      if (!newPlan.poster.startsWith("https://")) {
         const posterWithUrl = await generateSignedUrl(newPlan.poster, 240);
         return { ...newPlan, posterWithUrl };
       }
-      return newPlan;
     }
     return newPlan;
   } catch (error: any) {
@@ -53,17 +52,17 @@ export const getAllPlans = async ({
       );
       const plansWithUrl = await Promise.all(
         data.map(async (plan) => {
-          if (plan.poster) {
-            if (!plan.poster.includes("https://")) {
-              const posterWithUrl = await generateSignedUrl(plan.poster, 240);
-              return {...plan, posterWithUrl };
+          const planObj = plan.toObject();
+          if (planObj.poster) {
+            if (!planObj.poster.startsWith("https://")) {
+              const posterWithUrl = await generateSignedUrl(planObj.poster, 240);
+              return { ...planObj, posterWithUrl };
             }
-            return plan;
           }
-          return plan;
+          return planObj;
         })
       );
-      return { data:plansWithUrl, pagination };
+      return { data: plansWithUrl, pagination };
     }
     //get all plans
     const { data, pagination } = await fetchPaginatedData<IPlanDocument>(
@@ -74,17 +73,17 @@ export const getAllPlans = async ({
     );
     const plansWithUrl = await Promise.all(
       data.map(async (plan) => {
-        if (plan.poster) {
-          if (!plan.poster.includes("https://")) {
-            const posterWithUrl = await generateSignedUrl(plan.poster, 240);
-            return {...plan, posterWithUrl };
+        const planObj = plan.toObject();
+        if (planObj.poster) {
+          if (!planObj.poster.startsWith("https://")) {
+            const posterWithUrl = await generateSignedUrl(planObj.poster, 240);
+            return { ...planObj, posterWithUrl };
           }
-          return plan;
         }
-        return plan;
+        return planObj;
       })
     );
-    return { data:plansWithUrl, pagination };
+    return { data: plansWithUrl, pagination };
   } catch (error: any) {
     throw error;
   }
@@ -94,16 +93,13 @@ export const getAllPlans = async ({
 export const getPlanById = async (id: string) => {
   try {
     //get plan by id
-    const plan = await Plans.findById(id);
+    const plan = await Plans.findById(id).lean();
     if (!plan || plan.removed_at) throw new Error("Plan not found!");
-    if (plan.poster) {
-      if (!plan.poster.includes("https://")) {
-        const posterWithUrl = await generateSignedUrl(plan.poster, 240);
-        return { ...plan, posterWithUrl };
-      }
+    if (plan.poster?.startsWith("https://")) {
       return plan;
     }
-    return plan;
+    const posterWithUrl = await generateSignedUrl(plan.poster!, 240);
+    return { ...plan, posterWithUrl };
   } catch (error: any) {
     throw error;
   }
@@ -119,14 +115,11 @@ export const updatePlanById = async (id: string, plan: UpdatePlan) => {
       { new: true }
     ).lean();
     if (!updatedPlan) throw new Error("Plan not updated!");
-    if (updatedPlan.poster) {
-      if (!updatedPlan.poster.includes("https://")) {
-        const posterWithUrl = await generateSignedUrl(updatedPlan.poster, 240);
-        return { ...updatedPlan, posterWithUrl };
-      }
+    if (updatedPlan.poster?.startsWith("https://")) {
       return updatedPlan;
     }
-    return updatedPlan;
+    const posterWithUrl = await generateSignedUrl(updatedPlan.poster!, 240);
+    return { ...updatedPlan, posterWithUrl };
   } catch (error: any) {
     throw error;
   }

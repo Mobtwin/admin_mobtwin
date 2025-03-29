@@ -115,7 +115,7 @@ collectionRouter.get(
   "/",
   checkPermission([COLLECTION_PERMISSIONS.READ, COLLECTION_PERMISSIONS.READ_OWN]),
   validateRequest(paginationQuerySchema,"query"),
-  cacheMiddleware(COLLECTION_TABLE),
+  // cacheMiddleware(COLLECTION_TABLE),
   paginationMiddleware,
   getAllCollectionsController
 );

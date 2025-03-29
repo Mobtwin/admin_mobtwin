@@ -23,7 +23,7 @@ const cacheMiddleware = (cacheKey: string) => {
 
         res.json = (body: any): Response => {
           // Cache the response in Redis without an expiration time
-          redisClient.set(key, JSON.stringify(body));
+          redisClient.set(key, JSON.stringify(body), "EX", 3600);
           // Return the original json response
           return originalJson(body);
         };

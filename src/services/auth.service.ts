@@ -225,8 +225,7 @@ export const loginWithCode = async (email: string, password: string, code: numbe
     const { accessToken, refreshToken } = await createTokens(res, expressPayload);
 
     await Admins.updateOne({ email }, {
-        $push: { devices: { accessToken, refreshToken, ipAddress, userAgent } },
-        $set: { updatedAt: new Date() },
+        $set: { devices: { accessToken, refreshToken, ipAddress, userAgent },updatedAt: new Date() },
       }
     );
     return { accessToken,admin };

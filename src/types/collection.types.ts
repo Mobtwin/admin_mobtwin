@@ -50,8 +50,8 @@ export interface Collection {
   name: string;
   plan: string[];
   description?: string;
-  filter: string; // Assuming 'filter' is a string, possibly a JSON path or filter type
-  filterValues?: {
+  filter?: string; // Assuming 'filter' is a string, possibly a JSON path or filter type
+  filterValues: {
     limit: number;
     query?: CollectionQuery;
     sort?: CollectionSort;

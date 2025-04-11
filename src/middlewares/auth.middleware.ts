@@ -13,6 +13,9 @@ export const authMiddleWare = async (
   if (ALLOWED_ENDPOINTS.includes(req.url)) {
     next();
   } else {
+    if (req.url.includes("/auth/refresh")) {
+      next();
+    }
     const token = req.headers.authorization && req.headers.authorization.split(" ")[1];
     if (!token) {
       return sendErrorResponse(res, null, "Token is required.", 401);

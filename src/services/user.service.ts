@@ -1,4 +1,3 @@
-import validate from "deep-email-validator";
 import { IUser, Users } from "../models/user.schema";
 import { hashPassword } from "../utils/hashing";
 import { getOwnItemsByPermissionAction } from "./itemSpecificPermissions.service";
@@ -6,6 +5,7 @@ import { USER_TABLE } from "../constant/user.constant";
 import { PERMISSIONS_ACTIONS } from "../constant/actions.constant";
 import fetchPaginatedData from "../utils/pagination";
 import { FilterQuery } from "mongoose";
+import { generateSignedUrl } from "../config/bucket.config";
 
 //create user
 export const createUser = async (
@@ -45,7 +45,7 @@ export const getAllUsers = async ({
   readOwn = false,
   userId,
   limit,
-  skip
+  skip,
 }: {
   readOwn: boolean;
   userId: string;
@@ -59,11 +59,42 @@ export const getAllUsers = async ({
         USER_TABLE,
         PERMISSIONS_ACTIONS.READ
       );
-      const { data, pagination } = await fetchPaginatedData<IUser>(Users,skip,limit,{ _id: { $in: userIds },removed_at: null });
-      return { data, pagination };
+      const { data, pagination } = await fetchPaginatedData<IUser>(
+        Users,
+        skip,
+        limit,
+        { _id: { $in: userIds }, removed_at: null }
+      );
+      const dataWithUrls = await Promise.all(
+        data.map(async (user) => {
+          const userObj = user.toObject();
+
+          if (!userObj.avatar || (userObj.avatar ?? "").startsWith("https://")) {
+            return userObj;
+          }
+          const avatarWithUrl = await generateSignedUrl(userObj.avatar, 60);
+          return { ...userObj, avatarWithUrl };
+        })
+      );
+      return { data: dataWithUrls, pagination };
     }
-    const { data, pagination } = await fetchPaginatedData<IUser>(Users,skip,limit,{removed_at: null});
-    return { data, pagination };
+    const { data, pagination } = await fetchPaginatedData<IUser>(
+      Users,
+      skip,
+      limit,
+      { removed_at: null }
+    );
+    const dataWithUrls = await Promise.all(
+      data.map(async (user) => {
+        const userObj = user.toObject();
+        if (!userObj.avatar || (userObj.avatar ?? "").startsWith("https://")) {
+          return userObj;
+        }
+        const avatarWithUrl = await generateSignedUrl(userObj.avatar, 60);
+        return { ...userObj, avatarWithUrl };
+      })
+    );
+    return { data: dataWithUrls, pagination };
   } catch (error: any) {
     throw error;
   }
@@ -72,9 +103,13 @@ export const getAllUsers = async ({
 //get user by id
 export const getUserById = async (id: string) => {
   try {
-    const user = await Users.findOne({_id:id,removed_at: null});
+    const user = await Users.findOne({ _id: id, removed_at: null }).lean();
     if (!user) throw new Error(`User with id ${id} not found!`);
-    return user;
+    if (!user.avatar || (user.avatar ?? "").startsWith("https://")) {
+      return user;
+    }
+    const avatarWithUrl = await generateSignedUrl(user.avatar, 60);
+    return { ...user, avatar: avatarWithUrl };
   } catch (error: any) {
     throw error;
   }
@@ -105,9 +140,13 @@ export const updateUserById = async (id: string, userInfo: Partial<IUser>) => {
       id,
       { ...userInfo },
       { new: true }
-    );
+    ).lean();
     if (!updatedUser) throw new Error("User not updated!");
-    return user;
+    if (updatedUser.avatar && updatedUser.avatar.startsWith("https://")) {
+      return updatedUser;
+    }
+    const userWithUrl = updatedUser.avatar ? await generateSignedUrl(updatedUser.avatar, 60) : updatedUser.avatar;
+    return {...updatedUser, avatarWithUrl: userWithUrl};
   } catch (error: any) {
     throw error;
   }
@@ -118,7 +157,7 @@ export const deleteUserById = async (id: string) => {
   try {
     const user = await Users.findByIdAndUpdate(
       id,
-      { removed_at: Date.now(),devices:[] },
+      { removed_at: Date.now(), devices: [] },
       { new: true }
     );
     if (!user) throw new Error("User not found!");
@@ -129,11 +168,34 @@ export const deleteUserById = async (id: string) => {
 };
 
 // get searched users
-export const getSearchedUsers = async ({skip,limit,filters}:{skip:number,limit:number,filters:FilterQuery<IUser>}) => {
+export const getSearchedUsers = async ({
+  skip,
+  limit,
+  filters,
+}: {
+  skip: number;
+  limit: number;
+  filters: FilterQuery<IUser>;
+}) => {
   try {
-      const {data,pagination} = await fetchPaginatedData<IUser>(Users,skip,limit,filters);
-      return {data, pagination};
+    const { data, pagination } = await fetchPaginatedData<IUser>(
+      Users,
+      skip,
+      limit,
+      filters
+    );
+    const dataWithUrls = await Promise.all(
+      data.map(async (user) => {
+        const userObj = user.toObject();
+        if (!userObj.avatar || (userObj.avatar ?? "").startsWith("https://")) {
+          return userObj;
+        }
+        const avatarWithUrl = await generateSignedUrl(userObj.avatar, 60);
+        return { ...userObj, avatarWithUrl };
+      })
+    );
+    return { data: dataWithUrls, pagination };
   } catch (error: any) {
-      throw new Error(error.message);
+    throw new Error(error.message);
   }
 };

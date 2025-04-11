@@ -6,6 +6,7 @@ import { logEvents } from "../middlewares/logger";
 import { COLLECTION_TABLE } from "../constant/collection.constant";
 import { invalidateCache } from "../middlewares/cache.middleware";
 import { PaginationQueryRequest } from "../validators/pagination.validator";
+import { generateSignedUrl } from "../config/bucket.config";
 
 // get all collections
 export const getAllCollectionsController = async (req: PaginationQueryRequest, res: Response) => {
@@ -15,10 +16,26 @@ export const getAllCollectionsController = async (req: PaginationQueryRequest, r
     const user = req.user;
     //get all collections
     getAllCollectionsService(user.token||"")
-      .then((value) => {
-        return sendSuccessResponse(res, value, "Collections fetched successfully!", 200);
-      })
-      .catch((error) => {
+      .then(async(value) => {
+        const gp = value.data.getCollections.gp;
+        const as = value.data.getCollections.as;
+        const gpWithImages = await Promise.all(gp.map(async(collection: any) => {
+          if (collection.poster && !collection.poster.startsWith("https://")) {
+            const image = await generateSignedUrl(collection.poster, 240);
+            return {...collection, posterWithUrl: image };
+          }
+          return {...collection, posterWithUrl: collection.poster };
+        }));
+        const asWithImages = await Promise.all(as.map(async(collection: any) => {
+          if (collection.poster && !collection.poster.startsWith("https://")) {
+            const image = await generateSignedUrl(collection.poster, 240);
+            return {...collection, posterWithUrl: image };
+          }
+          return {...collection, posterWithUrl: collection.poster };
+        }));
+        const resultsWithImages = { gp: gpWithImages, as: asWithImages };
+        return sendSuccessResponse(res, resultsWithImages, "Collections fetched successfully!", 200);
+      }).catch((error) => {
         return sendErrorResponse(res, error, `Error: ${error.message}`, 500);
       });
   } catch (error: any) {
@@ -38,16 +55,21 @@ export const createCollectionController = async (
 
     //create collection
     createCollectionService(req.body, req.query.platform,req.user.token||"")
-      .then((value) => {
+      .then(async(value) => {
+        const posterUrl = await generateSignedUrl(value.data.createCollection.poster, 240);
+        const collection = {
+          ...value.data.createCollection,
+          posterWithUrl: posterUrl,
+        }
         logEvents(
-          `Collection: ${value.name} created by ${user.role}: ${user.userName}`,
+          `Collection: ${collection.name} created by ${user.role}: ${user.userName}`,
           "actions.log"
         );
         invalidateCache(COLLECTION_TABLE)
           .then(() => {
             return sendSuccessResponse(
               res,
-              value,
+              collection,
               "Collection created successfully!",
               201
             );

@@ -7,7 +7,20 @@ export const allowedOrigins = [
     'https://user.mobtwin.com',
     'https://100.42.182.147',
     'https://admin.mobtwin.com',
-    "https://aso.mobtwin.com"
+    "https://aso.mobtwin.com",
+    'https://mobtwintest.com',
+    'https://dashboard.mobtwintest.com',
+    'https://api.mobtwintest.com',
+    'https://user.mobtwintest.com',
+    'https://admin.mobtwintest.com',
+    "https://aso.mobtwintest.com",
+    "196.64.254.208",
+    "196.64.254.208:5173",
+    "localhost:5173",
+    "105.156.50.8",
+    "105.156.50.8:5173",
+    "197.147.57.83",
+    "197.147.57.83:5173",
 ];
 
 

@@ -17,6 +17,9 @@ export const getAllCollectionsService = async (token:string) => {
 export const createCollectionService = async (collection: CreateCollection,platform:"as"|"gp",token:string) => {
   try {
     const result = await createCollection(collection, platform,token);
+    if (Object.keys(result).includes("errors")) {
+      throw new Error(result.errors[0].message);
+    }
     return result;
   } catch (error: any) {
     throw error;

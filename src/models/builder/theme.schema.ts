@@ -24,6 +24,7 @@ export interface IThemePopulated extends ITheme {
 }
 export interface IThemeDocument extends ITheme, Document {
     removed_at: Date|null;
+    _doc?: ITheme;
 }
 
 // Define the schema corresponding to the document interface.
